@@ -31,7 +31,7 @@ namespace someBot
                 if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(466719035636187154))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(466719035636187154));
                 else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(466719035636187154));
             }
-            else if (role.ToLower() == "miku")
+            else if (role.ToLower() == "miku" || role.ToLower() == "meek")
             {
                 if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(466719209292824586))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(466719209292824586));
                 else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(466719209292824586));
@@ -65,6 +65,16 @@ namespace someBot
             {
                 if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(466720244849704971))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(466720244849704971));
                 else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(466720244849704971));
+            }
+            else if (role.ToLower() == "dex")
+            {
+                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(467067644806430730))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(467067644806430730));
+                else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(467067644806430730));
+            }
+            else if (role.ToLower() == "daina")
+            {
+                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(467067653018877965))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(467067653018877965));
+                else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(467067653018877965));
             }
             //UTAU
             else if (role.ToLower() == "defoko")
