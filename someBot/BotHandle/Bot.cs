@@ -59,6 +59,7 @@ namespace someBot
             commands.RegisterCommands<VUTDB>();
             commands.RegisterCommands<RanPics>();
             commands.RegisterCommands<XedddSpec>();
+            commands.RegisterCommands<VoWiki>();
 
             bot.Ready += OnReadyAsync;
             bot.MessageCreated += this.Bot_MessageCreated;
