@@ -15,7 +15,7 @@ namespace someBot
 {
     class VoWiki
     {
-        [Command("vwiki"), Description("Search Vocaloidwiki"), Aliases("vocaloidwiki")]
+        [Command("vocawiki"), Description("Search Vocaloidwiki"), Aliases("vocaloidwiki")]
         public async Task vocawiki(CommandContext ctx, [RemainingText] string term)
         {//http://vocaloid.wikia.com/api/v1/Search/List?query=miku&limit=10&minArticleQuality=10&batch=1&namespaces=0
             var interactivity = ctx.Client.GetInteractivityModule();
@@ -124,18 +124,30 @@ namespace someBot
                     try
                     {
                         string FieldText = Layer1.Text + " \n";
-                        foreach(var Layer2 in Layer1.Elements)
+                        if (Layer1.Elements.Length != 0)
                         {
-                            FieldText += $"{Layer2.Text} \n";
-                            foreach(var Layer3 in Layer2.Elements)
+                            foreach (var Layer2 in Layer1.Elements)
                             {
-                                FieldText += $"{Layer3.Text} \n";
-                                foreach(var Layer4 in Layer3.Elements)
+                                FieldText += $"{Layer2.Text} \n";
+                                if (Layer2.Elements.Length != 0)
                                 {
-                                    FieldText += $"{Layer4.Text}";
-                                    foreach(var Layer5 in Layer4.Elements)
+                                    foreach (var Layer3 in Layer2.Elements)
                                     {
-                                        FieldText += $"{Layer4.Text}";
+                                        FieldText += $"{Layer3.Text} \n";
+                                        if (Layer3.Elements.Length != 0)
+                                        {
+                                            foreach (var Layer4 in Layer3.Elements)
+                                            {
+                                                if (Layer4.Elements.Length != 0)
+                                                {
+                                                    FieldText += $"{Layer4.Text}";
+                                                    foreach (var Layer5 in Layer4.Elements)
+                                                    {
+                                                        FieldText += $"{Layer4.Text}";
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
