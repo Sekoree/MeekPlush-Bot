@@ -136,38 +136,30 @@ namespace someBot
                         string FieldText = Layer1.Text + " \n";
                         //await ctx.RespondAsync(FieldText);
                         //await ctx.RespondAsync("why are you here?");
-                        try {
+                        if (Layer1.Elements != null) {
                             foreach (var Layer2 in Layer1.Elements)
                             {
                                 FieldText += $"{Layer2.Text} \n";
-                                try
-                                {
+                                if (Layer2.Elements != null) {
                                     foreach (var Layer3 in Layer2.Elements)
                                     {
                                         FieldText += $"{Layer3.Text} \n";
-                                        try
-                                        {
+                                        if (Layer3.Elements != null) { 
                                             foreach (var Layer4 in Layer3.Elements)
                                             {
                                                 FieldText += $"{Layer4.Text}";
-                                                try
-                                                {
+                                                if (Layer4.Elements != null) {
                                                     foreach (var Layer5 in Layer4.Elements)
                                                     {
                                                         FieldText += $"{Layer5.Text}";
                                                     }
                                                 }
-                                                catch { }
                                             }
                                         }
-                                        catch { }
                                     }
                                 }
-                                catch { }
                             }
-                            
                         }
-                        catch { }
                         emim.AddField(Amyresponse.Sections[pselect].Title, FieldText);
                     }
                     catch
