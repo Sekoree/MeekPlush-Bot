@@ -108,40 +108,89 @@ namespace someBot
             response.Close();
 
             int pselect = 0;
+            bool inLoop = true;
 
-            try
+            while (inLoop == true)
             {
-                string thumb = Amyresponse.Sections[7].Images[0].First().ToString();
-                thumb = thumb.Remove(thumb.Length - 1);
-                thumb = thumb.Substring(5);
-                await ctx.RespondAsync("thumb " + thumb);
-            }
-            catch
-            {
-                await ctx.RespondAsync("told ya bitch lmao");
-            }
-            var emim = new DiscordEmbedBuilder
-            {
-                Color = new DiscordColor("#0d2b35"),
-                Title = Amyresponse.Sections[pselect].Title,
-                Description = "Entry for " + Amyresponse.Sections[0].Title
-            };
-
-            foreach (var Layer1 in Amyresponse.Sections[pselect].Content)
-            {
-                try
+                var emim = new DiscordEmbedBuilder
                 {
-                    emim.AddField("Stuff", Layer1.Text);
-                }
-                catch
-                {
-                    emim.AddField("this section was too long uwu", "tell me which loid plz");
-                }
-            }
+                    Color = new DiscordColor("#0d2b35"),
+                    Title = Amyresponse.Sections[pselect].Title,
+                    Description = "Entry for " + Amyresponse.Sections[0].Title
+                };
 
-            emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
-            var end = emim.Build();
-            await init.ModifyAsync(null, embed: end);
+                foreach (var Layer1 in Amyresponse.Sections[pselect].Content)
+                {
+                    try
+                    {
+                        string FieldText = Layer1.Text + " \n";
+                        foreach(var Layer2 in Layer1.Elements)
+                        {
+                            FieldText += $"{Layer2.Text} \n";
+                            foreach(var Layer3 in Layer2.Elements)
+                            {
+                                FieldText += $"{Layer3.Text} \n";
+                                foreach(var Layer4 in Layer3.Elements)
+                                {
+                                    FieldText += $"{Layer4.Text}";
+                                    foreach(var Layer5 in Layer4.Elements)
+                                    {
+                                        FieldText += $"{Layer4.Text}";
+                                    }
+                                }
+                            }
+                        }
+                        emim.AddField("Stuff", FieldText);
+                    }
+                    catch
+                    {
+                        emim.AddField("this section was too long uwu", "please refer to the actual wiki page for more info");
+                    }
+                }
+                emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
+                var end = emim.Build();
+                await init.ModifyAsync(null, embed: end);
+
+                int an = 0;
+                string[] nums = { ":one:", ":two:", ":three:", ":four:", ":five:", ":six:", ":seven:", ":eight:", ":nine:", ":keycap_ten:" };
+                string songs = "";
+                var blank = DiscordEmoji.FromGuildEmote(ctx.Client, 435447550196318218);
+                foreach (var entries in myresponse.items)
+                {
+                    songs += $"React {DiscordEmoji.FromName(ctx.Client, nums[an])} for {entries.title} \n";
+                    await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, nums[an]));
+                    an++;
+                }
+                await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":x:"));
+
+                var one = DiscordEmoji.FromName(ctx.Client, ":one:");
+                var two = DiscordEmoji.FromName(ctx.Client, ":two:");
+                var three = DiscordEmoji.FromName(ctx.Client, ":three:");
+                var four = DiscordEmoji.FromName(ctx.Client, ":four:");
+                var five = DiscordEmoji.FromName(ctx.Client, ":five:");
+                var six = DiscordEmoji.FromName(ctx.Client, ":six:");
+                var seven = DiscordEmoji.FromName(ctx.Client, ":seven:");
+                var eight = DiscordEmoji.FromName(ctx.Client, ":eight:");
+                var nine = DiscordEmoji.FromName(ctx.Client, ":nine:");
+                var ten = DiscordEmoji.FromName(ctx.Client, ":keycap_ten:");
+                var ex = DiscordEmoji.FromName(ctx.Client, ":x:");
+
+                var reSelect = await interactivity.WaitForReactionAsync(xe => (xe == one || xe == two || xe == three || xe == four || xe == five || xe == six || xe == seven || xe == eight || xe == nine || xe == ten || xe == ex), ctx.Message.Author, TimeSpan.FromSeconds(60));
+
+                if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":one:")) pselect = 0;
+                else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":two:")) pselect = 1;
+                else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":three:")) pselect = 2;
+                else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":four:")) pselect = 3;
+                else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":five:")) pselect = 4;
+                else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":six:")) pselect = 5;
+                else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":seven:")) pselect = 6;
+                else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":eight:")) pselect = 7;
+                else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":nine:")) pselect = 8;
+                else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":keycap_ten:")) pselect = 9;
+                else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":x:")) inLoop = false;
+                else inLoop = false;
+                await init.DeleteAllReactionsAsync();
+            }
             //await ctx.RespondAsync(Amyresponse.Sections[8].Content[0].Elements[0].Elements[0].Elements[0].Text);
         }
 
