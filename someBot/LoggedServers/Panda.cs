@@ -46,7 +46,7 @@ namespace someBot
                 }
                 else
                 {
-                    File.AppendAllText(@"/dbots/someBot/logs/panda" + pCheck + ".txt", addMsg + Environment.NewLine);
+                   File.AppendAllText(@"/dbots/someBot/logs/panda" + pCheck + ".txt", addMsg + Environment.NewLine);
                 }
         }
 

@@ -1,15 +1,24 @@
-﻿using DSharpPlus.CommandsNext;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using DSharpPlus;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Support.UI;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Dynamic;
+using WikiClientLibrary.Pages;
+using WikiClientLibrary.Client;
+using WikiClientLibrary.Sites;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace someBot
 {
@@ -123,40 +132,47 @@ namespace someBot
                 {
                     try
                     {
+                        //await ctx.RespondAsync("Layer1");
                         string FieldText = Layer1.Text + " \n";
-                        if (Layer1.Elements.Length != 0)
-                        {
+                        //await ctx.RespondAsync(FieldText);
+                        //await ctx.RespondAsync("why are you here?");
+                        try {
                             foreach (var Layer2 in Layer1.Elements)
                             {
                                 FieldText += $"{Layer2.Text} \n";
-                                if (Layer2.Elements.Length != 0)
+                                try
                                 {
                                     foreach (var Layer3 in Layer2.Elements)
                                     {
                                         FieldText += $"{Layer3.Text} \n";
-                                        if (Layer3.Elements.Length != 0)
+                                        try
                                         {
                                             foreach (var Layer4 in Layer3.Elements)
                                             {
-                                                if (Layer4.Elements.Length != 0)
+                                                FieldText += $"{Layer4.Text}";
+                                                try
                                                 {
-                                                    FieldText += $"{Layer4.Text}";
                                                     foreach (var Layer5 in Layer4.Elements)
                                                     {
-                                                        FieldText += $"{Layer4.Text}";
+                                                        FieldText += $"{Layer5.Text}";
                                                     }
                                                 }
+                                                catch { }
                                             }
                                         }
+                                        catch { }
                                     }
                                 }
+                                catch { }
                             }
+                            
                         }
-                        emim.AddField("Stuff", FieldText);
+                        catch { }
+                        emim.AddField(Amyresponse.Sections[pselect].Title, FieldText);
                     }
                     catch
                     {
-                        emim.AddField("this section was too long uwu", "please refer to the actual wiki page for more info");
+                        emim.AddField("Too long uwu","please look at the actual wiki for info");
                     }
                 }
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);

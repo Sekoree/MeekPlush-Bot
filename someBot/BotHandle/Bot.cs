@@ -61,6 +61,8 @@ namespace someBot
             commands.RegisterCommands<XedddSpec>();
             commands.RegisterCommands<VoWiki>();
 
+            commands.CommandErrored += Bot_CMDErr;
+
             bot.Ready += OnReadyAsync;
             bot.MessageCreated += this.Bot_MessageCreated;
             bot.MessageCreated += PandaClass.Bot_PandaMessageCreated;
@@ -199,10 +201,7 @@ namespace someBot
 
         private Task Bot_CMDErr(CommandErrorEventArgs e) //if bot error
         {
-            if (e.Command.Name != null)
-            {
-                e.Context.RespondAsync(e.Command.Description);
-            }
+            //e.Context.RespondAsync($"error + {e.StackTrace}");
             return Task.CompletedTask;
         }
 
