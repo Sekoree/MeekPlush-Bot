@@ -133,25 +133,31 @@ namespace someBot
                     try
                     {
                         //await ctx.RespondAsync("Layer1");
-                        string FieldText = Layer1.Text + " \n";
+                        //string FieldText = Layer1.Text + " \n";
+                        //string FuckUp = "";
                         //await ctx.RespondAsync(FieldText);
                         //await ctx.RespondAsync("why are you here?");
+                        emim.AddField("----------", Layer1.Text);
                         if (Layer1.Elements != null) {
                             foreach (var Layer2 in Layer1.Elements)
                             {
-                                FieldText += $"{Layer2.Text} \n";
+                                await ctx.RespondAsync(Layer2.Text);
+                                emim.AddField("  --------", Layer2.Text);
                                 if (Layer2.Elements != null) {
                                     foreach (var Layer3 in Layer2.Elements)
                                     {
-                                        FieldText += $"{Layer3.Text} \n";
+                                        await ctx.RespondAsync(Layer3.Text);
+                                        emim.AddField("    ------", Layer3.Text);
                                         if (Layer3.Elements != null) { 
                                             foreach (var Layer4 in Layer3.Elements)
                                             {
-                                                FieldText += $"{Layer4.Text}";
+                                                await ctx.RespondAsync(Layer4.Text);
+                                                emim.AddField("      ----", Layer4.Text);
                                                 if (Layer4.Elements != null) {
                                                     foreach (var Layer5 in Layer4.Elements)
                                                     {
-                                                        FieldText += $"{Layer5.Text}";
+                                                        await ctx.RespondAsync(Layer5.Text);
+                                                        emim.AddField("        --", Layer5.Text);
                                                     }
                                                 }
                                             }
@@ -160,11 +166,10 @@ namespace someBot
                                 }
                             }
                         }
-                        emim.AddField(Amyresponse.Sections[pselect].Title, FieldText);
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        emim.AddField("Too long uwu","please look at the actual wiki for info");
+                        emim.AddField("Too long uwu","please look at the actual wiki for info " + "Error:" + e.StackTrace);
                     }
                 }
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);

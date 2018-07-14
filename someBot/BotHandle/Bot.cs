@@ -140,62 +140,35 @@ namespace someBot
 
         public Task Bot_MessageCreated(MessageCreateEventArgs e)
         {
-            if (e.Message.Content.ToLower().StartsWith("speyd3r is retarded")) e.Message.RespondAsync("no u");
-            //e.Message.RespondAsync(e.Message.Channel.Id.ToString() + " " + e.Message.Id);
+                if (e.Message.Content.ToLower().StartsWith("speyd3r is retarded")) e.Message.RespondAsync("no u");
+                //e.Message.RespondAsync(e.Message.Channel.Id.ToString() + " " + e.Message.Id);
 
-            if (e.Message.Channel.Type.ToString() == "Private") //DM Messages
-            {
-                if (e.Message.Author.IsBot == false)
+                if (e.Message.Channel.Type.ToString() == "Private") //DM Messages
                 {
-                    e.Message.RespondAsync("no u");
+                    if (e.Message.Author.IsBot == false)
+                    {
+                        e.Message.RespondAsync("no u");
+                    }
+                    return Task.CompletedTask;
                 }
-                return Task.CompletedTask;
-            }
 
-            if (e.Message.Content.ToLower().StartsWith("uwu") && !(e.Message.Author.Id == 412572113191305226)) //the uwu react
-            {
-                e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordEmoji.FromUnicode("🇴")); //this its not a normal o, look up the twitemoji preview page to get the emojis
-                Thread.Sleep(500);
-                e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordEmoji.FromUnicode("🇼"));
-                Thread.Sleep(500);
-                e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordGuildEmoji.FromGuildEmote(bot, 455504120825249802)); // lengthy isnt it?
-            }
-
-            if (e.Message.Content.ToLower().StartsWith("uwu") && e.Message.Author.Id == 412572113191305226) //just to mess with monike from blodrodsgorls server hehe
-            {
-                e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordEmoji.FromUnicode("🇴"));
-                Thread.Sleep(500);
-                e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordEmoji.FromUnicode("🇲"));
-                Thread.Sleep(500);
-                e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordGuildEmoji.FromGuildEmote(bot, 455504120825249802));
-            }
-
-            if (e.Message.Content.ToLower().StartsWith("pls rember")) //the pl rember video thing
-                e.Message.RespondAsync("https://www.youtube.com/watch?v=x6LovY_DdEE");
-
-            if (e.Message.Content.ToLower().StartsWith("impale")) // someone asked me to do this
-                e.Message.RespondAsync("ask luka to do it for u!");
-
-            if (e.Message.Content.ToLower().StartsWith("emotes")) //sends all custom emojis of a server
-            {
-                string emotelist = "";
-
-                foreach (var emotes in e.Guild.Emojis)
+                if (e.Message.Content.ToLower().StartsWith("uwu") && !(e.Message.Author.Id == 412572113191305226)) //the uwu react
                 {
-                    emotelist += emotes;
+                    e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordEmoji.FromUnicode("🇴")); //this its not a normal o, look up the twitemoji preview page to get the emojis
+                    Thread.Sleep(500);
+                    e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordEmoji.FromUnicode("🇼"));
+                    Thread.Sleep(500);
+                    e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordGuildEmoji.FromGuildEmote(bot, 455504120825249802)); // lengthy isnt it?
                 }
-                e.Message.RespondAsync(emotelist);
-            }
 
-            if (e.Message.Content.ToLower().StartsWith("*understandable*")) //idk why i made this
-                e.Message.RespondAsync("have a great day");
-
-            if (e.Message.Content.ToLower().StartsWith("big gay")) //i really dont know...
-                e.Message.RespondAsync("big sad uwu");
-
-            //monika yeet happend, had a monike yeet easteregg, removed it cause it she found it
-            //412572113191305226 monika d-id
-
+                if (e.Message.Content.ToLower().StartsWith("uwu") && e.Message.Author.Id == 412572113191305226) //just to mess with monike from blodrodsgorls server hehe
+                {
+                    e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordEmoji.FromUnicode("🇴"));
+                    Thread.Sleep(500);
+                    e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordEmoji.FromUnicode("🇲"));
+                    Thread.Sleep(500);
+                    e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordGuildEmoji.FromGuildEmote(bot, 455504120825249802));
+                }
             return Task.CompletedTask;
         }
 
