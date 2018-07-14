@@ -137,27 +137,31 @@ namespace someBot
                         //string FuckUp = "";
                         //await ctx.RespondAsync(FieldText);
                         //await ctx.RespondAsync("why are you here?");
-                        emim.AddField("----------", Layer1.Text);
+                        try
+                        {
+                            emim.AddField("|----------|", Layer1.Text);
+                        }
+                        catch{}
                         if (Layer1.Elements != null) {
                             foreach (var Layer2 in Layer1.Elements)
                             {
-                                await ctx.RespondAsync(Layer2.Text);
-                                emim.AddField("  --------", Layer2.Text);
+                                //await ctx.RespondAsync(Layer2.Text);
+                                emim.AddField("|  --------|", Layer2.Text);
                                 if (Layer2.Elements != null) {
                                     foreach (var Layer3 in Layer2.Elements)
                                     {
-                                        await ctx.RespondAsync(Layer3.Text);
-                                        emim.AddField("    ------", Layer3.Text);
+                                        //await ctx.RespondAsync(Layer3.Text);
+                                        emim.AddField("|    ------|", Layer3.Text);
                                         if (Layer3.Elements != null) { 
                                             foreach (var Layer4 in Layer3.Elements)
                                             {
-                                                await ctx.RespondAsync(Layer4.Text);
-                                                emim.AddField("      ----", Layer4.Text);
+                                                //await ctx.RespondAsync(Layer4.Text);
+                                                emim.AddField("|      ----|", Layer4.Text);
                                                 if (Layer4.Elements != null) {
                                                     foreach (var Layer5 in Layer4.Elements)
                                                     {
-                                                        await ctx.RespondAsync(Layer5.Text);
-                                                        emim.AddField("        --", Layer5.Text);
+                                                        //await ctx.RespondAsync(Layer5.Text);
+                                                        emim.AddField("|        --|", Layer5.Text);
                                                     }
                                                 }
                                             }
@@ -169,7 +173,8 @@ namespace someBot
                     }
                     catch (Exception e)
                     {
-                        emim.AddField("Too long uwu","please look at the actual wiki for info " + "Error:" + e.StackTrace);
+                        await ctx.RespondAsync("Error:" + e.StackTrace);
+                        emim.AddField("Too long uwu","please look at the actual wiki for info ");
                     }
                 }
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
