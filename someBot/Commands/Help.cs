@@ -74,7 +74,8 @@ namespace someBot
                 Description = "indev commands, dont expect them to work!",
                 ThumbnailUrl = ctx.Client.CurrentUser.AvatarUrl
             };
-            HelpEmbed.AddField("-[Dev Commads]-", "``m!vocawiki`` super indev Vocaloid Wiki search");
+            HelpEmbed.AddField("-[Dev Commads]-", "``m!vocawiki`` super indev Vocaloid Wiki search\n" +
+                "``m!vdl <link>`` download YouTube od NND videos as mp3!\n");
             await ctx.RespondAsync(embed: HelpEmbed.Build());
             }
             catch

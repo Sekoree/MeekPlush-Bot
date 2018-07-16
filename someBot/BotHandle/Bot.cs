@@ -60,6 +60,7 @@ namespace someBot
             commands.RegisterCommands<RanPics>();
             commands.RegisterCommands<XedddSpec>();
             commands.RegisterCommands<VoWiki>();
+            commands.RegisterCommands<TestStuff>();
 
             commands.CommandErrored += Bot_CMDErr;
 

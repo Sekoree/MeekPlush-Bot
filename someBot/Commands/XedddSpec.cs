@@ -48,7 +48,7 @@ namespace someBot
             }
             else if (role.ToLower() == "luka")
             {
-                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(4667198593932984343))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(466719859393298434));
+                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(466719859393298434))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(466719859393298434));
                 else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(466719859393298434));
             }
             else if (role.ToLower() == "gumi")
@@ -76,6 +76,11 @@ namespace someBot
                 if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(467067653018877965))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(467067653018877965));
                 else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(467067653018877965));
             }
+            else if (role.ToLower() == "kiyoteru")
+            {
+                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(467492102779961384))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(467492102779961384));
+                else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(467492102779961384));
+            }
             //UTAU
             else if (role.ToLower() == "defoko")
             {
@@ -95,7 +100,7 @@ namespace someBot
 
             else
             {
-                await ctx.RespondAsync("For Vocaloid Channels: len, rin, miku, kaito, meiko, luka, gumi, gakupo or fukase \n" +
+                await ctx.RespondAsync("For Vocaloid Channels: len, rin, miku, kaito, meiko, luka, gumi, gakupo, fukase, daina, dex, kiyoteru \n" +
                     "For UTAU Channels: defoko, teto, momo \n" +
                     "Usage: ``m!role <rolename>`` \n" +
                     "using the command again will remove the role");
