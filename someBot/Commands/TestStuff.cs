@@ -92,8 +92,8 @@ namespace someBot
                 var youtubeDl = new YoutubeDL();
 
                 youtubeDl.Options.FilesystemOptions.Output = $"/var/www/vhosts/srgg.de/httpdocs/nnddl/{finalString}.mp4";
-                youtubeDl.Options.AuthenticationOptions.Username = "Hecc off use your";
-                youtubeDl.Options.AuthenticationOptions.Password = "own NND account";
+                youtubeDl.Options.AuthenticationOptions.Username = "yeetus";
+                youtubeDl.Options.AuthenticationOptions.Password = "defeatus";
                 youtubeDl.Options.PostProcessingOptions.ExtractAudio = true;
                 youtubeDl.Options.FilesystemOptions.NoCacheDir = true;
                 youtubeDl.Options.VideoFormatOptions.Format = NYoutubeDL.Helpers.Enums.VideoFormat.best;
