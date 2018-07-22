@@ -324,7 +324,9 @@ namespace someBot
                         {
                             if (oof3 != -1)
                             {
-                                await ctx.RespondAsync("Downloading from NicoNico, this may take a while! (NND is slow but has best quality)");
+                                await ctx.RespondAsync($"Downloading from NicoNico, this may take a while! (NND is slow but has best quality)\n" +
+                                    $"if this fails, you may want to download via Youtube (this works 99.9%)\n" +
+                                    $"use the ``!vdl <youtubeLink>`` command for this");
                                 await got.YTDL(ctx, myresponse.items[select].pvs[oof3].url);
                             }
                             else if (oof2 != -1)

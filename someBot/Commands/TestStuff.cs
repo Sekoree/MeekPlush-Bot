@@ -20,7 +20,7 @@ namespace someBot
     class TestStuff
     {
         [Command("vdl")]
-        public async Task YTDL(CommandContext ctx, string link = null)
+        public async Task YTDL(CommandContext ctx, string link)
         {
             if (link.Contains("youtu"))
             {
@@ -37,15 +37,15 @@ namespace someBot
 
                 var youtubeDl = new YoutubeDL();
 
-                youtubeDl.Options.FilesystemOptions.Output = $"/var/www/vhosts/srgg.de/httpdocs/ytdl/{finalString}.mp4";
+                youtubeDl.Options.FilesystemOptions.Output = $"/var/www/vhosts/srgg.de/why-is-this-a-me.me/ytdl/{finalString}.mp4";
                 youtubeDl.Options.PostProcessingOptions.ExtractAudio = true;
                 youtubeDl.Options.VideoSelectionOptions.NoPlaylist = true;
                 youtubeDl.Options.VideoFormatOptions.Format = NYoutubeDL.Helpers.Enums.VideoFormat.best;
                 youtubeDl.Options.PostProcessingOptions.ExtractAudio = true;
                 youtubeDl.Options.PostProcessingOptions.AudioFormat = NYoutubeDL.Helpers.Enums.AudioFormat.mp3;
-                youtubeDl.Options.PostProcessingOptions.AudioQuality = "0";
-                youtubeDl.Options.PostProcessingOptions.PostProcessorArgs = "";
+                youtubeDl.Options.PostProcessingOptions.AudioQuality = "320k";
                 youtubeDl.Options.PostProcessingOptions.AddMetadata = true;
+                youtubeDl.Options.PostProcessingOptions.EmbedThumbnail = true;
 
                 youtubeDl.VideoUrl = link;
 
@@ -55,24 +55,15 @@ namespace someBot
                 // Optional, required if binary is not in $PATH
                 youtubeDl.YoutubeDlPath = "youtube-dl";
 
-                youtubeDl.StandardOutputEvent += (sender, output) => Console.WriteLine(output);
+                //youtubeDl.StandardOutputEvent += (sender, output) => Console.WriteLine(output);
                 youtubeDl.StandardErrorEvent += (sender, errorOutput) => Console.WriteLine(errorOutput);
 
-                youtubeDl.Download();
-                long length = new System.IO.FileInfo($"/var/www/vhosts/srgg.de/httpdocs/ytdl/{finalString}.mp3").Length;
-                if (length > 8388000)
-                {
-                    await ctx.RespondAsync("Size too big for Discord, Use this link!\nhttps://srgg.de/ytdl/" + finalString + ".mp3 \n" +
-                        "**This file bill be deleted in about 60min!**");
-                    await Task.Delay((60000 * 60));
-                    File.Delete($"/var/www/vhosts/srgg.de/httpdocs/ytdl/{finalString}.mp3");
+                await youtubeDl.DownloadAsync();
 
-                }
-                else
-                {
-                    await ctx.RespondWithFileAsync($"/var/www/vhosts/srgg.de/httpdocs/ytdl/{finalString}.mp3");
-                    File.Delete($"/var/www/vhosts/srgg.de/httpdocs/ytdl/{finalString}.mp3");
-                }
+                    await ctx.RespondAsync("https://why-is-this-a-me.me/ytdl/" + finalString + ".mp3 \n" +
+                        "**This file bill be deleted in about 30min!**");
+                    await Task.Delay((60000 * 30));
+                    File.Delete($"/var/www/vhosts/srgg.de/why-is-this-a-me.me/ytdl/{finalString}.mp3");
             }
             else if (link.Contains("nico"))
             {
@@ -91,17 +82,17 @@ namespace someBot
 
                 var youtubeDl = new YoutubeDL();
 
-                youtubeDl.Options.FilesystemOptions.Output = $"/var/www/vhosts/srgg.de/httpdocs/nnddl/{finalString}.mp4";
-                youtubeDl.Options.AuthenticationOptions.Username = "yeetus";
-                youtubeDl.Options.AuthenticationOptions.Password = "defeatus";
+                youtubeDl.Options.FilesystemOptions.Output = $"/var/www/vhosts/srgg.de/why-is-this-a-me.me/nnddl/{finalString}.mp4";
+                youtubeDl.Options.AuthenticationOptions.Username = "hecc oof";
+                youtubeDl.Options.AuthenticationOptions.Password = "get ur own lol";
                 youtubeDl.Options.PostProcessingOptions.ExtractAudio = true;
                 youtubeDl.Options.FilesystemOptions.NoCacheDir = true;
                 youtubeDl.Options.VideoFormatOptions.Format = NYoutubeDL.Helpers.Enums.VideoFormat.best;
                 youtubeDl.Options.PostProcessingOptions.ExtractAudio = true;
                 youtubeDl.Options.PostProcessingOptions.AudioFormat = NYoutubeDL.Helpers.Enums.AudioFormat.mp3;
-                youtubeDl.Options.PostProcessingOptions.AudioQuality = "0";
-                youtubeDl.Options.PostProcessingOptions.PostProcessorArgs = "";
+                youtubeDl.Options.PostProcessingOptions.AudioQuality = "320k";
                 youtubeDl.Options.PostProcessingOptions.AddMetadata = true;
+                youtubeDl.Options.PostProcessingOptions.EmbedThumbnail = true;
 
                 youtubeDl.VideoUrl = link;
 
@@ -111,24 +102,16 @@ namespace someBot
                 // Optional, required if binary is not in $PATH
                 youtubeDl.YoutubeDlPath = "youtube-dl";
 
-                youtubeDl.StandardErrorEvent += (sender, errorOutput) => ctx.RespondAsync($"Error: {errorOutput}  (If its 403 blame NNDs Servers, hella slow sometimes and thus cancel the download uwu)");
+                youtubeDl.StandardErrorEvent += (sender, errorOutput) => ctx.RespondAsync($"{errorOutput}  (If its 403 blame NNDs Servers, hella slow sometimes and thus cancel the download uwu)");
 
-                youtubeDl.Download();
-                long length = new System.IO.FileInfo($"/var/www/vhosts/srgg.de/httpdocs/nnddl/{finalString}.mp3").Length;
-                if (length > 8388000)
-                {
-                    await ctx.RespondAsync("Size too big for Discord, Use this link!\nhttps://srgg.de/nnddl/" + finalString + ".mp3 \n" +
-                        "**This file bill be deleted in about 60min!**");
-                    await Task.Delay((60000 * 60));
-                    File.Delete($"/var/www/vhosts/srgg.de/httpdocs/nnddl/{finalString}.mp3");
+                await youtubeDl.DownloadAsync();
 
-                }
-                else
+                if (File.Exists($"/var/www/vhosts/srgg.de/why-is-this-a-me.me/nnddl/{finalString}.mp3"))
                 {
-                    await ctx.RespondWithFileAsync($"/var/www/vhosts/srgg.de/httpdocs/nnddl/{finalString}.mp3");
-                    await init.Result.ModifyAsync();
-                    await Task.Delay(60000);
-                    File.Delete($"/var/www/vhosts/srgg.de/httpdocs/nnddl/{finalString}.mp3");
+                    await ctx.RespondAsync("https://why-is-this-a-me.me/nnddl/" + finalString + ".mp3 \n" +
+                            "**This file will be deleted in about 30min!**");
+                    await Task.Delay((60000 * 30));
+                    File.Delete($"/var/www/vhosts/srgg.de/why-is-this-a-me.me/nnddl/{finalString}.mp3");
                 }
             }
 

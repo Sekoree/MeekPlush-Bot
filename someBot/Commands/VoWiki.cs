@@ -19,6 +19,7 @@ using WikiClientLibrary.Pages;
 using WikiClientLibrary.Client;
 using WikiClientLibrary.Sites;
 using System.Net;
+using wikia.Api;
 
 namespace someBot
 {
@@ -222,6 +223,7 @@ namespace someBot
                 await init.DeleteAllReactionsAsync();
             }
             //await ctx.RespondAsync(Amyresponse.Sections[8].Content[0].Elements[0].Elements[0].Elements[0].Text);
+
         }
 
         public class SItem
