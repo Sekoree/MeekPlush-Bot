@@ -45,7 +45,9 @@ namespace someBot
                 HelpEmbed.AddField("-[Song Info Commands]-", "``m!vocadb <songname>`` search for a Vocaloid song! (+lyrics if available)\n" +
                     "``m!utaitedb <songname>`` search UtaiteDB!(+lyrics if available)\n" +
                     "``m!touhoudb <songname>`` search for a Touhou song! (+lyrics if available)");
-                HelpEmbed.AddField("-[NSFW uwu]-", "``m!nl <category name>`` will display a random image from nekos.life get the category names at (11) https://nekos.life/api/v2/endpoints");
+                HelpEmbed.AddField("-[NSFW uwu]-", "``m!nl <category name>`` will display a random image from nekos.life get the category names at (11) [nekos.life](https://nekos.life/api/v2/endpoints)");
+                HelpEmbed.AddField("Like this?", "Please upvote [here](https://discordbots.org/bot/465675368775417856/vote), helps me very much uwu \n" +
+                    "Github: [Link](https://github.com/Speyd3r/MeekPlush-Bot)");
                 var yeet = await ctx.RespondAsync(embed: HelpEmbed.Build());
                 await ctx.Channel.GetMessageAsync(yeet.Id).Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":x:"));
                 try
