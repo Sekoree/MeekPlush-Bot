@@ -20,104 +20,72 @@ namespace someBot
     class TestStuff
     {
         [Command("vdl")]
-        public async Task YTDL(CommandContext ctx, string link)
+        public async Task YTDL(CommandContext ctx, string link = null)
         {
-            if (link.Contains("youtu"))
+            if (link.Contains("youtu") || link.Contains("nico"))
             {
-                var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-                var stringChars = new char[20];
-                var random = new System.Random();
-
-                for (int i = 0; i < stringChars.Length; i++)
+                var msg = await ctx.RespondAsync("Download started!");
+                System.Random random = new System.Random();
+                const string pool = "abcdefghijklmnopqrstuvwxyz0123456789";
+                var chars = Enumerable.Range(0, 20)
+                    .Select(x => pool[random.Next(0, pool.Length)]);
+                string finalString = new string(chars.ToArray());
+                var youtubeDl = new YoutubeDL();
+                if (link.Contains("youtu"))
                 {
-                    stringChars[i] = chars[random.Next(chars.Length)];
+                    youtubeDl.Options.FilesystemOptions.Output = $"/var/www/vhosts/srgg.de/why-is-this-a-me.me/ytdl/{finalString}.mp4";
+                    youtubeDl.Options.VideoSelectionOptions.NoPlaylist = true;
                 }
 
-                var finalString = new String(stringChars);
-
-                var youtubeDl = new YoutubeDL();
-
-                youtubeDl.Options.FilesystemOptions.Output = $"/var/www/vhosts/srgg.de/why-is-this-a-me.me/ytdl/{finalString}.mp4";
+                if (link.Contains("nico"))
+                {
+                    youtubeDl.Options.FilesystemOptions.Output = $"/var/www/vhosts/srgg.de/why-is-this-a-me.me/nnddl/{finalString}.mp4";
+                    youtubeDl.Options.AuthenticationOptions.Username = "ger";
+                    youtubeDl.Options.AuthenticationOptions.Password = "ghrten";
+                    youtubeDl.Options.FilesystemOptions.NoCacheDir = true;
+                }
                 youtubeDl.Options.PostProcessingOptions.ExtractAudio = true;
-                youtubeDl.Options.VideoSelectionOptions.NoPlaylist = true;
                 youtubeDl.Options.VideoFormatOptions.Format = NYoutubeDL.Helpers.Enums.VideoFormat.best;
                 youtubeDl.Options.PostProcessingOptions.ExtractAudio = true;
                 youtubeDl.Options.PostProcessingOptions.AudioFormat = NYoutubeDL.Helpers.Enums.AudioFormat.mp3;
                 youtubeDl.Options.PostProcessingOptions.AudioQuality = "320k";
                 youtubeDl.Options.PostProcessingOptions.AddMetadata = true;
                 youtubeDl.Options.PostProcessingOptions.EmbedThumbnail = true;
-
-                youtubeDl.VideoUrl = link;
-
-                // Or update the binary
                 youtubeDl.Options.GeneralOptions.Update = true;
-
-                // Optional, required if binary is not in $PATH
+                youtubeDl.VideoUrl = link;
                 youtubeDl.YoutubeDlPath = "youtube-dl";
-
-                //youtubeDl.StandardOutputEvent += (sender, output) => Console.WriteLine(output);
-                youtubeDl.StandardErrorEvent += (sender, errorOutput) => Console.WriteLine(errorOutput);
-
+                youtubeDl.StandardOutputEvent += (sender, output) =>
+                {
+                    try
+                    {
+                        if (output.Substring(12, 5).StartsWith("1") || output.Substring(12, 5).StartsWith("2") || output.Substring(12, 5).StartsWith("3") || output.Substring(12, 5).StartsWith("4") || output.Substring(12, 5).StartsWith("5") || output.Substring(12, 5).StartsWith("6") || output.Substring(12, 5).StartsWith("7") || output.Substring(12, 5).StartsWith("8") || output.Substring(12, 5).StartsWith("9"))
+                        {
+                            msg.ModifyAsync(output.Substring(12, 5) + "!");
+                        }
+                    }
+                    catch{ }
+                    //if (output.Substring(0, 8).StartsWith("10"))
+                };
+                youtubeDl.StandardErrorEvent += (sender, errorOutput) => ctx.RespondAsync($"{errorOutput}  (If its 403 blame NNDs Servers, hella slow sometimes and thus cancel the download uwu)");
                 await youtubeDl.DownloadAsync();
-
-                    await ctx.RespondAsync("https://why-is-this-a-me.me/ytdl/" + finalString + ".mp3 \n" +
-                        "**This file bill be deleted in about 30min!**");
+                if (File.Exists($"/var/www/vhosts/srgg.de/why-is-this-a-me.me/ytdl/{finalString}.mp3"))
+                {
+                    await msg.ModifyAsync("https://why-is-this-a-me.me/ytdl/" + finalString + ".mp3 \n" +
+                            "**This file bill be deleted in about 30min!**");
                     await Task.Delay((60000 * 30));
                     File.Delete($"/var/www/vhosts/srgg.de/why-is-this-a-me.me/ytdl/{finalString}.mp3");
-            }
-            else if (link.Contains("nico"))
-            {
-                var init = ctx.RespondAsync("NND is slow this may take a while!");
-
-                var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-                var stringChars = new char[20];
-                var random = new System.Random();
-
-                for (int i = 0; i < stringChars.Length; i++)
-                {
-                    stringChars[i] = chars[random.Next(chars.Length)];
                 }
-
-                var finalString = new String(stringChars);
-
-                var youtubeDl = new YoutubeDL();
-
-                youtubeDl.Options.FilesystemOptions.Output = $"/var/www/vhosts/srgg.de/why-is-this-a-me.me/nnddl/{finalString}.mp4";
-                youtubeDl.Options.AuthenticationOptions.Username = "hecc oof";
-                youtubeDl.Options.AuthenticationOptions.Password = "get ur own lol";
-                youtubeDl.Options.PostProcessingOptions.ExtractAudio = true;
-                youtubeDl.Options.FilesystemOptions.NoCacheDir = true;
-                youtubeDl.Options.VideoFormatOptions.Format = NYoutubeDL.Helpers.Enums.VideoFormat.best;
-                youtubeDl.Options.PostProcessingOptions.ExtractAudio = true;
-                youtubeDl.Options.PostProcessingOptions.AudioFormat = NYoutubeDL.Helpers.Enums.AudioFormat.mp3;
-                youtubeDl.Options.PostProcessingOptions.AudioQuality = "320k";
-                youtubeDl.Options.PostProcessingOptions.AddMetadata = true;
-                youtubeDl.Options.PostProcessingOptions.EmbedThumbnail = true;
-
-                youtubeDl.VideoUrl = link;
-
-                // Or update the binary
-                youtubeDl.Options.GeneralOptions.Update = true;
-
-                // Optional, required if binary is not in $PATH
-                youtubeDl.YoutubeDlPath = "youtube-dl";
-
-                youtubeDl.StandardErrorEvent += (sender, errorOutput) => ctx.RespondAsync($"{errorOutput}  (If its 403 blame NNDs Servers, hella slow sometimes and thus cancel the download uwu)");
-
-                await youtubeDl.DownloadAsync();
-
-                if (File.Exists($"/var/www/vhosts/srgg.de/why-is-this-a-me.me/nnddl/{finalString}.mp3"))
+                else if (File.Exists($"/var/www/vhosts/srgg.de/why-is-this-a-me.me/nnddl/{finalString}.mp3"))
                 {
-                    await ctx.RespondAsync("https://why-is-this-a-me.me/nnddl/" + finalString + ".mp3 \n" +
-                            "**This file will be deleted in about 30min!**");
+                    await msg.ModifyAsync("https://why-is-this-a-me.me/nnddl/" + finalString + ".mp3 \n" +
+                            "**This file bill be deleted in about 30min!**");
                     await Task.Delay((60000 * 30));
                     File.Delete($"/var/www/vhosts/srgg.de/why-is-this-a-me.me/nnddl/{finalString}.mp3");
                 }
             }
-
             else
             {
-                await ctx.RespondAsync("no YouTube or NNDlink detected, please try another");
+                await ctx.RespondAsync("no YouTube or NND link detected, please try again");
             }
         }
     }
