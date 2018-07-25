@@ -223,7 +223,6 @@ namespace someBot
         {
             try
             {
-
                 WebRequest request = WebRequest.Create("https://api.meek.moe/diva");
                 WebResponse response = request.GetResponse();
                 Stream dataStream = response.GetResponseStream();
@@ -237,6 +236,38 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Project Diva Image!",
+                    Description = "via api.meek.moe",
+                    ImageUrl = myresponse.url.ToString()
+                };
+                response.Close();
+                emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
+
+                await ctx.RespondAsync(embed: emim.Build());
+            }
+            catch
+            {
+                await ctx.RespondAsync("Hi! I'm missing either the Manage Messages or Embed Links Permission \nPlease add those so my commands work uwu");
+            }
+        }
+
+        [Command("rin"), Description("Shows you a Project Diva image")]
+        public async Task KRinPic(CommandContext ctx)
+        {
+            try
+            {
+                WebRequest request = WebRequest.Create("https://api.meek.moe/rin");
+                WebResponse response = request.GetResponse();
+                Stream dataStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(dataStream);
+                string responseFromServer = reader.ReadToEnd();
+                //await ctx.RespondAsync(responseFromServer);
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
+                //await ctx.RespondAsync(myresponse.url);
+
+                var emim = new DiscordEmbedBuilder
+                {
+                    Color = new DiscordColor("#289b9a"),
+                    Title = "Random Rin Image!",
                     Description = "via api.meek.moe",
                     ImageUrl = myresponse.url.ToString()
                 };
