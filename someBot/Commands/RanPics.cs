@@ -181,6 +181,76 @@ namespace someBot
             }
         }
 
+        [Command("nekopara"), Description("Shows you a random nekopara image or gif"), RequireNsfw]
+        public async Task NPPic(CommandContext ctx)
+        {
+            try
+            {
+                System.Random rnd = new System.Random();
+                int yo = rnd.Next(0, 2);
+                string url = "";
+                if (yo == 0) url = "https://api.ohlookitsderpy.space/nekoparagif";
+                else url = "https://api.ohlookitsderpy.space/nekoparastatic";
+                WebRequest request = WebRequest.Create(url);
+                WebResponse response = request.GetResponse();
+                Stream dataStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(dataStream);
+                string responseFromServer = reader.ReadToEnd();
+                //await ctx.RespondAsync(responseFromServer);
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
+                //await ctx.RespondAsync(myresponse.url);
+
+                var emim = new DiscordEmbedBuilder
+                {
+                    Color = new DiscordColor("#289b9a"),
+                    Title = "uwu",
+                    Description = "via api.ohlookitsderpy.space",
+                    ImageUrl = myresponse.url
+                };
+                response.Close();
+                emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
+
+                await ctx.RespondAsync(embed: emim.Build());
+            }
+            catch
+            {
+                await ctx.RespondAsync("Hi! I'm missing either the Manage Messages or Embed Links Permission \nPlease add those so my commands work uwu");
+            }
+        }
+
+        [Command("diva"), Description("Shows you a Project Diva image")]
+        public async Task DivaPic(CommandContext ctx)
+        {
+            try
+            {
+
+                WebRequest request = WebRequest.Create("https://api.meek.moe/diva");
+                WebResponse response = request.GetResponse();
+                Stream dataStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(dataStream);
+                string responseFromServer = reader.ReadToEnd();
+                //await ctx.RespondAsync(responseFromServer);
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
+                //await ctx.RespondAsync(myresponse.url);
+
+                var emim = new DiscordEmbedBuilder
+                {
+                    Color = new DiscordColor("#289b9a"),
+                    Title = "Random Project Diva Image!",
+                    Description = "via api.meek.moe",
+                    ImageUrl = myresponse.url.ToString()
+                };
+                response.Close();
+                emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
+
+                await ctx.RespondAsync(embed: emim.Build());
+            }
+            catch
+            {
+                await ctx.RespondAsync("Hi! I'm missing either the Manage Messages or Embed Links Permission \nPlease add those so my commands work uwu");
+            }
+        }
+
         [Command("kanna"), Description("Shows you a Kanna image")]
         public async Task KannaPic(CommandContext ctx)
         {

@@ -42,12 +42,14 @@ namespace someBot
                     "``m!dog`` random Dog Pic\n" +
                     "``m!catgirl`` random Catgirl Pic!\n" +
                     "``m!foxgirl`` random Foxgirl Pic!\n" +
-                    "``m!kanna`` random Kanna image!");
+                    "``m!kanna`` random Kanna image!" +
+                    "``m!diva`` random Project Diva Image (from the loading screen images'n stuff, not ingame footage lmao))");
                 HelpEmbed.AddField("-[Song Info Commands]-", "``m!vocadb <songname>`` search for a Vocaloid song! (+lyrics if available)\n" +
                     "``m!utaitedb <songname>`` search UtaiteDB!(+lyrics if available)\n" +
                     "``m!touhoudb <songname>`` search for a Touhou song! (+lyrics if available)");
                 HelpEmbed.AddField("-[NSFW uwu]-", "``m!nl <category name>`` will display a random image from nekos.life get the category names at (11) [nekos.life](https://nekos.life/api/v2/endpoints)\n" +
-                    "``m!thigh`` random thigh pic uwu");
+                    "``m!thigh`` random thigh pic uwu\n" +
+                    "``m!nekopara`` random lewd nekopara image/gif uwu");
                 HelpEmbed.AddField("Like this?", "Please upvote [here](https://discordbots.org/bot/465675368775417856/vote), helps me very much uwu \n" +
                     "Github: [Link](https://github.com/Speyd3r/MeekPlush-Bot)");
                 var yeet = await ctx.RespondAsync(embed: HelpEmbed.Build());
