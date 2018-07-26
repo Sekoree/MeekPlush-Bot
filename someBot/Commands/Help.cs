@@ -44,7 +44,9 @@ namespace someBot
                     "``m!foxgirl`` random Foxgirl Pic!\n" +
                     "``m!kanna`` random Kanna image!\n" +
                     "``m!diva`` random Project Diva Image (from the loading screen images'n stuff, not ingame footage lmao)\n" +
-                    "``m!rin`` random Rin image!");
+                    "``m!rin`` random Rin image!\n" +
+                    "``m!una`` random Una image!\n" +
+                    "``m!gumi`` random Gumi image");
                 HelpEmbed.AddField("-[Song Info Commands]-", "``m!vocadb <songname>`` search for a Vocaloid song! (+lyrics if available)\n" +
                     "``m!utaitedb <songname>`` search UtaiteDB!(+lyrics if available)\n" +
                     "``m!touhoudb <songname>`` search for a Touhou song! (+lyrics if available)");
