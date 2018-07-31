@@ -46,11 +46,18 @@ namespace someBot
                     "``m!diva`` random Project Diva Image (from the loading screen images'n stuff, not ingame footage lmao)\n" +
                     "``m!rin`` random Rin image!\n" +
                     "``m!una`` random Una image!\n" +
-                    "``m!gumi`` random Gumi image");
+                    "``m!gumi`` random Gumi image\n" +
+                    "``m!luka`` random Luka image!\n" +
+                    "``m!ia`` random IA image\n" +
+                    "``m!yukari`` random Yukari image\n" +
+                    "``m!meiko`` random Meiko image\n" +
+                    "``m!teto`` random Teto image\n" +
+                    "``m!len`` random Len image\n" +
+                    "``m!kaito`` random Kaito image");
                 HelpEmbed.AddField("-[Song Info Commands]-", "``m!vocadb <songname>`` search for a Vocaloid song! (+lyrics if available)\n" +
                     "``m!utaitedb <songname>`` search UtaiteDB!(+lyrics if available)\n" +
                     "``m!touhoudb <songname>`` search for a Touhou song! (+lyrics if available)");
-                HelpEmbed.AddField("-[NSFW uwu]-", "``m!nl <category name>`` will display a random image from nekos.life get the category names at (11) [nekos.life](https://nekos.life/api/v2/endpoints)\n" +
+                HelpEmbed.AddField("-[NSFW uwu]-", "``m!nl <category name>`` will display a random image from nekos.life, get the category names at (11) [nekos.life](https://nekos.life/api/v2/endpoints)\n" +
                     "``m!thigh`` random thigh pic uwu\n" +
                     "``m!nekopara`` random lewd nekopara image/gif uwu");
                 HelpEmbed.AddField("Like this?", "Please upvote [here](https://discordbots.org/bot/465675368775417856/vote), helps me very much uwu \n" +
