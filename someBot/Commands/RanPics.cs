@@ -237,7 +237,7 @@ namespace someBot
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Project Diva Image!",
                     Description = "via api.meek.moe",
-                    ImageUrl = myresponse.url.ToString()
+                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
                 };
                 response.Close();
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -269,7 +269,7 @@ namespace someBot
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Rin Image!",
                     Description = "via api.meek.moe",
-                    ImageUrl = myresponse.url.ToString()
+                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
                 };
                 response.Close();
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -301,7 +301,7 @@ namespace someBot
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Una Image!",
                     Description = "via api.meek.moe",
-                    ImageUrl = myresponse.url.ToString()
+                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
                 };
                 response.Close();
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -333,7 +333,7 @@ namespace someBot
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Gumi Image!",
                     Description = "via api.meek.moe",
-                    ImageUrl = myresponse.url.ToString()
+                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
                 };
                 response.Close();
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -365,7 +365,7 @@ namespace someBot
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Luka Image!",
                     Description = "via api.meek.moe",
-                    ImageUrl = (myresponse.url.ToString() + "??")
+                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
                 };
                 response.Close();
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -397,7 +397,7 @@ namespace someBot
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random IA Image!",
                     Description = "via api.meek.moe",
-                    ImageUrl = (myresponse.url.ToString() + "??")
+                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
                 };
                 response.Close();
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -429,7 +429,7 @@ namespace someBot
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Yukari Image!",
                     Description = "via api.meek.moe",
-                    ImageUrl = (myresponse.url.ToString() + "??")
+                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
                 };
                 response.Close();
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -461,7 +461,7 @@ namespace someBot
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Teto Image!",
                     Description = "via api.meek.moe",
-                    ImageUrl = myresponse.url.ToString()
+                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
                 };
                 response.Close();
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -493,7 +493,7 @@ namespace someBot
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Len Image!",
                     Description = "via api.meek.moe",
-                    ImageUrl = myresponse.url.ToString()
+                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
                 };
                 response.Close();
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -525,7 +525,7 @@ namespace someBot
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Kaito Image!",
                     Description = "via api.meek.moe",
-                    ImageUrl = myresponse.url.ToString()
+                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
                 };
                 response.Close();
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -557,7 +557,7 @@ namespace someBot
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Meiko Image!",
                     Description = "via api.meek.moe",
-                    ImageUrl = myresponse.url.ToString()
+                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
                 };
                 response.Close();
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
