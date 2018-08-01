@@ -2,9 +2,7 @@
 using DSharpPlus.Interactivity;
 using DSharpPlus.CommandsNext;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Entities;
@@ -38,10 +36,7 @@ namespace someBot
                 TokenType = TokenType.Bot,
                 UseInternalLogHandler = true
             });
-            interactivity = bot.UseInteractivity(new InteractivityConfiguration
-            {
-                //PaginationBehaviour = Bot_Inend()
-            }); //add the ineractivity stuff to it
+            interactivity = bot.UseInteractivity(new InteractivityConfiguration{}); //add the ineractivity stuff to it
 
             _cts = new CancellationTokenSource();
 
@@ -49,7 +44,8 @@ namespace someBot
             {
                 StringPrefix = "m!",
                 EnableDefaultHelp = false,
-                IgnoreExtraArguments = false
+                IgnoreExtraArguments = false,
+                CaseSensitive = false
             });
 
             commands.RegisterCommands<Random>(); //registers all the coammds from the different classes
@@ -57,10 +53,14 @@ namespace someBot
             commands.RegisterCommands<Wiki>();
             commands.RegisterCommands<Help>();
             commands.RegisterCommands<VUTDB>();
-            commands.RegisterCommands<RanPics>();
+            commands.RegisterCommands<Commands.RanImg.Derpy>();
+            commands.RegisterCommands<Commands.RanImg.MeekMoe>();
+            commands.RegisterCommands<Commands.RanImg.Nadeko>();
+            commands.RegisterCommands<Commands.RanImg.NekosLife>();
+            commands.RegisterCommands<Commands.RanImg.Other>();
             commands.RegisterCommands<XedddSpec>();
             commands.RegisterCommands<VoWiki>();
-            commands.RegisterCommands<TestStuff>();
+            commands.RegisterCommands<YTDLC>();
 
             commands.CommandErrored += Bot_CMDErr;
 
@@ -77,11 +77,6 @@ namespace someBot
             bot.GuildMemberRemoved += XedddClass.Bot_XedddBoiLeave;
             bot.MessageReactionAdded += PandaClass.Bot_PandaGumiQuotes;
             bot.ClientErrored += this.Bot_ClientErrored;
-            bot.MessageReactionAdded += e =>
-            {
-                try { return Task.CompletedTask; }
-                catch { return Task.CompletedTask; }
-            };
             bot.Ready += e =>
             {
                 DiscordGame test = new DiscordGame
@@ -139,43 +134,44 @@ namespace someBot
             bot.GetChannelAsync(channelId).Result.SendMessageAsync(msg);
         }
 
-        public Task Bot_MessageCreated(MessageCreateEventArgs e)
+        public async Task Bot_MessageCreated(MessageCreateEventArgs e)
         {
-                if (e.Message.Content.ToLower().StartsWith("speyd3r is retarded")) e.Message.RespondAsync("no u");
-                //e.Message.RespondAsync(e.Message.Channel.Id.ToString() + " " + e.Message.Id);
+            if (e.Message.Content.ToLower().StartsWith("speyd3r is retarded")) await e.Message.RespondAsync("no u");
+            //e.Message.RespondAsync(e.Message.Channel.Id.ToString() + " " + e.Message.Id);
 
-                if (e.Message.Channel.Type.ToString() == "Private") //DM Messages
+            if (e.Message.Channel.Type.ToString() == "Private") //DM Messages
+            {
+                if (e.Message.Author.IsBot == false)
                 {
-                    if (e.Message.Author.IsBot == false)
-                    {
-                        e.Message.RespondAsync("no u");
-                    }
-                    return Task.CompletedTask;
+                    await e.Message.RespondAsync("no u");
                 }
+                await Task.CompletedTask;
+                return;
+            }
 
-                if (e.Message.Content.ToLower().StartsWith("uwu") && !(e.Message.Author.Id == 412572113191305226)) //the uwu react
-                {
-                    e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordEmoji.FromUnicode("🇴")); //this its not a normal o, look up the twitemoji preview page to get the emojis
-                    Thread.Sleep(500);
-                    e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordEmoji.FromUnicode("🇼"));
-                    Thread.Sleep(500);
-                    e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordGuildEmoji.FromGuildEmote(bot, 455504120825249802)); // lengthy isnt it?
-                }
+            if (e.Message.Content.ToLower().StartsWith("uwu") && !(e.Message.Author.Id == 412572113191305226)) //the uwu react
+            {
+                await e.Message.CreateReactionAsync(DiscordEmoji.FromUnicode("🇴"));
+                await Task.Delay(TimeSpan.FromMilliseconds(500));//this its not a normal o, look up the twitemoji preview page to get the emojis
+                await e.Message.CreateReactionAsync(DiscordEmoji.FromUnicode("🇼"));
+                await Task.Delay(TimeSpan.FromMilliseconds(500));
+                await e.Message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(bot, 455504120825249802)); // lengthy isnt it?
+            }
 
-                if (e.Message.Content.ToLower().StartsWith("uwu") && e.Message.Author.Id == 412572113191305226) //just to mess with monike from blodrodsgorls server hehe
-                {
-                    e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordEmoji.FromUnicode("🇴"));
-                    Thread.Sleep(500);
-                    e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordEmoji.FromUnicode("🇲"));
-                    Thread.Sleep(500);
-                    e.Message.CreateReactionAsync(DSharpPlus.Entities.DiscordGuildEmoji.FromGuildEmote(bot, 455504120825249802));
-                }
-            return Task.CompletedTask;
+            if (e.Message.Content.ToLower().StartsWith("uwu") && e.Message.Author.Id == 412572113191305226) //just to mess with monike from blodrodsgorls server hehe
+            {
+                await e.Message.CreateReactionAsync(DiscordEmoji.FromUnicode("🇴"));
+                await Task.Delay(TimeSpan.FromMilliseconds(500));
+                await e.Message.CreateReactionAsync(DiscordEmoji.FromUnicode("🇲"));
+                await Task.Delay(TimeSpan.FromMilliseconds(500));
+                await e.Message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(bot, 455504120825249802));
+            }
+            await Task.CompletedTask;
         }
 
         private Task Bot_CMDErr(CommandErrorEventArgs e) //if bot error
         {
-            //e.Context.RespondAsync($"error + {e.StackTrace}");
+            e.Context.RespondAsync($"**Error:**\n```{e.Exception.Message}```");
             return Task.CompletedTask;
         }
 
@@ -191,17 +187,11 @@ namespace someBot
 
         public Task Bot_MessageEdited(MessageUpdateEventArgs e)
         {
-            if (e.Message.Channel.Type.ToString() == "Private" && e.Message.Author.IsBot == false) //responds with no u whena message is edited in dms NEVER FORGET THE "isBot" or it will dm u infinitly
-            {
-                e.Message.RespondAsync("no u");
-            }
             return Task.CompletedTask;
         }
 
         public Task itError(CommandErrorEventArgs oof)
         {
-            //DSharpPlus.CommandsNext.CommandEventArgs.Command.get
-            //oof.Context.RespondAsync(oof.Exception.HResult.ToString());
             if (oof.Exception.HResult != -2146233088)
             {
                 oof.Context.RespondAsync(oof.Command.Description); //as i explained above

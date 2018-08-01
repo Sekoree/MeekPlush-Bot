@@ -119,7 +119,7 @@ namespace someBot
             var ddresponse = JsonConvert.DeserializeObject<List<VTUDBrGet>>(dresponseFromServer);
             int oof2 = myresponse.items[select].pvs.FindIndex(x => x.url.Contains("youtu"));
             int oof3 = myresponse.items[select].pvs.FindIndex(x => x.url.Contains("nico"));
-            TestStuff got = new TestStuff();
+            YTDLC got = new YTDLC();
             BaseiInfo(ctx, init, select, myresponse, ddresponse);
             await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":pushpin:"));
             if (myresponse.items[select].lyrics.Count != 0) await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":page_facing_up:"));
@@ -285,7 +285,7 @@ namespace someBot
             var ddresponse = JsonConvert.DeserializeObject<List<VTUDBrGet>>(dresponseFromServer);
             int oof2 = myresponse.items[select].pvs.FindIndex(x => x.url.Contains("youtu"));
             int oof3 = myresponse.items[select].pvs.FindIndex(x => x.url.Contains("nico"));
-            TestStuff got = new TestStuff();
+            YTDLC got = new YTDLC();
             BaseiInfo(ctx, init, select, myresponse, ddresponse);
             await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":pushpin:"));
             if (myresponse.items[select].lyrics.Count != 0) await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":page_facing_up:"));
@@ -451,7 +451,7 @@ namespace someBot
             var ddresponse = JsonConvert.DeserializeObject<List<VTUDBrGet>>(dresponseFromServer);
             int oof2 = myresponse.items[select].pvs.FindIndex(x => x.url.Contains("youtu"));
             int oof3 = myresponse.items[select].pvs.FindIndex(x => x.url.Contains("nico"));
-            TestStuff got = new TestStuff();
+            YTDLC got = new YTDLC();
             BaseiInfo(ctx, init, select, myresponse, ddresponse);
             await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":pushpin:"));
             if (myresponse.items[select].lyrics.Count != 0) await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":page_facing_up:"));

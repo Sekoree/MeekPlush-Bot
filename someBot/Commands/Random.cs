@@ -30,7 +30,6 @@ namespace someBot
         public async Task Emotes(CommandContext ctx)
         {
             string emotelist = "";
-
             foreach (var emotes in ctx.Guild.Emojis)
             {
                 emotelist += emotes;
@@ -50,24 +49,12 @@ namespace someBot
             await ctx.RespondAsync(oof);
         }
 
-        [Command("roles"), Description("list roles")] //i think u same some people use this, pretty simple
+        [Command("roles"), Description("list roles")]
         public async Task roles(CommandContext ctx)
         {
             foreach(var oof in ctx.Guild.Roles)
             {
-                if (oof.Id != 373635826703400960)
-                {
-                    await ctx.Member.SendMessageAsync($"``{oof.Name} {oof.Id}``");
-                }
-            }
-        }
-
-        [Command("big"),Description("useless lol")] //kinda same as if u type big gay but commands arent allowed to contain spaces
-        public async Task Gay(CommandContext ctx, string gay)
-        {
-            if (gay == "gay") //lmao
-            {
-                await ctx.RespondAsync("*useless command*");
+                await ctx.Member.SendMessageAsync($"``{oof.Name} {oof.Id}``");
             }
         }
 
@@ -110,7 +97,6 @@ namespace someBot
                 options.AddArguments("--headless"); //to tell firefox to start in windowless mode
                 driver = new FirefoxDriver(chromeDriverService, options); //starts up firefox it in the directory already (called gecko)
                 driver.Navigate().GoToUrl("http://ex.nicovideo.jp/vocaloid/ranking"); //ig goes to the ranking pages
-                                                                                      //var allRanking = driver.FindElements(By.ClassName("ttl")); i just put that in the foreach to save space i guess
                 string[] allranks = new string[80]; // there are always 80 songs on that page! this is for the names
                 string[] allURLS = new string[80]; //it also gets the urls
                 int yeet = 0; //to add stuff to the array
@@ -177,18 +163,15 @@ namespace someBot
                 await init.DeleteAsync();
                 await inter.SendPaginatedMessage(ctx.Channel, ctx.Message.Author, pgs, timeoutoverride: TimeSpan.FromMinutes(2));
             }
-            catch (Exception e)
+            catch
             {
-                Console.WriteLine(e.Message);
-                Console.WriteLine(e.StackTrace);
-                //await ctx.RespondAsync("Hi! I'm missing either the Manage Messages or Embed Links Permission \nPlease add those so my commands work uwu");
+                await ctx.RespondAsync("Hi! I'm missing either the Manage Messages or Embed Links Permission \nPlease add those so my commands work uwu");
             }
         }//invitehttps://discordapp.com/oauth2/authorize?client_id=451362137571328000&scope=bot&permissions=67497024
 
         [Command("invite"),Aliases("link"),Description("Invitelink for the bot")] //guess....
         public async Task Invite(CommandContext ctx)
-        {//Object reference not set to an instance of an object.
-            //at someBot.Random.< NND > d__6.MoveNext() in / dbots / someBot / someBot / someBot / Commands / Random.cs:line 161
+        {
             await ctx.RespondAsync("https://discordapp.com/oauth2/authorize?client_id=465675368775417856&scope=bot&permissions=67497025");
         }
     }

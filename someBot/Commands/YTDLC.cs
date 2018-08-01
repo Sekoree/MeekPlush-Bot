@@ -1,23 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Entities;
-using DSharpPlus.Interactivity;
 using System.IO;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Dynamic;
-using System.Diagnostics;
 using NYoutubeDL;
 
 namespace someBot
 {
-    class TestStuff
+    class YTDLC
     {
         [Command("vdl")]
         public async Task YTDL(CommandContext ctx, string link = null)
@@ -40,8 +31,8 @@ namespace someBot
                 if (link.Contains("nico"))
                 {
                     youtubeDl.Options.FilesystemOptions.Output = $"/var/www/vhosts/srgg.de/why-is-this-a-me.me/nnddl/{finalString}.mp4";
-                    youtubeDl.Options.AuthenticationOptions.Username = "ger";
-                    youtubeDl.Options.AuthenticationOptions.Password = "ghrten";
+                    youtubeDl.Options.AuthenticationOptions.Username = "";
+                    youtubeDl.Options.AuthenticationOptions.Password = "";
                     youtubeDl.Options.FilesystemOptions.NoCacheDir = true;
                 }
                 youtubeDl.Options.PostProcessingOptions.ExtractAudio = true;
@@ -54,7 +45,7 @@ namespace someBot
                 youtubeDl.Options.GeneralOptions.Update = true;
                 youtubeDl.VideoUrl = link;
                 youtubeDl.YoutubeDlPath = "youtube-dl";
-                youtubeDl.StandardOutputEvent += (sender, output) =>
+                /*youtubeDl.StandardOutputEvent += (sender, output) =>
                 {
                     try
                     {
@@ -65,20 +56,20 @@ namespace someBot
                     }
                     catch{ }
                     //if (output.Substring(0, 8).StartsWith("10"))
-                };
+                };*/
                 youtubeDl.StandardErrorEvent += (sender, errorOutput) => ctx.RespondAsync($"{errorOutput}  (If its 403 blame NNDs Servers, hella slow sometimes and thus cancel the download uwu)");
                 await youtubeDl.DownloadAsync();
                 if (File.Exists($"/var/www/vhosts/srgg.de/why-is-this-a-me.me/ytdl/{finalString}.mp3"))
                 {
                     await msg.ModifyAsync("https://why-is-this-a-me.me/ytdl/" + finalString + ".mp3 \n" +
-                            "**This file bill be deleted in about 30min!**");
+                            "**This file will be deleted in about 30min!**");
                     await Task.Delay((60000 * 30));
                     File.Delete($"/var/www/vhosts/srgg.de/why-is-this-a-me.me/ytdl/{finalString}.mp3");
                 }
                 else if (File.Exists($"/var/www/vhosts/srgg.de/why-is-this-a-me.me/nnddl/{finalString}.mp3"))
                 {
                     await msg.ModifyAsync("https://why-is-this-a-me.me/nnddl/" + finalString + ".mp3 \n" +
-                            "**This file bill be deleted in about 30min!**");
+                            "**This file will be deleted in about 30min!**");
                     await Task.Delay((60000 * 30));
                     File.Delete($"/var/www/vhosts/srgg.de/why-is-this-a-me.me/nnddl/{finalString}.mp3");
                 }
