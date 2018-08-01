@@ -128,49 +128,6 @@ namespace someBot
             return Task.CompletedTask;
         }
 
-        string[] badbois = new string[100];
-        int[] vioAm = new int[100];
-        int ripperoni = 0;
-
-        public Task Bot_XedddLawEnforce(MessageCreateEventArgs e) //we dont use this, but i made it, its nowhere near perfect and will probably never be used, there are probably easier ways to do this
-        {
-            if (e.Guild.Id == 373635826703400960)
-            {
-                //Rule#1
-                if (e.Message.Content.ToLower().Contains("fuck you") || e.Message.Content.ToLower().Contains("fuck off") || e.Message.Content.ToLower().Contains("is a bitch") || e.Message.Content.ToLower().Contains("an asshole") || e.Message.Content.ToLower().Contains("you nigga") || e.Message.Content.ToLower().Contains("please die"))
-                {
-                    if (ripperoni == 100)
-                    {
-                        ripperoni = 0;
-                        badbois[ripperoni] = "";
-                        vioAm[ripperoni] = 0;
-                    }
-                    e.Message.RespondAsync("Please do NOT insult or harass others! (Rule#1)");
-                    badbois[ripperoni] = e.Message.Author.Id.ToString();
-                    vioAm[ripperoni] = vioAm[ripperoni] + 1;
-                }
-                //Rule#3
-                if ((e.Message.Content.ToLower().Contains("i want to die") && e.Message.Content.ToLower().Contains("really")) && !(e.Message.Channel.Id == 424971266181824523))
-                {
-                    e.Message.RespondAsync("Please use #suicice-serious if this was a serious statement (Rule#3)");
-                }
-                //Rule#7
-                if (e.Message.Content.ToLower().Contains("fucking Mod") || e.Message.Content.ToLower().Contains("fuck off admin") || e.Message.Content.ToLower().Contains("fuck the memebois") || e.Message.Content.ToLower().Contains("fuck the meme bois") || e.Message.Content.ToLower().Contains("mods should fuck off") || e.Message.Content.ToLower().Contains("admins should fuck off") || e.Message.Content.ToLower().Contains("mods fuck off") || e.Message.Content.ToLower().Contains("admins fuck off"))
-                {
-                    if (ripperoni == 100)
-                    {
-                        ripperoni = 0;
-                        badbois[ripperoni] = "";
-                        vioAm[ripperoni] = 0;
-                    }
-                    e.Message.RespondAsync("Please respect the Mods! If you dont bother us, we wont bother you! (Rule#7)");
-                    badbois[ripperoni] = e.Message.Author.Id.ToString();
-                    vioAm[ripperoni] = vioAm[ripperoni] + 1;
-                }
-            }
-            return Task.CompletedTask;
-        }
-
         public Task Bot_XedddBoiLeave(GuildMemberRemoveEventArgs e) //sends a message to owo if someone leaves the server
         {
             if (e.Guild.Id == 373635826703400960)
@@ -183,30 +140,33 @@ namespace someBot
 
         public Task Bot_Dump(MessageCreateEventArgs e) //sends a message to owo if someone leaves the server
         {
-            ulong[] Vocas = { 435257131789320233, 435257195106664458, 435257232133849098, 435257330603393036, 435257510560268298, 435257651312590868, 437088673654243338, 460630459270037504, 462360419101835283, 467069921034108939, 467070496299810836, 468125583121973248 };
-            ulong[] Utas = { 460412979507101717, 460413000109654039, 460413038743257089 };
-            if (e.Guild.Id == 373635826703400960)
+            if (!(e.Message.Channel.Type.ToString() == "Private"))
             {
-                if (Vocas.Contains(e.Channel.Id) || Utas.Contains(e.Channel.Id))
+                ulong[] Vocas = { 435257131789320233, 435257195106664458, 435257232133849098, 435257330603393036, 435257510560268298, 435257651312590868, 437088673654243338, 460630459270037504, 462360419101835283, 467069921034108939, 467070496299810836, 468125583121973248 };
+                ulong[] Utas = { 460412979507101717, 460413000109654039, 460413038743257089 };
+                if (e.Guild.Id == 373635826703400960)
                 {
-                    string proxy_urls = "";
-                    string attlist = "";
+                    if (Vocas.Contains(e.Channel.Id) || Utas.Contains(e.Channel.Id))
+                    {
+                        string proxy_urls = "";
+                        string attlist = "";
 
-                    if (e.Message.Attachments != null)
-                    {
-                        foreach (var files in e.Message.Attachments)
+                        if (e.Message.Attachments != null)
                         {
-                            proxy_urls += "\n  " + files.ProxyUrl;
+                            foreach (var files in e.Message.Attachments)
+                            {
+                                proxy_urls += "\n  " + files.ProxyUrl;
+                            }
                         }
-                    }
-                    if (!(proxy_urls == "")) attlist =  proxy_urls;
-                    if (e.Message.Content.Contains("http"))
-                    {
-                        attlist += e.Message.Content;
-                    }
-                    if (attlist != "")
-                    {
-                        y.sendToChannel(466715815866269716, attlist);
+                        if (!(proxy_urls == "")) attlist = proxy_urls;
+                        if (e.Message.Content.Contains("http"))
+                        {
+                            attlist += e.Message.Content;
+                        }
+                        if (attlist != "")
+                        {
+                            y.sendToChannel(466715815866269716, attlist);
+                        }
                     }
                 }
             }

@@ -135,33 +135,36 @@ namespace someBot
 
         public Task Bot_PandaGumiQuotes(MessageReactionAddEventArgs e)
         {
-            if (e.Channel.GuildId == 448241243496120321)
+            if (!(e.Message.Channel.Type.ToString() == "Private"))
             {
-                //var gumi2 = DSharpPlus.Entities.DiscordEmoji.FromGuildEmote(Bot.Client, 450861876805632010);
-                var gumi = e.Channel.Guild.GetEmojiAsync(450861876805632010).Result;
-                var countnum = y.emojiCount(e.Channel.Id, e.Message.Id, 450861876805632010);
-                //var countnum = Convert.ToInt32(e.Message.GetReactionsAsync(gumi).Result.Count);
-                var msg = e.Message.Content;
-                if (countnum == 3)
+                if (e.Channel.GuildId == 448241243496120321)
                 {
-                    if (!lastStars.Contains(msg + "\n- <@" + e.Message.Author.Id + ">"))
+                    //var gumi2 = DSharpPlus.Entities.DiscordEmoji.FromGuildEmote(Bot.Client, 450861876805632010);
+                    var gumi = e.Channel.Guild.GetEmojiAsync(450861876805632010).Result;
+                    var countnum = y.emojiCount(e.Channel.Id, e.Message.Id, 450861876805632010);
+                    //var countnum = Convert.ToInt32(e.Message.GetReactionsAsync(gumi).Result.Count);
+                    var msg = e.Message.Content;
+                    if (countnum == 3)
                     {
-                        if (cUp <= 99)
+                        if (!lastStars.Contains(msg + "\n- <@" + e.Message.Author.Id + ">"))
                         {
-                            lastStars[cUp] = msg + "\n- <@" + e.Message.Author.Id + ">";
-                            cUp++;
-                        } //<@174970757468651520>
-                        else
-                        {
-                            cUp = 1;
-                            lastStars[cUp] = msg + "\n- <@" + e.Message.Author.Id + ">";
-                        }
-                        if (!msg.Contains("@everyone") || !msg.Contains("@here") || !lastStars.Contains(msg + "\n- <@" + e.Message.Author.Id + ">"))
-                        {
-                            //Bot.Client.GetChannelAsync(448262707896909824).Result.SendMessageAsync(msg + "\n- <@" + e.Message.Author.Id + ">");
-                            y.sendToChannel(456445338010517515, msg + "\n- <@" + e.Message.Author.Id + ">");
-                        }//448262707896909824
-                    }//456445338010517515 quotechannel
+                            if (cUp <= 99)
+                            {
+                                lastStars[cUp] = msg + "\n- <@" + e.Message.Author.Id + ">";
+                                cUp++;
+                            } //<@174970757468651520>
+                            else
+                            {
+                                cUp = 1;
+                                lastStars[cUp] = msg + "\n- <@" + e.Message.Author.Id + ">";
+                            }
+                            if (!msg.Contains("@everyone") || !msg.Contains("@here") || !lastStars.Contains(msg + "\n- <@" + e.Message.Author.Id + ">"))
+                            {
+                                //Bot.Client.GetChannelAsync(448262707896909824).Result.SendMessageAsync(msg + "\n- <@" + e.Message.Author.Id + ">");
+                                y.sendToChannel(456445338010517515, msg + "\n- <@" + e.Message.Author.Id + ">");
+                            }//448262707896909824
+                        }//456445338010517515 quotechannel
+                    }
                 }
             }
             return Task.CompletedTask;
