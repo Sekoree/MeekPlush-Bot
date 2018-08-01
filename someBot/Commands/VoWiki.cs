@@ -19,7 +19,6 @@ using WikiClientLibrary.Pages;
 using WikiClientLibrary.Client;
 using WikiClientLibrary.Sites;
 using System.Net;
-using wikia.Api;
 
 namespace someBot
 {

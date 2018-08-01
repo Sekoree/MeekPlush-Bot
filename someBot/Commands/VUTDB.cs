@@ -45,7 +45,7 @@ namespace someBot
             //await ctx.RespondAsync("data: " + myresponse.items[0].artistString);
             if (myresponse.items.Count == 0)
             {
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.ModifyAsync("nothing found uwu (Note: In weird cases it finds the song but still returns 0 results, since this crashes the bot, its not showing anything here)");
+                await init.ModifyAsync("nothing found uwu (Note: In weird cases it finds the song but still returns 0 results, since this crashes the bot, its not showing anything here)");
                 return;
             }
             if (myresponse.items.Count > 1)
@@ -63,11 +63,11 @@ namespace someBot
                 foreach (var entries in myresponse.items)
                 {
                     songs += $"React {DiscordEmoji.FromName(ctx.Client, nums[an])} for {entries.name} by {entries.artistString} \n";
-                    await ctx.Guild.GetChannel(ctx.Channel.Id).GetMessageAsync(init.Id).Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, nums[an]));
+                    await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, nums[an]));
                     an++;
                 }
                 embed2.AddField("Found Songs", songs);
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.ModifyAsync("", embed: embed2.Build());
+                await init.ModifyAsync("", embed: embed2.Build());
 
                 var one = DiscordEmoji.FromName(ctx.Client, ":one:");
                 var two = DiscordEmoji.FromName(ctx.Client, ":two:");
@@ -93,13 +93,12 @@ namespace someBot
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":eight:")) select = 7;
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":nine:")) select = 8;
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":keycap_ten:")) select = 9;
-                    var oof = ctx.Channel.GetMessageAsync(ctx.Message.Id).Result.GetReactionsAsync(DiscordEmoji.FromUnicode("🇻")).Result;
                 }
                 catch
                 {
                     return;
                 }
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.DeleteAllReactionsAsync();
+                await init.DeleteAllReactionsAsync();
             }
             //https://vocadb.net/api/songs/4083/derived?fields=PVs&lang=English
             HttpWebRequest drequest = (HttpWebRequest)WebRequest.Create("https://vocadb.net/api/songs/" + myresponse.items[select].id + "/derived?lang=English");
@@ -122,6 +121,15 @@ namespace someBot
             int oof3 = myresponse.items[select].pvs.FindIndex(x => x.url.Contains("nico"));
             TestStuff got = new TestStuff();
             BaseiInfo(ctx, init, select, myresponse, ddresponse);
+            await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":pushpin:"));
+            if (myresponse.items[select].lyrics.Count != 0) await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":page_facing_up:"));
+            if (myresponse.items[select].pvs.Count != 0)
+            {
+                await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":movie_camera:"));
+                if (myresponse.items[select].pvs.Any(x => (x.url.Contains("youtu") || x.url.Contains("nico")))) await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"));
+            }
+            if (ddresponse.Count != 0) await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:"));
+            await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":x:"));
 
             bool loop = true;
             while (loop == true)
@@ -136,48 +144,41 @@ namespace someBot
                 {
                     var reSelect = await interactivity.WaitForMessageReactionAsync(xe => (xe == emoji || xe == emoji2 || xe == emoji3 || xe == emoji4 || xe == emoji5 || xe == emoji6), init, ctx.Message.Author, TimeSpan.FromSeconds(123));
 
-                    if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":pushpin:"))
-                    {
-                        BaseiInfo(ctx, init, select, myresponse, ddresponse);
-                    }
-                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":page_facing_up:"))
-                    {
-                        LyricEm(ctx, init, select, myresponse, ddresponse);
-                    }
-                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":movie_camera:"))
-                    {
-                        PVShowInfo(ctx, init, select, myresponse, ddresponse, oof2);
-                    }
-                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:"))
-                    {
-                        Derratives(ctx, init, select, myresponse, ddresponse);
-                    }
+                    if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":pushpin:")) BaseiInfo(ctx, init, select, myresponse, ddresponse);
+                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":page_facing_up:")) LyricEm(ctx, init, select, myresponse, ddresponse);
+                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":movie_camera:")) PVShowInfo(ctx, init, select, myresponse, ddresponse, oof2);
+                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:")) Derratives(ctx, init, select, myresponse, ddresponse);
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"))
                     {
-                            if (!(oof2 == -1 && oof3 == -1)) {
-                                if (oof3 != -1)
-                                {
-                                    await ctx.RespondAsync("Downloading from NicoNico, this may take a while! (NND is slow but has best quality)");
-                                    await got.YTDL(ctx, myresponse.items[select].pvs[oof3].url);
-                                }
-                                else if (oof2 != -1)
-                                {
-                                    await ctx.RespondAsync("Downloading from YouTube! Please wait!");
-                                    await got.YTDL(ctx, myresponse.items[select].pvs[oof2].url);
-                                }
-                            }
-                            else
+                        if (!(oof2 == -1 && oof3 == -1))
+                        {
+                            if (oof3 != -1)
                             {
-                                await ctx.RespondAsync("No valid Download Source found, sorry uwu");
+                                await ctx.RespondAsync("Downloading from NicoNico, this may take a while! (NND is slow but has best quality)");
+                                got.YTDL(ctx, myresponse.items[select].pvs[oof3].url);
                             }
+                            else if (oof2 != -1)
+                            {
+                                await ctx.RespondAsync("Downloading from YouTube! Please wait!");
+                                got.YTDL(ctx, myresponse.items[select].pvs[oof2].url);
+                            }
+                            await init.DeleteReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"), ctx.Message.Author);
+                            await init.DeleteOwnReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"));
+                        }
+                        else
+                        {
+                            await ctx.RespondAsync("No valid Download Source found, sorry uwu");
+                        }
                     }
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":x:"))
                     {
                         loop = false;
+                        await init.DeleteAllReactionsAsync();
                     }
                     else
                     {
                         loop = false;
+                        await init.DeleteAllReactionsAsync();
                     }
                 }
                 catch
@@ -212,7 +213,7 @@ namespace someBot
             //await ctx.RespondAsync("data: " + myresponse.items[0].artistString);
             if (myresponse.items.Count == 0)
             {
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.ModifyAsync("nothing found uwu (Note: In weird cases it finds the song but still returns 0 results, since this crashes the bot, its not showing anything here)");
+                await init.ModifyAsync("nothing found uwu (Note: In weird cases it finds the song but still returns 0 results, since this crashes the bot, its not showing anything here)");
                 return;
             }
             if (myresponse.items.Count > 1)
@@ -230,11 +231,11 @@ namespace someBot
                 foreach (var entries in myresponse.items)
                 {
                     songs += $"React {DiscordEmoji.FromName(ctx.Client, nums[an])} for {entries.name} by {entries.artistString} \n";
-                    await ctx.Guild.GetChannel(ctx.Channel.Id).GetMessageAsync(init.Id).Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, nums[an]));
+                    await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, nums[an]));
                     an++;
                 }
                 embed2.AddField("Found Songs", songs);
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.ModifyAsync("", embed: embed2.Build());
+                await init.ModifyAsync("", embed: embed2.Build());
 
                 var one = DiscordEmoji.FromName(ctx.Client, ":one:");
                 var two = DiscordEmoji.FromName(ctx.Client, ":two:");
@@ -249,7 +250,6 @@ namespace someBot
                 try
                 {
                     var reSelect = await interactivity.WaitForMessageReactionAsync(xe => (xe == one || xe == two || xe == three || xe == four || xe == five || xe == six || xe == seven || xe == eight || xe == nine || xe == ten), init, ctx.Message.Author, TimeSpan.FromSeconds(60));
-
                     if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":one:")) select = 0;
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":two:")) select = 1;
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":three:")) select = 2;
@@ -260,13 +260,12 @@ namespace someBot
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":eight:")) select = 7;
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":nine:")) select = 8;
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":keycap_ten:")) select = 9;
-                    var oof = ctx.Channel.GetMessageAsync(ctx.Message.Id).Result.GetReactionsAsync(DiscordEmoji.FromUnicode("🇻")).Result;
                 }
                 catch
                 {
                     return;
                 }
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.DeleteAllReactionsAsync();
+                await init.DeleteAllReactionsAsync();
             }
 
             HttpWebRequest drequest = (HttpWebRequest)WebRequest.Create("https://utaitedb.net/api/songs/" + myresponse.items[select].id + "/derived?lang=English");
@@ -288,6 +287,15 @@ namespace someBot
             int oof3 = myresponse.items[select].pvs.FindIndex(x => x.url.Contains("nico"));
             TestStuff got = new TestStuff();
             BaseiInfo(ctx, init, select, myresponse, ddresponse);
+            await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":pushpin:"));
+            if (myresponse.items[select].lyrics.Count != 0) await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":page_facing_up:"));
+            if (myresponse.items[select].pvs.Count != 0)
+            {
+                await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":movie_camera:"));
+                if (myresponse.items[select].pvs.Any(x => (x.url.Contains("youtu") || x.url.Contains("nico")))) await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"));
+            }
+            if (ddresponse.Count != 0) await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:"));
+            await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":x:"));
 
             bool loop = true;
             while (loop == true)
@@ -302,38 +310,26 @@ namespace someBot
                 {
                     var reSelect = await interactivity.WaitForMessageReactionAsync(xe => (xe == emoji || xe == emoji2 || xe == emoji3 || xe == emoji4 || xe == emoji5 || xe == emoji6), init, ctx.Message.Author, TimeSpan.FromSeconds(123));
 
-                    if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":pushpin:"))
-                    {
-                        BaseiInfo(ctx, init, select, myresponse, ddresponse);
-                    }
-                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":page_facing_up:"))
-                    {
-                        LyricEm(ctx, init, select, myresponse, ddresponse);
-                    }
-                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":movie_camera:"))
-                    {
-                        PVShowInfo(ctx, init, select, myresponse, ddresponse, oof2);
-                    }
-                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:"))
-                    {
-                        Derratives(ctx, init, select, myresponse, ddresponse);
-                    }
+                    if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":pushpin:")) BaseiInfo(ctx, init, select, myresponse, ddresponse);
+                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":page_facing_up:")) LyricEm(ctx, init, select, myresponse, ddresponse);
+                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":movie_camera:")) PVShowInfo(ctx, init, select, myresponse, ddresponse, oof2);
+                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:")) Derratives(ctx, init, select, myresponse, ddresponse);
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"))
                     {
                         if (!(oof2 == -1 && oof3 == -1))
                         {
                             if (oof3 != -1)
                             {
-                                await ctx.RespondAsync($"Downloading from NicoNico, this may take a while! (NND is slow but has best quality)\n" +
-                                    $"if this fails, you may want to download via Youtube (this works 99.9%)\n" +
-                                    $"use the ``!vdl <youtubeLink>`` command for this");
-                                await got.YTDL(ctx, myresponse.items[select].pvs[oof3].url);
+                                await ctx.RespondAsync("Downloading from NicoNico, this may take a while! (NND is slow but has best quality)");
+                                got.YTDL(ctx, myresponse.items[select].pvs[oof3].url);
                             }
                             else if (oof2 != -1)
                             {
                                 await ctx.RespondAsync("Downloading from YouTube! Please wait!");
-                                await got.YTDL(ctx, myresponse.items[select].pvs[oof2].url);
+                                got.YTDL(ctx, myresponse.items[select].pvs[oof2].url);
                             }
+                            await init.DeleteReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"), ctx.Message.Author);
+                            await init.DeleteOwnReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"));
                         }
                         else
                         {
@@ -343,10 +339,12 @@ namespace someBot
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":x:"))
                     {
                         loop = false;
+                        await init.DeleteAllReactionsAsync();
                     }
                     else
                     {
                         loop = false;
+                        await init.DeleteAllReactionsAsync();
                     }
                 }
                 catch
@@ -381,7 +379,7 @@ namespace someBot
             //await ctx.RespondAsync("data: " + myresponse.items[0].artistString);
             if (myresponse.items.Count == 0)
             {
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.ModifyAsync("nothing found uwu (Note: In weird cases it finds the song but still returns 0 results, since this crashes the bot, its not showing anything here)");
+                await init.ModifyAsync("nothing found uwu (Note: In weird cases it finds the song but still returns 0 results, since this crashes the bot, its not showing anything here)");
                 return;
             }
             if (myresponse.items.Count > 1)
@@ -399,11 +397,11 @@ namespace someBot
                 foreach (var entries in myresponse.items)
                 {
                     songs += $"React {DiscordEmoji.FromName(ctx.Client, nums[an])} for {entries.name} by {entries.artistString} \n";
-                    await ctx.Guild.GetChannel(ctx.Channel.Id).GetMessageAsync(init.Id).Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, nums[an]));
+                    await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, nums[an]));
                     an++;
                 }
                 embed2.AddField("Found Songs", songs);
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.ModifyAsync("", embed: embed2.Build());
+                await init.ModifyAsync("", embed: embed2.Build());
 
                 var one = DiscordEmoji.FromName(ctx.Client, ":one:");
                 var two = DiscordEmoji.FromName(ctx.Client, ":two:");
@@ -428,13 +426,12 @@ namespace someBot
                 else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":eight:")) select = 7;
                 else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":nine:")) select = 8;
                 else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":keycap_ten:")) select = 9;
-                var oof = ctx.Channel.GetMessageAsync(ctx.Message.Id).Result.GetReactionsAsync(DiscordEmoji.FromUnicode("🇻")).Result;
                 }
                 catch
                 {
                     return;
                 }
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.DeleteAllReactionsAsync();
+                await init.DeleteAllReactionsAsync();
             }
             HttpWebRequest drequest = (HttpWebRequest)WebRequest.Create("https://touhoudb.com/api/songs/" + myresponse.items[select].id + "/derived?lang=English");
             drequest.Method = "GET";
@@ -456,6 +453,15 @@ namespace someBot
             int oof3 = myresponse.items[select].pvs.FindIndex(x => x.url.Contains("nico"));
             TestStuff got = new TestStuff();
             BaseiInfo(ctx, init, select, myresponse, ddresponse);
+            await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":pushpin:"));
+            if (myresponse.items[select].lyrics.Count != 0) await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":page_facing_up:"));
+            if (myresponse.items[select].pvs.Count != 0)
+            {
+                await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":movie_camera:"));
+                if (myresponse.items[select].pvs.Any(x => (x.url.Contains("youtu") || x.url.Contains("nico")))) await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"));
+            }
+            if (ddresponse.Count != 0) await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:"));
+            await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":x:"));
 
             bool loop = true;
             while (loop == true)
@@ -470,22 +476,10 @@ namespace someBot
                 {
                     var reSelect = await interactivity.WaitForMessageReactionAsync(xe => (xe == emoji || xe == emoji2 || xe == emoji3 || xe == emoji4 || xe == emoji5 || xe == emoji6), init, ctx.Message.Author, TimeSpan.FromSeconds(123));
 
-                    if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":pushpin:"))
-                    {
-                        BaseiInfo(ctx, init, select, myresponse, ddresponse);
-                    }
-                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":page_facing_up:"))
-                    {
-                        LyricEm(ctx, init, select, myresponse, ddresponse);
-                    }
-                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":movie_camera:"))
-                    {
-                        PVShowInfo(ctx, init, select, myresponse, ddresponse, oof2);
-                    }
-                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:"))
-                    {
-                        Derratives(ctx, init, select, myresponse, ddresponse);
-                    }
+                    if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":pushpin:")) BaseiInfo(ctx, init, select, myresponse, ddresponse);
+                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":page_facing_up:")) LyricEm(ctx, init, select, myresponse, ddresponse);
+                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":movie_camera:")) PVShowInfo(ctx, init, select, myresponse, ddresponse, oof2);
+                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:")) Derratives(ctx, init, select, myresponse, ddresponse);
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"))
                     {
                         if (!(oof2 == -1 && oof3 == -1))
@@ -493,13 +487,15 @@ namespace someBot
                             if (oof3 != -1)
                             {
                                 await ctx.RespondAsync("Downloading from NicoNico, this may take a while! (NND is slow but has best quality)");
-                                await got.YTDL(ctx, myresponse.items[select].pvs[oof3].url);
+                                got.YTDL(ctx, myresponse.items[select].pvs[oof3].url);
                             }
                             else if (oof2 != -1)
                             {
                                 await ctx.RespondAsync("Downloading from YouTube! Please wait!");
-                                await got.YTDL(ctx, myresponse.items[select].pvs[oof2].url);
+                                got.YTDL(ctx, myresponse.items[select].pvs[oof2].url);
                             }
+                            await init.DeleteReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"), ctx.Message.Author);
+                            await init.DeleteOwnReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"));
                         }
                         else
                         {
@@ -509,10 +505,12 @@ namespace someBot
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":x:"))
                     {
                         loop = false;
+                        await init.DeleteAllReactionsAsync();
                     }
                     else
                     {
                         loop = false;
+                        await init.DeleteAllReactionsAsync();
                     }
                 }
                 catch
@@ -526,8 +524,8 @@ namespace someBot
         {
             try
             {
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.DeleteAllReactionsAsync();
-                
+                try { await init.DeleteReactionAsync(DiscordEmoji.FromName(ctx.Client, ":pushpin:"), ctx.Message.Author); }
+                catch { }
                 string tumurl = "";
                 if (myresponse.items[select].pvs.Count != 0) tumurl = myresponse.items[select].pvs[0].thumbUrl;
                 var emim = new DiscordEmbedBuilder
@@ -559,22 +557,7 @@ namespace someBot
                 //    $"{DiscordEmoji.FromName(ctx.Client, ":movie_camera:")} Watch the PV!\n" +
                 //    $"{DiscordEmoji.FromName(ctx.Client, ":x:")} cancel out, not needed, but its there");
                 var end = emim.Build();
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.ModifyAsync(null, embed: end);
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":pushpin:"));
-                if (myresponse.items[select].lyrics.Count != 0)
-                {
-                    await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":page_facing_up:"));
-                }
-                if (myresponse.items[select].pvs.Count != 0)
-                {
-                    await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":movie_camera:"));
-                    await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"));
-                }
-                if (dresponse.Count != 0)
-                {
-                    await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:"));
-                }
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":x:"));
+                await init.ModifyAsync(null, embed: end);
             }
             catch
             {
@@ -586,24 +569,10 @@ namespace someBot
         {
             try
             {
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.DeleteAllReactionsAsync();
-
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.ModifyAsync(myresponse.items[select].pvs[yt].url, embed: null);
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":pushpin:"));
-                if (myresponse.items[select].lyrics.Count != 0)
-                {
-                    await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":page_facing_up:"));
-                }
-                if (myresponse.items[select].pvs.Count != 0)
-                {
-                    await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":movie_camera:"));
-                    await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"));
-                }
-                if (dresponse.Count != 0)
-                {
-                    await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:"));
-                }
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":x:"));
+                try {await init.DeleteReactionAsync(DiscordEmoji.FromName(ctx.Client, ":movie_camera:"), ctx.Message.Author); }
+                catch { }
+                if (yt == -1) yt = 0;
+                await init.ModifyAsync(myresponse.items[select].pvs[yt].url, embed: null);
             }
             catch
                 {
@@ -615,7 +584,8 @@ namespace someBot
         {
             try
             {
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.DeleteAllReactionsAsync();
+                try { await init.DeleteReactionAsync(DiscordEmoji.FromName(ctx.Client, ":page_facing_up:"), ctx.Message.Author); }
+                catch { }
                 var interactivity = ctx.Client.GetInteractivityModule();
                 int lyse = 0;
                 string tumurl = "";
@@ -632,7 +602,7 @@ namespace someBot
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
                 if (myresponse.items[select].lyrics.Count > 1)
                 {
-
+                    await init.DeleteAllReactionsAsync();
                     var embed2 = new DiscordEmbedBuilder
                     {
                         Color = new DiscordColor("#289b9a"),
@@ -646,10 +616,10 @@ namespace someBot
                     {
                         if (an == 10) break;
                         embed2.AddField("React " + DiscordEmoji.FromName(ctx.Client, nums[an]), $"[{entries.translationType}] + {entries.cultureCode.ToUpper()} by {entries.source}");
-                        await ctx.Guild.GetChannel(ctx.Channel.Id).GetMessageAsync(init.Id).Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, nums[an]));
+                        await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, nums[an]));
                         an++;
                     }
-                    await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.ModifyAsync(null, embed: embed2.Build());
+                    await init.ModifyAsync(null, embed: embed2.Build());
 
                     var one = DiscordEmoji.FromName(ctx.Client, ":one:");
                     var two = DiscordEmoji.FromName(ctx.Client, ":two:");
@@ -679,7 +649,22 @@ namespace someBot
                     {
                         return;
                     }
-                    await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.DeleteAllReactionsAsync();
+                    await init.DeleteAllReactionsAsync();
+                    await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":pushpin:"));
+                    if (myresponse.items[select].lyrics.Count != 0)
+                    {
+                        await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":page_facing_up:"));
+                    }
+                    if (myresponse.items[select].pvs.Count != 0)
+                    {
+                        await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":movie_camera:"));
+                        await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"));
+                    }
+                    if (dresponse.Count != 0)
+                    {
+                        await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:"));
+                    }
+                    await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":x:"));
                 }
                 if (myresponse.items[select].lyrics[lyse].translationType.Length != 0) emim.AddField("Language", myresponse.items[select].lyrics[lyse].translationType, true);
                 if (myresponse.items[select].lyrics[lyse].source.Length != 0) emim.AddField("Source", myresponse.items[select].lyrics[lyse].source, true);
@@ -700,22 +685,7 @@ namespace someBot
 
                 var end = emim.Build();
 
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.ModifyAsync(null, embed: end);
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":pushpin:"));
-                if (myresponse.items[select].lyrics.Count != 0)
-                {
-                    await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":page_facing_up:"));
-                }
-                if (myresponse.items[select].pvs.Count != 0)
-                {
-                    await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":movie_camera:"));
-                    await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"));
-                }
-                if (dresponse.Count != 0)
-                {
-                    await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:"));
-                }
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":x:"));
+                await init.ModifyAsync(null, embed: end);
             }
             catch
             {
@@ -727,8 +697,8 @@ namespace someBot
         {
             try
             {
-                //await ctx.RespondAsync("response3");
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.DeleteAllReactionsAsync();
+                try { await init.DeleteReactionAsync(DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:"), ctx.Message.Author); }
+                catch { }
                 string tumurl = "";
                 if (myresponse.items[select].pvs.Count != 0) tumurl = myresponse.items[select].pvs[0].thumbUrl;
                 //await ctx.RespondAsync("b4 build");
@@ -755,22 +725,7 @@ namespace someBot
                 //await ctx.RespondAsync("damn field");
                 
                 var end = emim.Build();
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.ModifyAsync(null, embed: end);
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":pushpin:"));
-                if (myresponse.items[select].lyrics.Count != 0)
-                {
-                    await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":page_facing_up:"));
-                }
-                if (myresponse.items[select].pvs.Count != 0)
-                {
-                    await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":movie_camera:"));
-                    await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"));
-                }
-                if (dresponse.Count != 0)
-                {
-                    await init.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:"));
-                }
-                await ctx.Guild.GetChannel(init.ChannelId).GetMessageAsync(init.Id).Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":x:"));
+                await init.ModifyAsync(null, embed: end);
             }
             catch
             {

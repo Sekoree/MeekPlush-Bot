@@ -36,11 +36,12 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Cat Picture/Gif!",
-                    Description = "via thecatapi.com",
-                    ImageUrl = response.ResponseUri.ToString()
+                    Description = $"[Full Source Image Link]({response.ResponseUri.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={response.ResponseUri.ToString()}&resize=500"
                 };
 
                 response.Close();
+                emim.WithAuthor(name: "via thecatapi.com", url: "https://thecatapi.com/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
                 await ctx.RespondAsync(embed: emim.Build());
@@ -69,10 +70,11 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Dog Picture/Gif!",
-                    Description = "via thedogapi.com",
-                    ImageUrl = myresponse[0].url
+                    Description = $"[Full Source Image Link]({myresponse[0].url})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse[0].url}&resize=500"
                 };
                 response.Close();
+                emim.WithAuthor(name: "via thedogapi.com", url: "https://thedogapi.com/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
                 await ctx.RespondAsync(embed: emim.Build());
@@ -88,7 +90,6 @@ namespace someBot
         {
             try
             {
-
                 WebRequest request = WebRequest.Create("https://nekos.life/api/v2/img/neko");
                 WebResponse response = request.GetResponse();
                 Stream dataStream = response.GetResponseStream();
@@ -102,10 +103,11 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Catgirl Pictures!",
-                    Description = "via nekos.life",
-                    ImageUrl = myresponse.url
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
                 response.Close();
+                emim.WithAuthor(name: "via nekos.life", url: "https://nekos.life/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
                 await ctx.RespondAsync(embed: emim.Build());
@@ -135,10 +137,11 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Foxgirl Pictures!",
-                    Description = "via nekos.life",
-                    ImageUrl = myresponse.url
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
                 response.Close();
+                emim.WithAuthor(name: "via nekos.life", url: "https://nekos.life/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
                 await ctx.RespondAsync(embed: emim.Build());
@@ -149,7 +152,7 @@ namespace someBot
             }
         }//https://nekobot.xyz/api/image?type=thigh
 
-        [Command("thigh"), Description("Shows you a random thigh image"), RequireNsfw]
+        [Command("thigh"), Description("Shows you a random thigh image uwu"), RequireNsfw]
         public async Task ThighPic(CommandContext ctx)
         {
             try
@@ -167,10 +170,11 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "uwu",
-                    Description = "via nadeko.xyz",
-                    ImageUrl = myresponse.message
+                    Description = $"[Full Source Image Link]({myresponse.message.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.message.ToString()}&resize=500"
                 };
                 response.Close();
+                emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
                 await ctx.RespondAsync(embed: emim.Build());
@@ -181,7 +185,7 @@ namespace someBot
             }
         }
 
-        [Command("nekopara"), Description("Shows you a random nekopara image or gif"), RequireNsfw]
+        [Command("nekopara"), Description("Shows you a random nekopara image or gif uwu"), RequireNsfw]
         public async Task NPPic(CommandContext ctx)
         {
             try
@@ -204,10 +208,11 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "uwu",
-                    Description = "via api.ohlookitsderpy.space",
-                    ImageUrl = myresponse.url
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
                 response.Close();
+                emim.WithAuthor(name: "via api.ohlookitsderpy.space", url: "https://api.ohlookitsderpy.space/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
                 await ctx.RespondAsync(embed: emim.Build());
@@ -236,10 +241,11 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Project Diva Image!",
-                    Description = "via api.meek.moe",
-                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
                 response.Close();
+                emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
                 await ctx.RespondAsync(embed: emim.Build());
@@ -250,7 +256,7 @@ namespace someBot
             }
         }
 
-        [Command("rin"), Description("Shows you a Project Diva image")]
+        [Command("rin"), Description("Shows you a Rin image")]
         public async Task KRinPic(CommandContext ctx)
         {
             try
@@ -268,10 +274,11 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Rin Image!",
-                    Description = "via api.meek.moe",
-                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
                 response.Close();
+                emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
                 await ctx.RespondAsync(embed: emim.Build());
@@ -282,7 +289,7 @@ namespace someBot
             }
         }
 
-        [Command("una"), Description("Shows you a Project Diva image")]
+        [Command("una"), Description("Shows you a Una image")]
         public async Task OUnaPic(CommandContext ctx)
         {
             try
@@ -300,10 +307,11 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Una Image!",
-                    Description = "via api.meek.moe",
-                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
                 response.Close();
+                emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
                 await ctx.RespondAsync(embed: emim.Build());
@@ -314,7 +322,7 @@ namespace someBot
             }
         }
 
-        [Command("gumi"), Description("Shows you a Project Diva image")]
+        [Command("gumi"), Description("Shows you a Gumi image")]
         public async Task GumiPic(CommandContext ctx)
         {
             try
@@ -332,10 +340,11 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Gumi Image!",
-                    Description = "via api.meek.moe",
-                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
                 response.Close();
+                emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
                 await ctx.RespondAsync(embed: emim.Build());
@@ -346,7 +355,7 @@ namespace someBot
             }
         }
 
-        [Command("luka"), Description("Shows you a Project Diva image")]
+        [Command("luka"), Description("Shows you a Luka image")]
         public async Task MLukaPic(CommandContext ctx)
         {
             try
@@ -364,10 +373,11 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Luka Image!",
-                    Description = "via api.meek.moe",
-                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
                 response.Close();
+                emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
                 await ctx.RespondAsync(embed: emim.Build());
@@ -378,7 +388,7 @@ namespace someBot
             }
         }
 
-        [Command("ia"), Description("Shows you a Project Diva image")]
+        [Command("ia"), Description("Shows you a IA image")]
         public async Task IAPic(CommandContext ctx)
         {
             try
@@ -396,10 +406,11 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random IA Image!",
-                    Description = "via api.meek.moe",
-                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
                 response.Close();
+                emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
                 await ctx.RespondAsync(embed: emim.Build());
@@ -410,7 +421,7 @@ namespace someBot
             }
         }
 
-        [Command("yukari"), Description("Shows you a Project Diva image")]
+        [Command("yukari"), Description("Shows you a Yukari image")]
         public async Task YYukariPic(CommandContext ctx)
         {
             try
@@ -428,10 +439,11 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Yukari Image!",
-                    Description = "via api.meek.moe",
-                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
                 response.Close();
+                emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
                 await ctx.RespondAsync(embed: emim.Build());
@@ -442,7 +454,7 @@ namespace someBot
             }
         }
 
-        [Command("teto"), Description("Shows you a Project Diva image")]
+        [Command("teto"), Description("Shows you a Teto image")]
         public async Task KTetoPic(CommandContext ctx)
         {
             try
@@ -460,10 +472,11 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Teto Image!",
-                    Description = "via api.meek.moe",
-                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
                 response.Close();
+                emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
                 await ctx.RespondAsync(embed: emim.Build());
@@ -474,7 +487,7 @@ namespace someBot
             }
         }
 
-        [Command("len"), Description("Shows you a Project Diva image")]
+        [Command("len"), Description("Shows you a Len image")]
         public async Task KLenPic(CommandContext ctx)
         {
             try
@@ -492,10 +505,11 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Len Image!",
-                    Description = "via api.meek.moe",
-                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
                 response.Close();
+                emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
                 await ctx.RespondAsync(embed: emim.Build());
@@ -506,7 +520,7 @@ namespace someBot
             }
         }
 
-        [Command("kaito"), Description("Shows you a Project Diva image")]
+        [Command("kaito"), Description("Shows you a Kaito image")]
         public async Task KaitoPic(CommandContext ctx)
         {
             try
@@ -524,10 +538,11 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Kaito Image!",
-                    Description = "via api.meek.moe",
-                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
                 response.Close();
+                emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
                 await ctx.RespondAsync(embed: emim.Build());
@@ -538,7 +553,7 @@ namespace someBot
             }
         }
 
-        [Command("meiko"), Description("Shows you a Project Diva image")]
+        [Command("meiko"), Description("Shows you a Meiko image")]
         public async Task MeikoPic(CommandContext ctx)
         {
             try
@@ -556,10 +571,77 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "Random Meiko Image!",
-                    Description = "via api.meek.moe",
-                    ImageUrl = ("https://api.meek.moe/im/?image=" + myresponse.url.ToString() + "&resize=500")
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
                 response.Close();
+                emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
+                emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
+
+                await ctx.RespondAsync(embed: emim.Build());
+            }
+            catch
+            {
+                await ctx.RespondAsync("Hi! I'm missing either the Manage Messages or Embed Links Permission \nPlease add those so my commands work uwu");
+            }
+        }
+
+        [Command("fukase"), Description("Shows you a Meiko image")]
+        public async Task FukasePic(CommandContext ctx)
+        {
+            try
+            {
+                WebRequest request = WebRequest.Create("https://api.meek.moe/fukase");
+                WebResponse response = request.GetResponse();
+                Stream dataStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(dataStream);
+                string responseFromServer = reader.ReadToEnd();
+                //await ctx.RespondAsync(responseFromServer);
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
+                //await ctx.RespondAsync(myresponse.url);
+
+                var emim = new DiscordEmbedBuilder
+                {
+                    Color = new DiscordColor("#289b9a"),
+                    Title = "Random Fukase Image!",
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                };
+                response.Close();
+                emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
+                emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
+
+                await ctx.RespondAsync(embed: emim.Build());
+            }
+            catch
+            {
+                await ctx.RespondAsync("Hi! I'm missing either the Manage Messages or Embed Links Permission \nPlease add those so my commands work uwu");
+            }
+        }
+
+        [Command("miku"), Description("Shows you a Meiko image")]
+        public async Task HMikuPic(CommandContext ctx)
+        {
+            try
+            {
+                WebRequest request = WebRequest.Create("https://api.meek.moe/miku");
+                WebResponse response = request.GetResponse();
+                Stream dataStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(dataStream);
+                string responseFromServer = reader.ReadToEnd();
+                //await ctx.RespondAsync(responseFromServer);
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
+                //await ctx.RespondAsync(myresponse.url);
+
+                var emim = new DiscordEmbedBuilder
+                {
+                    Color = new DiscordColor("#289b9a"),
+                    Title = "Random Miku Image!",
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                };
+                response.Close();
+                emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
                 await ctx.RespondAsync(embed: emim.Build());
@@ -588,10 +670,11 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "uwu",
-                    Description = "via nadeko.xyz",
-                    ImageUrl = myresponse.message
+                    Description = $"[Full Source Image Link]({myresponse.message.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.message.ToString()}&resize=500"
                 };
                 response.Close();
+                emim.WithAuthor(name: "via nekobot.xyz", url: "https://nekobot.xyz/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
                 await ctx.RespondAsync(embed: emim.Build());
@@ -622,32 +705,14 @@ namespace someBot
                 {
                     Color = new DiscordColor("#6600cc"),
                     Title = "Random Pictures!",
-                    Description = "via nekos.life",
-                    ImageUrl = myresponse.url
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
                 response.Close();
+                emim.WithAuthor(name: "via nekos.life", url: "https://nekos.life/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
-                var it = await ctx.RespondAsync(embed: emim.Build());
-                bool woo = false;
-                await ctx.Channel.GetMessageAsync(it.Id).Result.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":one:"));
-                await Task.Delay(2500);
-                try
-                {
-                    var lewd = await interactivity.WaitForMessageReactionAsync(xe => xe == DiscordEmoji.FromName(ctx.Client, ":one:"), it, ctx.Message.Author, TimeSpan.FromSeconds(60));
-                    if (lewd.Emoji == DiscordEmoji.FromName(ctx.Client, ":one:"))
-                    {
-                        woo = true;
-                    }
-                    if (woo)
-                    {
-                        await ctx.Channel.GetMessageAsync(it.Id).Result.DeleteAsync();
-                    }
-                }
-                catch
-                {
-                    return;
-                }
+                await ctx.RespondAsync(embed: emim.Build());
             }
             catch
             {
