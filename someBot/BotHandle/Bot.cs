@@ -145,8 +145,6 @@ namespace someBot
                 {
                     await e.Message.RespondAsync("no u");
                 }
-                await Task.CompletedTask;
-                return;
             }
 
             if (e.Message.Content.ToLower().StartsWith("uwu") && !(e.Message.Author.Id == 412572113191305226)) //the uwu react
@@ -166,7 +164,7 @@ namespace someBot
                 await Task.Delay(TimeSpan.FromMilliseconds(500));
                 await e.Message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(bot, 455504120825249802));
             }
-            await Task.CompletedTask;
+            //await Task.CompletedTask;
         }
 
         private Task Bot_CMDErr(CommandErrorEventArgs e) //if bot error
