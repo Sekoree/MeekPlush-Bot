@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace someBot.Commands.RanImg
 {
-    class MeekMoe
+    class MeekMoe : BaseCommandModule
     {
         [Command("diva"), Description("Shows you a Project Diva image")]
         public async Task DivaPic(CommandContext ctx)
@@ -24,7 +24,7 @@ namespace someBot.Commands.RanImg
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
                 //await ctx.RespondAsync(responseFromServer);
-                var myresponse = JsonConvert.DeserializeObject<Other.ImgRet>(responseFromServer);
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
                 //await ctx.RespondAsync(myresponse.url);
 
                 var emim = new DiscordEmbedBuilder
@@ -34,6 +34,10 @@ namespace someBot.Commands.RanImg
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
+                if (myresponse.creator != "")
+                {
+                    emim.AddField("Creator Message", myresponse.creator);
+                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -57,7 +61,7 @@ namespace someBot.Commands.RanImg
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
                 //await ctx.RespondAsync(responseFromServer);
-                var myresponse = JsonConvert.DeserializeObject<Other.ImgRet>(responseFromServer);
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
                 //await ctx.RespondAsync(myresponse.url);
 
                 var emim = new DiscordEmbedBuilder
@@ -90,7 +94,7 @@ namespace someBot.Commands.RanImg
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
                 //await ctx.RespondAsync(responseFromServer);
-                var myresponse = JsonConvert.DeserializeObject<Other.ImgRet>(responseFromServer);
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
                 //await ctx.RespondAsync(myresponse.url);
 
                 var emim = new DiscordEmbedBuilder
@@ -100,6 +104,10 @@ namespace someBot.Commands.RanImg
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
+                if (myresponse.creator != "")
+                {
+                    emim.AddField("Creator Message", myresponse.creator);
+                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -123,7 +131,7 @@ namespace someBot.Commands.RanImg
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
                 //await ctx.RespondAsync(responseFromServer);
-                var myresponse = JsonConvert.DeserializeObject<Other.ImgRet>(responseFromServer);
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
                 //await ctx.RespondAsync(myresponse.url);
 
                 var emim = new DiscordEmbedBuilder
@@ -133,6 +141,10 @@ namespace someBot.Commands.RanImg
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
+                if (myresponse.creator != "")
+                {
+                    emim.AddField("Creator Message", myresponse.creator);
+                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -156,7 +168,7 @@ namespace someBot.Commands.RanImg
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
                 //await ctx.RespondAsync(responseFromServer);
-                var myresponse = JsonConvert.DeserializeObject<Other.ImgRet>(responseFromServer);
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
                 //await ctx.Client.CreateDmAsync(ctx.Client.GetUserAsync(174970757468651520).Result).Result.SendMessageAsync(myresponse.url);
 
                 var emim = new DiscordEmbedBuilder
@@ -166,6 +178,10 @@ namespace someBot.Commands.RanImg
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
+                if (myresponse.creator != "")
+                {
+                    emim.AddField("Creator Message", myresponse.creator);
+                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -189,7 +205,7 @@ namespace someBot.Commands.RanImg
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
                 //await ctx.RespondAsync(responseFromServer);
-                var myresponse = JsonConvert.DeserializeObject<Other.ImgRet>(responseFromServer);
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
                 //await ctx.Client.CreateDmAsync(ctx.Client.GetUserAsync(174970757468651520).Result).Result.SendMessageAsync(myresponse.url);
 
                 var emim = new DiscordEmbedBuilder
@@ -199,6 +215,10 @@ namespace someBot.Commands.RanImg
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
+                if (myresponse.creator != "")
+                {
+                    emim.AddField("Creator Message", myresponse.creator);
+                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -222,7 +242,7 @@ namespace someBot.Commands.RanImg
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
                 //await ctx.RespondAsync(responseFromServer);
-                var myresponse = JsonConvert.DeserializeObject<Other.ImgRet>(responseFromServer);
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
                 //await ctx.RespondAsync(myresponse.url);
 
                 var emim = new DiscordEmbedBuilder
@@ -232,6 +252,10 @@ namespace someBot.Commands.RanImg
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
+                if (myresponse.creator != "")
+                {
+                    emim.AddField("Creator Message", myresponse.creator);
+                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -255,7 +279,7 @@ namespace someBot.Commands.RanImg
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
                 //await ctx.RespondAsync(responseFromServer);
-                var myresponse = JsonConvert.DeserializeObject<Other.ImgRet>(responseFromServer);
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
                 //await ctx.RespondAsync(myresponse.url);
 
                 var emim = new DiscordEmbedBuilder
@@ -265,6 +289,10 @@ namespace someBot.Commands.RanImg
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
+                if (myresponse.creator != "")
+                {
+                    emim.AddField("Creator Message", myresponse.creator);
+                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -288,7 +316,7 @@ namespace someBot.Commands.RanImg
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
                 //await ctx.RespondAsync(responseFromServer);
-                var myresponse = JsonConvert.DeserializeObject<Other.ImgRet>(responseFromServer);
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
                 //await ctx.RespondAsync(myresponse.url);
 
                 var emim = new DiscordEmbedBuilder
@@ -298,6 +326,10 @@ namespace someBot.Commands.RanImg
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
+                if (myresponse.creator != "")
+                {
+                    emim.AddField("Creator Message", myresponse.creator);
+                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -321,7 +353,7 @@ namespace someBot.Commands.RanImg
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
                 //await ctx.RespondAsync(responseFromServer);
-                var myresponse = JsonConvert.DeserializeObject<Other.ImgRet>(responseFromServer);
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
                 //await ctx.RespondAsync(myresponse.url);
 
                 var emim = new DiscordEmbedBuilder
@@ -331,6 +363,10 @@ namespace someBot.Commands.RanImg
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
+                if (myresponse.creator != "")
+                {
+                    emim.AddField("Creator Message", myresponse.creator);
+                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -354,7 +390,7 @@ namespace someBot.Commands.RanImg
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
                 //await ctx.RespondAsync(responseFromServer);
-                var myresponse = JsonConvert.DeserializeObject<Other.ImgRet>(responseFromServer);
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
                 //await ctx.RespondAsync(myresponse.url);
 
                 var emim = new DiscordEmbedBuilder
@@ -364,6 +400,10 @@ namespace someBot.Commands.RanImg
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
+                if (myresponse.creator != "")
+                {
+                    emim.AddField("Creator Message", myresponse.creator);
+                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -387,7 +427,7 @@ namespace someBot.Commands.RanImg
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
                 //await ctx.RespondAsync(responseFromServer);
-                var myresponse = JsonConvert.DeserializeObject<Other.ImgRet>(responseFromServer);
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
                 //await ctx.RespondAsync(myresponse.url);
 
                 var emim = new DiscordEmbedBuilder
@@ -397,6 +437,10 @@ namespace someBot.Commands.RanImg
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
+                if (myresponse.creator != "")
+                {
+                    emim.AddField("Creator Message", myresponse.creator);
+                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -419,7 +463,7 @@ namespace someBot.Commands.RanImg
                 Stream dataStream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
-                var myresponse = JsonConvert.DeserializeObject<Other.ImgRet>(responseFromServer);
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
                 var emim = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor("#289b9a"),
@@ -427,6 +471,10 @@ namespace someBot.Commands.RanImg
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
                 };
+                if (myresponse.creator != "")
+                {
+                    emim.AddField("Creator Message", myresponse.creator);
+                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
@@ -437,6 +485,150 @@ namespace someBot.Commands.RanImg
             {
                 await ctx.RespondAsync("Hi! I'm missing either the Manage Messages or Embed Links Permission \nPlease add those so my commands work uwu");
             }
+        }
+
+        [Command("miki"), Description("Shows you a Meiko image")]
+        public async Task SFMikiPic(CommandContext ctx)
+        {
+            try
+            {
+                WebRequest request = WebRequest.Create("https://api.meek.moe/miki");
+                WebResponse response = request.GetResponse();
+                Stream dataStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(dataStream);
+                string responseFromServer = reader.ReadToEnd();
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
+                var emim = new DiscordEmbedBuilder
+                {
+                    Color = new DiscordColor("#289b9a"),
+                    Title = "Random Miki Image!",
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                };
+                if (myresponse.creator != "")
+                {
+                    emim.AddField("Creator Message", myresponse.creator);
+                }
+                response.Close();
+                emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
+                emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
+
+                await ctx.RespondAsync(embed: emim.Build());
+            }
+            catch
+            {
+                await ctx.RespondAsync("Hi! I'm missing either the Manage Messages or Embed Links Permission \nPlease add those so my commands work uwu");
+            }
+        }
+
+        [Command("mayu"), Description("Shows you a Meiko image")]
+        public async Task MayuPic(CommandContext ctx)
+        {
+            try
+            {
+                WebRequest request = WebRequest.Create("https://api.meek.moe/mayu");
+                WebResponse response = request.GetResponse();
+                Stream dataStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(dataStream);
+                string responseFromServer = reader.ReadToEnd();
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
+                var emim = new DiscordEmbedBuilder
+                {
+                    Color = new DiscordColor("#289b9a"),
+                    Title = "Random Mayu Image!",
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                };
+                if (myresponse.creator != "")
+                {
+                    emim.AddField("Creator Message", myresponse.creator);
+                }
+                response.Close();
+                emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
+                emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
+
+                await ctx.RespondAsync(embed: emim.Build());
+            }
+            catch
+            {
+                await ctx.RespondAsync("Hi! I'm missing either the Manage Messages or Embed Links Permission \nPlease add those so my commands work uwu");
+            }
+        }
+
+        [Command("aoki"), Description("Shows you a Meiko image")]
+        public async Task LAokiPic(CommandContext ctx)
+        {
+            try
+            {
+                WebRequest request = WebRequest.Create("https://api.meek.moe/aoki");
+                WebResponse response = request.GetResponse();
+                Stream dataStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(dataStream);
+                string responseFromServer = reader.ReadToEnd();
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
+                var emim = new DiscordEmbedBuilder
+                {
+                    Color = new DiscordColor("#289b9a"),
+                    Title = "Random Aoki Image!",
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                };
+                if (myresponse.creator != "")
+                {
+                    emim.AddField("Creator Message", myresponse.creator);
+                }
+                response.Close();
+                emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
+                emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
+
+                await ctx.RespondAsync(embed: emim.Build());
+            }
+            catch
+            {
+                await ctx.RespondAsync("Hi! I'm missing either the Manage Messages or Embed Links Permission \nPlease add those so my commands work uwu");
+            }
+        }
+
+        [Command("lily"), Description("Shows you a Meiko image")]
+        public async Task LilyPic(CommandContext ctx)
+        {
+            try
+            {
+                WebRequest request = WebRequest.Create("https://api.meek.moe/lily");
+                WebResponse response = request.GetResponse();
+                Stream dataStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(dataStream);
+                string responseFromServer = reader.ReadToEnd();
+                var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
+                var emim = new DiscordEmbedBuilder
+                {
+                    Color = new DiscordColor("#289b9a"),
+                    Title = "Random Lily Image!",
+                    Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
+                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                };
+                if (myresponse.creator != "")
+                {
+                    emim.AddField("Creator Message", myresponse.creator);
+                }
+                response.Close();
+                emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
+                emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
+
+                await ctx.RespondAsync(embed: emim.Build());
+            }
+            catch
+            {
+                await ctx.RespondAsync("Hi! I'm missing either the Manage Messages or Embed Links Permission \nPlease add those so my commands work uwu");
+            }
+        }
+
+        public class ImgRet
+        {
+            [JsonProperty("url")]
+            public string url { get; set; }
+            [JsonProperty("creator")]
+            public string creator { get; set; }
         }
     }
 }

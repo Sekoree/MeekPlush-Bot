@@ -11,7 +11,7 @@ using DSharpPlus.Entities;
 
 namespace someBot
 {
-    class Help
+    class Help : BaseCommandModule
     {
         
         [Command("help")] //pretty selfexpnanatory
@@ -29,7 +29,17 @@ namespace someBot
 
                 if (page == null)
                 {
-
+                    if (!(ctx.Message.Channel.Type.ToString() == "Private")) //DM Messages
+                    {
+                        if (ctx.Channel.GuildId == 373635826703400960)
+                        {
+                            HelpEmbed.AddField("Xeddd Specific Commands", "**m!roles <rolename>**\nPlease refer to <#467001692429484032> for further instructions and available Roles!");
+                        }
+                        if (ctx.Channel.GuildId == 469661736534802432)
+                        {
+                            HelpEmbed.AddField("Rin Specific Commands", "**m!roles <rolename>**\nTo get one or more vocaloid roles! to see all available roles, just type ``m!role``");
+                        }
+                    }
                     HelpEmbed.AddField("-[Random Commands]-> **m!help random**", "stuff i cant catogorize lol");
                     HelpEmbed.AddField("-[Search Commands]-> **m!help search**", "search some sites ");
                     HelpEmbed.AddField("-[Songinfo Commands]-> **m!help info**", "weebmusic info uwu");
@@ -80,6 +90,10 @@ namespace someBot
                     HelpEmbed.AddField("m!kaito", "random Kaito image", true);
                     HelpEmbed.AddField("m!fukase", "random Fukase image", true);
                     HelpEmbed.AddField("m!miku", "random Miku image", true);
+                    HelpEmbed.AddField("m!miki", "random Miki image", true);
+                    HelpEmbed.AddField("m!mayu", "random Mayu image", true);
+                    HelpEmbed.AddField("m!aoki", "random Aoki image", true);
+                    HelpEmbed.AddField("m!lily", "random Lily image", true);
                 }
                 else if (page.ToLower() == "nsfw")
                 {

@@ -22,12 +22,12 @@ using System.Net;
 
 namespace someBot
 {
-    class VoWiki
+    class VoWiki : BaseCommandModule
     {
         [Command("vocawiki"), Description("Search Vocaloidwiki"), Aliases("vocaloidwiki")]
         public async Task vocawiki(CommandContext ctx, [RemainingText] string term)
         {//http://vocaloid.wikia.com/api/v1/Search/List?query=miku&limit=10&minArticleQuality=10&batch=1&namespaces=0
-            var interactivity = ctx.Client.GetInteractivityModule();
+            var interactivity = ctx.Client.GetInteractivity();
             var init = await ctx.RespondAsync("Searching");
             int select = 0;
 

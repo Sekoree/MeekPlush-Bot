@@ -1,20 +1,26 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Interactivity;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.VoiceNext;
+using DSharpPlus.Lavalink;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Entities;
 using System.Threading;
+using DSharpPlus.Net.Udp;
 
 namespace someBot
 {
     public class Bot : IDisposable
     {
         private DiscordClient bot;
-        private InteractivityModule interactivity;
-        private CommandsNextModule commands;
+        private InteractivityExtension interactivity;
+        private CommandsNextExtension commands;
+        static VoiceNextExtension voice;
+        public LavalinkExtension Lavalink { get; }
+        public LavalinkNodeConnection LavalinkNode { get; private set; }
         private CancellationTokenSource _cts;
 
         public Bot()
@@ -30,7 +36,7 @@ namespace someBot
             bot = new DiscordClient(new DiscordConfiguration()
             {
                 AutoReconnect = true,
-                EnableCompression = true,
+                //EnableCompression = true,
                 LogLevel = LogLevel.Debug,
                 Token = "",
                 TokenType = TokenType.Bot,
@@ -40,9 +46,8 @@ namespace someBot
 
             _cts = new CancellationTokenSource();
 
-            commands = bot.UseCommandsNext(new CommandsNextConfiguration()
-            {
-                StringPrefix = "m!",
+            commands = bot.UseCommandsNext(new CommandsNextConfiguration() { 
+                StringPrefixes = (new[] { "m!"}),
                 EnableDefaultHelp = false,
                 IgnoreExtraArguments = false,
                 CaseSensitive = false
@@ -60,9 +65,12 @@ namespace someBot
             commands.RegisterCommands<Commands.RanImg.Other>();
             commands.RegisterCommands<XedddSpec>();
             commands.RegisterCommands<VoWiki>();
-            commands.RegisterCommands<YTDLC>();
+            commands.RegisterCommands<Commands.Voice>();
 
             commands.CommandErrored += Bot_CMDErr;
+
+            voice = bot.UseVoiceNext();
+            Lavalink = bot.UseLavalink();
 
             bot.Ready += OnReadyAsync;
             bot.MessageCreated += this.Bot_MessageCreated;
@@ -77,16 +85,35 @@ namespace someBot
             bot.GuildMemberRemoved += XedddClass.Bot_XedddBoiLeave;
             bot.MessageReactionAdded += PandaClass.Bot_PandaGumiQuotes;
             bot.ClientErrored += this.Bot_ClientErrored;
-            bot.Ready += e =>
+            bot.Ready += async e =>
             {
-                DiscordGame test = new DiscordGame
+                DiscordActivity test = new DiscordActivity
                 {
                     Name = "m!help or m!help-dev for commands uwu",
-                    Details = "useless",
-                    State = "dippin nachos"
+                    ActivityType = ActivityType.Streaming,
+                    StreamUrl = "https://meek.moe/"
                 };
-                bot.UpdateStatusAsync(game: test);
-                return Task.CompletedTask;
+                await bot.UpdateStatusAsync(activity: test);
+                Console.WriteLine("before Lava");
+                try
+                {
+                    if (this.LavalinkNode != null)
+                        return;
+
+                    var lava = e.Client.GetLavalink();
+                    this.LavalinkNode = await lava.ConnectAsync(new LavalinkConfiguration
+                    {
+                        Password = "",
+                        SocketEndpoint = new ConnectionEndpoint { Hostname = "", Port = 0 },
+                        RestEndpoint = new ConnectionEndpoint { Hostname = "", Port = 0 }
+                    }).ConfigureAwait(false);
+                    Console.WriteLine("Lava Connect");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                }
             };
         }
 

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace someBot.Commands.RanImg
 {
-    class Other
+    class Other : BaseCommandModule
     {
         [Command("cat"), Description("Shows you a random cat picture")]
         public async Task CatPic(CommandContext ctx)

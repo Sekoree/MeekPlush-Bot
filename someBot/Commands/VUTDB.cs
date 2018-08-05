@@ -18,12 +18,12 @@ using System.Dynamic;
 
 namespace someBot
 {
-    class VUTDB
+    class VUTDB : BaseCommandModule
     {
         [Command("vocadb"), Description("Search Vocaloidsongs (and their lyrics, if available) via vocadb.net")]
         public async Task VocaDBGet(CommandContext ctx, [RemainingText] string song)
         {
-            var interactivity = ctx.Client.GetInteractivityModule();
+            var interactivity = ctx.Client.GetInteractivity();
             var init = await ctx.RespondAsync("Searching");
             int select = 0;
 
@@ -191,7 +191,7 @@ namespace someBot
         [Command("utaitedb"), Description("Search Japanese songs (and their lyrics, if available) via utaitedb.net")]
         public async Task UtaiteDBGet(CommandContext ctx, [RemainingText] string song)
         {
-            var interactivity = ctx.Client.GetInteractivityModule();
+            var interactivity = ctx.Client.GetInteractivity();
             var init = await ctx.RespondAsync("Searching");
             int select = 0;
 
@@ -357,7 +357,7 @@ namespace someBot
         [Command("touhoudb"), Aliases("tohodb"), Description("Search Touhou songs (and their lyrics, if available) via touhoudb.com")]
         public async Task TohoDBGet(CommandContext ctx, [RemainingText] string song)
         {
-            var interactivity = ctx.Client.GetInteractivityModule();
+            var interactivity = ctx.Client.GetInteractivity();
             var init = await ctx.RespondAsync("Searching");
             int select = 0;
 
@@ -586,7 +586,7 @@ namespace someBot
             {
                 try { await init.DeleteReactionAsync(DiscordEmoji.FromName(ctx.Client, ":page_facing_up:"), ctx.Message.Author); }
                 catch { }
-                var interactivity = ctx.Client.GetInteractivityModule();
+                var interactivity = ctx.Client.GetInteractivity();
                 int lyse = 0;
                 string tumurl = "";
                 if (myresponse.items[select].pvs.Count != 0) tumurl = myresponse.items[select].pvs[0].thumbUrl;

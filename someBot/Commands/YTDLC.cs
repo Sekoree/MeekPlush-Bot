@@ -8,7 +8,7 @@ using NYoutubeDL;
 
 namespace someBot
 {
-    class YTDLC
+    class YTDLC : BaseCommandModule
     {
         [Command("vdl")]
         public async Task YTDL(CommandContext ctx, string link = null)
@@ -45,18 +45,6 @@ namespace someBot
                 youtubeDl.Options.GeneralOptions.Update = true;
                 youtubeDl.VideoUrl = link;
                 youtubeDl.YoutubeDlPath = "youtube-dl";
-                /*youtubeDl.StandardOutputEvent += (sender, output) =>
-                {
-                    try
-                    {
-                        if (output.Substring(12, 5).StartsWith("1") || output.Substring(12, 5).StartsWith("2") || output.Substring(12, 5).StartsWith("3") || output.Substring(12, 5).StartsWith("4") || output.Substring(12, 5).StartsWith("5") || output.Substring(12, 5).StartsWith("6") || output.Substring(12, 5).StartsWith("7") || output.Substring(12, 5).StartsWith("8") || output.Substring(12, 5).StartsWith("9"))
-                        {
-                            msg.ModifyAsync(output.Substring(12, 5) + "!");
-                        }
-                    }
-                    catch{ }
-                    //if (output.Substring(0, 8).StartsWith("10"))
-                };*/
                 youtubeDl.StandardErrorEvent += (sender, errorOutput) => ctx.RespondAsync($"{errorOutput}  (If its 403 blame NNDs Servers, hella slow sometimes and thus cancel the download uwu)");
                 await youtubeDl.DownloadAsync();
                 if (File.Exists($"/var/www/vhosts/srgg.de/why-is-this-a-me.me/ytdl/{finalString}.mp3"))

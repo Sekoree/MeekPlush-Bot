@@ -11,6 +11,8 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.EventArgs;
 using System.IO;
+using Newtonsoft.Json;
+using static someBot.XedddSpec;
 
 namespace someBot
 {
@@ -142,11 +144,14 @@ namespace someBot
         {
             if (!(e.Message.Channel.Type.ToString() == "Private"))
             {
-                ulong[] Vocas = { 435257131789320233, 435257195106664458, 435257232133849098, 435257330603393036, 435257510560268298, 435257651312590868, 437088673654243338, 460630459270037504, 462360419101835283, 467069921034108939, 467070496299810836, 468125583121973248 };
-                ulong[] Utas = { 460412979507101717, 460413000109654039, 460413038743257089 };
+                StreamReader r = new StreamReader("XedddGroups.json");
+                string json = r.ReadToEnd();
+                var roles = JsonConvert.DeserializeObject<List<RootObject>>(json);
+                //var roles = JsonConvert.DeserializeObject<List<RootObject>>(responseFromServer);
+                //int select = roles.FindIndex(x => x.Name == role);
                 if (e.Guild.Id == 373635826703400960)
                 {
-                    if (Vocas.Contains(e.Channel.Id) || Utas.Contains(e.Channel.Id))
+                    if (roles.Any(x => Convert.ToUInt64(x.ChannelID) == e.Channel.Id))
                     {
                         string proxy_urls = "";
                         string attlist = "";

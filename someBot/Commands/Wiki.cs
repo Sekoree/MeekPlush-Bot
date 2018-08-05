@@ -22,7 +22,7 @@ using System.Net;
 
 namespace someBot
 {
-    class Wiki
+    class Wiki : BaseCommandModule
     {
         [Command("knowledge"), Description("Links you to a random Wikipedia article")]
         public async Task WikiRan(CommandContext ctx)

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace someBot.Commands.RanImg
 {
-    class NekosLife
+    class NekosLife : BaseCommandModule
     {
         [Command("catgirl"), Description("Show you a Random catgirl image")]
         public async Task NekoPic(CommandContext ctx)

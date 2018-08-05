@@ -1,28 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Services;
-using Google.Apis.Upload;
-using Google.Apis.Util.Store;
-using Google.Apis.YouTube.v3;
-using Google.Apis.YouTube.v3.Data;
-using System.IO;	
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
-using OpenQA.Selenium.Support.UI;
 
 
 namespace someBot
 {
-    class Random //note i was just too lazy to add descriptions to these, will be there someday
+    class Random : BaseCommandModule
     {
         //!!!you can define groups with [Group("groupName")] BUT its added to the command so if id call this group random, it'd be !random emotes
 
@@ -58,6 +47,15 @@ namespace someBot
             }
         }
 
+        [Command("guilds"), Description("list guilds"), RequireOwner]
+        public async Task Guilds(CommandContext ctx)
+        {
+            foreach (var oof in ctx.Client.Guilds)
+            {
+                await ctx.Member.SendMessageAsync($"``{oof.Value.Name} {oof.Value.Owner} {oof.Value.MemberCount} {oof.Value.IconUrl}``");
+            }
+        }
+
         [Command("dj-links"), Aliases("music-links")] //i use sinusbot so, yea, long test is long, this was before i discovered Embeds
         public async Task DjLinks(CommandContext ctx)
         {
@@ -87,7 +85,7 @@ namespace someBot
                     await ctx.RespondAsync(ctx.Command.Description);
                     return;
                 }
-                var inter = ctx.Client.GetInteractivityModule();
+                var inter = ctx.Client.GetInteractivity();
                 var init = await ctx.RespondAsync("this may take a while, be patient uwu");
                 IWebDriver driver;
                 var chromeDriverService = FirefoxDriverService.CreateDefaultService();

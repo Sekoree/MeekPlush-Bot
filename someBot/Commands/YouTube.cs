@@ -17,7 +17,7 @@ using Google.Apis.YouTube.v3.Data;
 
 namespace someBot
 {
-    class YouTube //this shit is cool cause youtube actually got an usable api unlike niconico
+    class YouTube : BaseCommandModule
     {
         [Command("yts"), Description("Search a YouTube Video!")]
         public async Task YtSearchV(CommandContext ctx, [Description("Searchterm"), RemainingText]string term)
@@ -125,33 +125,34 @@ namespace someBot
         [Command("yt"),Description("Same yts n stuff but with a menu lol")] //similar to !nnd but its linear
         public async Task AllOne(CommandContext ctx)
         {
-            try { 
-            var interactivity = ctx.Client.GetInteractivityModule();
-
-            string searchTerm = "";
-            string searchType = "";
-            ulong TermId = 0;
-
-            var embed2 = new DiscordEmbedBuilder
+            try
             {
-                Color = new DiscordColor("#289b9a"),
-                Title = "YouTube Search",
-                ThumbnailUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/YouTube_Logo.svg/2000px-YouTube_Logo.svg.png",
-                Description = "Search for a YouTube video, channel or playlist!"
-            };
+                var interactivity = ctx.Client.GetInteractivity();
 
-            embed2.AddField("Videos", "React with " + DiscordEmoji.FromUnicode("🇻") + " to search a video");
-            embed2.AddField("Channels", "React with" + DiscordEmoji.FromUnicode("🇨") + " to search a channel");
-            embed2.AddField("Playlists", "React with " + DiscordEmoji.FromUnicode("🇵") + " to search a playlist");
-            embed2.WithFooter("requested by " + ctx.Message.Author.Username);
+                string searchTerm = "";
+                string searchType = "";
+                ulong TermId = 0;
 
-            //await ctx.RespondAsync("dis happends");
-            var msg = await ctx.RespondAsync(embed: embed2.Build());
+                var embed2 = new DiscordEmbedBuilder
+                {
+                    Color = new DiscordColor("#289b9a"),
+                    Title = "YouTube Search",
+                    ThumbnailUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/YouTube_Logo.svg/2000px-YouTube_Logo.svg.png",
+                    Description = "Search for a YouTube video, channel or playlist!"
+                };
+
+                embed2.AddField("Videos", "React with " + DiscordEmoji.FromUnicode("🇻") + " to search a video");
+                embed2.AddField("Channels", "React with" + DiscordEmoji.FromUnicode("🇨") + " to search a channel");
+                embed2.AddField("Playlists", "React with " + DiscordEmoji.FromUnicode("🇵") + " to search a playlist");
+                embed2.WithFooter("requested by " + ctx.Message.Author.Username);
+
+                //await ctx.RespondAsync("dis happends");
+                var msg = await ctx.RespondAsync(embed: embed2.Build());
 
 
-            await ctx.Guild.GetChannel(ctx.Channel.Id).GetMessageAsync(msg.Id).Result.CreateReactionAsync(DiscordEmoji.FromUnicode("🇻"));
-            await ctx.Guild.GetChannel(ctx.Channel.Id).GetMessageAsync(msg.Id).Result.CreateReactionAsync(DiscordEmoji.FromUnicode("🇨"));
-            await ctx.Guild.GetChannel(ctx.Channel.Id).GetMessageAsync(msg.Id).Result.CreateReactionAsync(DiscordEmoji.FromUnicode("🇵"));
+                await ctx.Guild.GetChannel(ctx.Channel.Id).GetMessageAsync(msg.Id).Result.CreateReactionAsync(DiscordEmoji.FromUnicode("🇻"));
+                await ctx.Guild.GetChannel(ctx.Channel.Id).GetMessageAsync(msg.Id).Result.CreateReactionAsync(DiscordEmoji.FromUnicode("🇨"));
+                await ctx.Guild.GetChannel(ctx.Channel.Id).GetMessageAsync(msg.Id).Result.CreateReactionAsync(DiscordEmoji.FromUnicode("🇵"));
                 // send the paginator
                 try
                 {
@@ -176,80 +177,81 @@ namespace someBot
                 //await ctx.Guild.GetChannel(ctx.Message.Channel.Id).GetMessageAsync(ctx.Message.Id).Result.DeleteAsync();
                 await ctx.Guild.GetChannel(msg.Channel.Id).GetMessageAsync(msg.Id).Result.DeleteAllReactionsAsync();
 
-            if (searchType != "")
-            {
-                var pickEmbed = new DiscordEmbedBuilder
+                if (searchType != "")
                 {
-                    Color = new DiscordColor("#289b9a"),
-                    Title = "YouTube Search",
-                    ThumbnailUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/YouTube_Logo.svg/2000px-YouTube_Logo.svg.png"
-                };
-                pickEmbed.AddField("You picked: " + searchType, "Please enter your search query now!");
-                await msg.ModifyAsync(embed: pickEmbed.Build());
-                var termHappend = await interactivity.WaitForMessageAsync(xm => {
-                    if (xm.Author.Id == ctx.Message.Author.Id)
+                    var pickEmbed = new DiscordEmbedBuilder
                     {
-                        if (!(xm.Content.Length == 0))
+                        Color = new DiscordColor("#289b9a"),
+                        Title = "YouTube Search",
+                        ThumbnailUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/YouTube_Logo.svg/2000px-YouTube_Logo.svg.png"
+                    };
+                    pickEmbed.AddField("You picked: " + searchType, "Please enter your search query now!");
+                    await msg.ModifyAsync(embed: pickEmbed.Build());
+                    var termHappend = await interactivity.WaitForMessageAsync(xm =>
+                    {
+                        if (xm.Author.Id == ctx.Message.Author.Id)
                         {
-                            searchTerm = xm.Content;
-                            TermId = xm.Id;
+                            if (!(xm.Content.Length == 0))
+                            {
+                                searchTerm = xm.Content;
+                                TermId = xm.Id;
+                            }
+                            else return false;
+                            return true;
                         }
-                        else return false;
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }, TimeSpan.FromSeconds(60));
+                        else
+                        {
+                            return false;
+                        }
+                    }, TimeSpan.FromSeconds(60));
 
-                if (TermId != 0)
-                {
-                    await ctx.Guild.GetChannel(ctx.Message.Channel.Id).GetMessageAsync(TermId).Result.DeleteAsync();
+                    if (TermId != 0)
+                    {
+                        await ctx.Guild.GetChannel(ctx.Message.Channel.Id).GetMessageAsync(TermId).Result.DeleteAsync();
+                    }
+                    //await ctx.Guild.GetChannel(termHappend.Message.Channel.Id).GetMessageAsync(termHappend.Message.Id).Result.DeleteAsync();
                 }
-                //await ctx.Guild.GetChannel(termHappend.Message.Channel.Id).GetMessageAsync(termHappend.Message.Id).Result.DeleteAsync();
-            }
 
-            //YouTube search stuff
-            if (searchType.Length > 0 && searchTerm.Length > 0)
-            {
-                try
+                //YouTube search stuff
+                if (searchType.Length > 0 && searchTerm.Length > 0)
                 {
-                    var youtubeService = new YouTubeService(new BaseClientService.Initializer()
+                    try
                     {
-                        ApiKey = "AIzaSyDbj184qjOOS8fE6PlHcuyasA8VB_gr_f0",
-                        ApplicationName = "C# Discord Bot"
-                    });
-                    var searchListRequest = youtubeService.Search.List("snippet");
-                    searchListRequest.Q = searchTerm; // Replace with your search term.
-                    searchListRequest.MaxResults = 1;
-                    searchListRequest.Type = searchType;
+                        var youtubeService = new YouTubeService(new BaseClientService.Initializer()
+                        {
+                            ApiKey = "AIzaSyDbj184qjOOS8fE6PlHcuyasA8VB_gr_f0",
+                            ApplicationName = "C# Discord Bot"
+                        });
+                        var searchListRequest = youtubeService.Search.List("snippet");
+                        searchListRequest.Q = searchTerm; // Replace with your search term.
+                        searchListRequest.MaxResults = 1;
+                        searchListRequest.Type = searchType;
 
-                    // Call the search.list method to retrieve results matching the specified query term.
-                    var searchListResponse = await searchListRequest.ExecuteAsync();
+                        // Call the search.list method to retrieve results matching the specified query term.
+                        var searchListResponse = await searchListRequest.ExecuteAsync();
 
-                    if (searchType == "playlist")
-                    {
-                        await msg.ModifyAsync("https://www.youtube.com/playlist?list=" + searchListResponse.Items[0].Id.PlaylistId, embed: null);
-                    }
-                    if (searchType == "channel")
-                    {
-                        await msg.ModifyAsync("https://www.youtube.com/channel/" + searchListResponse.Items[0].Id.ChannelId, embed: null);
-                    }
-                    if (searchType == "video")
-                    {
-                        await msg.ModifyAsync("https://www.youtube.com/watch?v=" + searchListResponse.Items[0].Id.VideoId, embed: null);
-                    }
+                        if (searchType == "playlist")
+                        {
+                            await msg.ModifyAsync("https://www.youtube.com/playlist?list=" + searchListResponse.Items[0].Id.PlaylistId, embed: null);
+                        }
+                        if (searchType == "channel")
+                        {
+                            await msg.ModifyAsync("https://www.youtube.com/channel/" + searchListResponse.Items[0].Id.ChannelId, embed: null);
+                        }
+                        if (searchType == "video")
+                        {
+                            await msg.ModifyAsync("https://www.youtube.com/watch?v=" + searchListResponse.Items[0].Id.VideoId, embed: null);
+                        }
 
-                }
-                catch (AggregateException ex)
-                {
-                    foreach (var e in ex.InnerExceptions)
+                    }
+                    catch (AggregateException ex)
                     {
-                        await ctx.RespondAsync("Error: " + e.Message);
+                        foreach (var e in ex.InnerExceptions)
+                        {
+                            await ctx.RespondAsync("Error: " + e.Message);
+                        }
                     }
                 }
-            }
             }
             catch
             {

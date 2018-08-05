@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace someBot.Commands.RanImg
 {
-    class Nadeko
+    class Nadeko : BaseCommandModule
     {
         [Command("thigh"), Description("Shows you a random thigh image uwu"), RequireNsfw]
         public async Task ThighPic(CommandContext ctx)

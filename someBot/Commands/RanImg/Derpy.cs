@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace someBot.Commands.RanImg
 {
-    class Derpy
+    class Derpy : BaseCommandModule
     {
         [Command("nekopara"), Description("Shows you a random nekopara image or gif uwu"), RequireNsfw]
         public async Task NPPic(CommandContext ctx)

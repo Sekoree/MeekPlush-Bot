@@ -16,95 +16,103 @@ using System.Net;
 
 namespace someBot
 {
-    class XedddSpec
+    class XedddSpec : BaseCommandModule
     {
         [Command("role"), Description("get a role to access a vocaloid channel")] //yeet
-        public async Task VocRole(CommandContext ctx, string role)
+        public async Task VocRole(CommandContext ctx, string role = null)
         {
-            if(role.ToLower() == "len")
+            try
             {
-                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(466716801682767882))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(466716801682767882));
-                else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(466716801682767882));
+                string ServerJSON = "";
+                string Desc = "";
+                string Title = "";
+                if (ctx.Channel.GuildId == 373635826703400960) //Xeddd
+                {
+                    if (role == null)
+                    {
+                        await ctx.RespondAsync("Please look in <#467001692429484032> to see all available roles and command usage!");
+                        return;
+                    }
+                    ServerJSON = "XedddGroups.json";
+                    Desc = $"Please look in <#467001692429484032> to see all available roles!";
+                    Title = $"Xeddd Vocaloid Role Select!";
+                }
+                else if (ctx.Channel.GuildId == 469661736534802432) //Rin
+                {
+                    if (role == null)
+                    {
+                        await ctx.RespondAsync("**__Available Roles:__**\n" +
+                            "``rin, miku, len, una, aoki, luka, meiko, gumi, mayu, kaito, ia, maki``\n" +
+                            "Usage: ``m!role RoleName``\n" +
+                            "Example: ``m!role rin``");
+                        return;
+                    }
+                    ServerJSON = "RinGroups.json";
+                    Desc = $"To see all available roles just type ``m!role``";
+                    Title = $"Rin Role Select!";
+                }
+                else return;
+                role = role.ToLower();
+                StreamReader r = new StreamReader(ServerJSON);
+                string json = r.ReadToEnd();
+                var roles = JsonConvert.DeserializeObject<List<RootObject>>(json);
+                int select = roles.FindIndex(x => x.Name == role);
+                DiscordEmbedBuilder RXEmbed = new DiscordEmbedBuilder
+                {
+                    Color = new DiscordColor("#289b9a"),
+                    Description = Desc,
+                    Title = Title
+                };
+                if (select == -1) return;
+                //await ctx.RespondAsync(ctx.Channel.Guild.GetMemberAsync(ctx.Message.Author.Id).Result.Roles.Where(x => x.Id == Convert.ToUInt64(roles[select].RoleId)).ToString());
+                if (!ctx.Channel.Guild.GetMemberAsync(ctx.Message.Author.Id).Result.Roles.Any(x => x.Id == Convert.ToUInt64(roles[select].RoleId)))
+                {
+                    await ctx.Channel.Guild.GetMemberAsync(ctx.Message.Author.Id).Result.GrantRoleAsync(ctx.Channel.Guild.GetRole(Convert.ToUInt64(roles[select].RoleId)));
+                    RXEmbed.AddField("Added Role:", ctx.Channel.Guild.GetRole(Convert.ToUInt64(roles[select].RoleId)).Mention);
+                }
+                else
+                {
+                    try
+                    {
+                        await ctx.Channel.Guild.GetMemberAsync(ctx.Message.Author.Id).Result.RevokeRoleAsync(ctx.Channel.Guild.GetRole(Convert.ToUInt64(roles[select].RoleId)));
+                        RXEmbed.AddField("Removed Role:", ctx.Channel.Guild.GetRole(Convert.ToUInt64(roles[select].RoleId)).Mention);
+                    }
+                    catch
+                    {
+                        await ctx.RespondAsync("You did something wrong there :/ \nIf you believe you did nothing wrong contact Speyd3r#3939");
+                        return;
+                    }
+                }
+                await Task.Delay(TimeSpan.FromMilliseconds(500));
+                string demRoles = "-> ";
+                foreach (var ee in ctx.Channel.Guild.GetMemberAsync(ctx.Message.Author.Id).Result.Roles)
+                {
+                    int newselect = roles.FindIndex(x => Convert.ToUInt64(x.RoleId) == ee.Id);
+                    if (newselect != -1)
+                    {
+                        demRoles += $"<@&{roles[newselect].RoleId}> ";
+                    }
+                }
+                RXEmbed.AddField("Your Roles:", demRoles);
+                RXEmbed.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
+                await ctx.RespondAsync(embed: RXEmbed.Build());
             }
-            else if (role.ToLower() == "rin")
+            catch (Exception ex)
             {
-                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(466719035636187154))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(466719035636187154));
-                else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(466719035636187154));
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
-            else if (role.ToLower() == "miku" || role.ToLower() == "meek")
-            {
-                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(466719209292824586))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(466719209292824586));
-                else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(466719209292824586));
-            }
-            else if (role.ToLower() == "kaito")
-            {
-                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(466719459311091732))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(466719459311091732));
-                else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(466719459311091732));
-            }
-            else if (role.ToLower() == "meiko")
-            {
-                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(466719766988718090))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(466719766988718090));
-                else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(466719766988718090));
-            }
-            else if (role.ToLower() == "luka")
-            {
-                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(466719859393298434))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(466719859393298434));
-                else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(466719859393298434));
-            }
-            else if (role.ToLower() == "gumi")
-            {
-                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(466720077752827904))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(466720077752827904));
-                else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(466720077752827904));
-            }
-            else if (role.ToLower() == "gakupo")
-            {
-                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(466720148657668127))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(466720148657668127));
-                else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(466720148657668127));
-            }
-            else if (role.ToLower() == "fukase")
-            {
-                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(466720244849704971))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(466720244849704971));
-                else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(466720244849704971));
-            }
-            else if (role.ToLower() == "dex")
-            {
-                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(467067644806430730))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(467067644806430730));
-                else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(467067644806430730));
-            }
-            else if (role.ToLower() == "daina")
-            {
-                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(467067653018877965))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(467067653018877965));
-                else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(467067653018877965));
-            }
-            else if (role.ToLower() == "kiyoteru")
-            {
-                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(467492102779961384))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(467492102779961384));
-                else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(467492102779961384));
-            }
-            //UTAU
-            else if (role.ToLower() == "defoko")
-            {
-                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(466720505031032842))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(466720505031032842));
-                else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(466720505031032842));
-            }
-            else if (role.ToLower() == "teto")
-            {
-                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(466720581618761738))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(466720581618761738));
-                else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(466720581618761738));
-            }
-            else if (role.ToLower() == "momo")
-            {
-                if (!ctx.Member.Roles.Contains(ctx.Guild.GetRole(466720730017562633))) await ctx.Member.GrantRoleAsync(ctx.Guild.GetRole(466720730017562633));
-                else await ctx.Member.RevokeRoleAsync(ctx.Guild.GetRole(466720730017562633));
-            }
+        }//<@&467492990462459904>
 
-            else
-            {
-                await ctx.RespondAsync("For Vocaloid Channels: len, rin, miku, kaito, meiko, luka, gumi, gakupo, fukase, daina, dex, kiyoteru \n" +
-                    "For UTAU Channels: defoko, teto, momo \n" +
-                    "Usage: ``m!role <rolename>`` \n" +
-                    "using the command again will remove the role");
-            }
+
+        public class RootObject
+        {
+            [JsonProperty("Name")]
+            public string Name { get; set; }
+            [JsonProperty("ChannelId")]
+            public object ChannelID { get; set; }
+            [JsonProperty("RoleId")]
+            public object RoleId { get; set; }
         }
     }
 }
