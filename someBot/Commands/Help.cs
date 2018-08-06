@@ -23,7 +23,7 @@ namespace someBot
                 {
                     Color = new DiscordColor("#289b9a"),
                     Title = "MeekPlush Help",
-                    Description = "(not so) useful commads that may help you!",
+                    Description = "(not so) useful commads that may help you!\n **Support me on Patreon!** [link](https://www.patreon.com/speyd3r)",
                     ThumbnailUrl = ctx.Client.CurrentUser.AvatarUrl
                 };
 
@@ -105,16 +105,12 @@ namespace someBot
                     "Please upvote [here](https://discordbots.org/bot/465675368775417856/vote), helps me very much uwu \n" +
                     "Github: [Link](https://github.com/Speyd3r/MeekPlush-Bot) \n" +
                     "Support me and keep the bot alive UwU: [Paypal](https://www.paypal.me/speyd3r)");
-                var yeet = await ctx.RespondAsync(embed: HelpEmbed.Build());
-                await yeet.CreateReactionAsync(DiscordEmoji.FromName(ctx.Client, ":x:"));
-                try
-                {
-                    await yeet.DeleteAllReactionsAsync();
+                string check = "";
+                var perms = ctx.Channel.Guild.CurrentMember.PermissionsIn(ctx.Channel);
+                if (!perms.HasPermission(Permissions.ManageMessages)) {
+                    check = "**Heya! I'm missing the 'Manage Messages' permission! I need that for some commands uwu (expecially the more advanced ones)**";
                 }
-                catch
-                {
-                    await yeet.ModifyAsync("**Heya! I'm missing the 'Manage Messages' permission! I need that for some commands uwu (expecially the more advanced ones)**");
-                }
+                var yeet = await ctx.RespondAsync(content: check, embed: HelpEmbed.Build());
             }
             catch
             {
@@ -165,7 +161,7 @@ namespace someBot
                 HelpEmbed.AddField("Users (without Bots)", $"{men} ({memno})");
                 HelpEmbed.AddField("Ping", $"{ctx.Client.Ping.ToString()}");
                 HelpEmbed.AddField("Bot Owner", $"Speyd3r#3939");
-                HelpEmbed.AddField("Donations uwu", $"[Paypal](https://www.paypal.me/speyd3r)");
+                HelpEmbed.AddField("Donations uwu", $"[Paypal](https://www.paypal.me/speyd3r)\n[Patreon](https://www.patreon.com/speyd3r)");
                 await ctx.RespondAsync(embed: HelpEmbed.Build());
             }
             catch
