@@ -393,7 +393,7 @@ namespace someBot
         public DiscordMember requester { get; set; }
         [JsonProperty("LavaTrack")]
         public LavalinkTrack LavaTrack { get; set; }
-        [JsonProperty("playtime")]
-        public DateTime playtime { get; set; }
+        [JsonProperty("sstop")]
+        public bool sstop { get; set; }
     }
 }

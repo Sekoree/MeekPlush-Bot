@@ -119,7 +119,7 @@ namespace someBot
                     HelpEmbed.AddField("m!nowplaying", "shows whats currently playing with some additional info!\n" +
                         "Aliases: ``m!np``", true);
                     HelpEmbed.AddField("m!queueclear", "removes everything from the queue!\n" +
-                        "Aliases: ``m!qc", true);
+                        "Aliases: ``m!qc``", true);
                     HelpEmbed.AddField("m!pause", "will pause the current song!", true);
                     HelpEmbed.AddField("m!resume", "will resume the paused song!", true);
                     HelpEmbed.AddField("m!queueremovesome <start> <(optional)end>", "will remove every song between those 2 numbers in queue, if just 1 is provided everything after that number will be deleted from queue\n" +
@@ -127,7 +127,7 @@ namespace someBot
                     HelpEmbed.AddField("m!volume <number>", "changes the volume (150 is max)!\n" +
                         "Aliases: ``m!vol``", true);
                     HelpEmbed.AddField("m!playlist <youtubePlaylistURL>", "adds a playlist to the queue (max 600 videos)!\n" +
-                        "Aliases: ``m!pp", true);
+                        "Aliases: ``m!pp``", true);
                 }
                 else if (page.ToLower() == "support")
                 {

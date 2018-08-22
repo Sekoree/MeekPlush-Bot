@@ -162,7 +162,14 @@ namespace someBot.Commands
                     await Task.Delay(250);
                     Bot.guit[pos].playnow.LavaTrack = Bot.guit[pos].queue[rr].LavaTrack;
                     Bot.guit[pos].playnow.requester = Bot.guit[pos].queue[rr].requester;
-                    Bot.guit[pos].playnow.playtime = DateTime.Now;
+                    if (Bot.guit[pos].playnow.LavaTrack.IsStream)
+                    {
+                        Bot.guit[pos].playnow.sstop = false;
+                    }
+                    else
+                    {
+                        Bot.guit[pos].playnow.sstop = true;
+                    }
                     await Task.Delay(500);
                     if (Bot.guit[pos].queue[rr].LavaTrack.Author != null)
                     {
@@ -233,10 +240,21 @@ namespace someBot.Commands
 
         public async Task PlayFin(TrackFinishEventArgs lg)
         {
+            var con = Bot.guit[0].LLinkCon;
             var pos = Bot.guit.FindIndex(x => x.GID == lg.Player.Guild.Id);
             if (pos == -1)
             {
                 return;
+            }
+            if (Bot.guit[pos].playnow.LavaTrack.IsStream && !Bot.guit[pos].playnow.sstop)
+            {
+                var naet = await con.GetTracksAsync(new Uri(Bot.guit[pos].playnow.LavaTrack.Uri.OriginalString));
+                Bot.guit[pos].queue.Insert(0, new Gsets2
+                {
+                    LavaTrack = Bot.guit[pos].playnow.LavaTrack,
+                    requester = Bot.guit[pos].playnow.requester
+                });
+                Console.WriteLine("LL Stream Error");
             }
             Bot.guit[pos].playing = false;
             await Task.CompletedTask;
@@ -244,24 +262,46 @@ namespace someBot.Commands
 
         public async Task PlayStu(TrackStuckEventArgs ts)
         {
+            var con = Bot.guit[0].LLinkCon;
             var pos = Bot.guit.FindIndex(x => x.GID == ts.Player.Guild.Id);
             if (pos == -1)
             {
                 return;
             }
+            if (Bot.guit[pos].playnow.LavaTrack.IsStream)
+            {
+                var naet = await con.GetTracksAsync(new Uri(Bot.guit[pos].playnow.LavaTrack.Uri.OriginalString));
+                Bot.guit[pos].queue.Insert(0, new Gsets2
+                {
+                    LavaTrack = Bot.guit[pos].playnow.LavaTrack,
+                    requester = Bot.guit[pos].playnow.requester
+                });
+            }
             await ts.Player.Channel.SendMessageAsync("Track was stuck, so it was skipped >>");
+            Console.WriteLine("LL Stuck");
             Bot.guit[pos].playing = false;
             await Task.CompletedTask;
         }
 
         public async Task PlayErr(TrackExceptionEventArgs ts)
         {
+            var con = Bot.guit[0].LLinkCon;
             var pos = Bot.guit.FindIndex(x => x.GID == ts.Player.Guild.Id);
             if (pos == -1)
             {
                 return;
             }
+            if (Bot.guit[pos].playnow.LavaTrack.IsStream)
+            {
+                var naet = await con.GetTracksAsync(new Uri(Bot.guit[pos].playnow.LavaTrack.Uri.OriginalString));
+                Bot.guit[pos].queue.Insert(0, new Gsets2
+                {
+                    LavaTrack = Bot.guit[pos].playnow.LavaTrack,
+                    requester = Bot.guit[pos].playnow.requester
+                });
+            }
             await ts.Player.Channel.SendMessageAsync($"There was an error with the track, so it was skipped ({ts.Error.First()})>>");
+            Console.WriteLine("LL Error");
             Bot.guit[pos].playing = false;
             await Task.CompletedTask;
         }
@@ -286,6 +326,11 @@ namespace someBot.Commands
                 {
                     return;
                 }
+                if (Bot.guit[pos].playnow.LavaTrack.IsStream)
+                {
+                    Bot.guit[pos].playnow.sstop = true;
+                }
+                Bot.guit[pos].LLGuild.Stop();
                 Bot.guit[pos].LLGuild.Disconnect();
                 Bot.guit[pos].LLGuild = null;
                 await ctx.RespondAsync("disconnected");
@@ -317,6 +362,10 @@ namespace someBot.Commands
                 {
                     return;
                 }
+                if (Bot.guit[pos].playnow.LavaTrack.IsStream)
+                {
+                    Bot.guit[pos].playnow.sstop = true;
+                }
                 Bot.guit[pos].LLGuild.Stop();
                 await ctx.RespondAsync("stopped");
             }
@@ -347,13 +396,17 @@ namespace someBot.Commands
                 {
                     return;
                 }
-                if (Bot.guit[pos].queue.Count < 2)
+                if (Bot.guit[pos].queue.Count < 1)
                 {
                     Bot.guit[pos].playing = false;
                     await ctx.RespondAsync("skipped");
                 }
                 else
                 {
+                    if (Bot.guit[pos].playnow.LavaTrack.IsStream)
+                    {
+                        Bot.guit[pos].playnow.sstop = true;
+                    }
                     Bot.guit[pos].LLGuild.Stop();
                     await ctx.RespondAsync("skipped");
                 }
