@@ -52,39 +52,48 @@ namespace someBot
 
         public Task Bot_MyMessageCreated(MessageCreateEventArgs e)
         {
-            if (!(e.Message.Channel.Type.ToString() == "Private"))
+            try
             {
-                if (e.Guild.Id == 401419401011920907 && !(e.Message.ChannelId == 401419609946980352) && !(e.Message.ChannelId == 445989871589392404) && !(e.Message.ChannelId == 445999293921230863) && !(e.Message.ChannelId == 4358676259319316881))
+                if (!(e.Message.Channel.Type.ToString() == "Private"))
                 {
-                    string proxy_urls = "";
-                    string attlist = "";
-                    string BotCheck = "";
+                    if (e.Guild.Id == 401419401011920907 && !(e.Message.ChannelId == 401419609946980352) && !(e.Message.ChannelId == 445989871589392404) && !(e.Message.ChannelId == 445999293921230863) && !(e.Message.ChannelId == 4358676259319316881))
+                    {
+                        string proxy_urls = "";
+                        string attlist = "";
+                        string BotCheck = "";
 
-                    if (e.Message.Attachments != null)
-                    {
-                        foreach (var files in e.Message.Attachments)
+                        if (e.Message.Attachments != null)
                         {
-                            proxy_urls += "\n  " + files.ProxyUrl;
+                            foreach (var files in e.Message.Attachments)
+                            {
+                                proxy_urls += "\n  " + files.ProxyUrl;
+                            }
                         }
-                    }
 
-                    if (!(proxy_urls == "")) attlist = "\n Attachments:" + proxy_urls;
-                    if (e.Message.Author.IsBot) BotCheck = "[Bot] ";
-                    if (e.Message.Author.Id == mlast_boi && !(proxy_urls == ""))
-                    {
-                        mlast_boi = e.Message.Author.Id;
-                        myMsgAddTxt(proxy_urls);
-                    }
-                    else
-                    {
-                        mlast_boi = e.Message.Author.Id;
-                        if (bmylog == true)
+                        if (!(proxy_urls == "")) attlist = "\n Attachments:" + proxy_urls;
+                        if (e.Message.Author.IsBot) BotCheck = "[Bot] ";
+                        if (e.Message.Author.Id == mlast_boi && !(proxy_urls == ""))
                         {
-                            bmylog = false;
+                            mlast_boi = e.Message.Author.Id;
+                            myMsgAddTxt(proxy_urls);
                         }
-                        myMsgAddTxt("[" + e.Message.Channel.Name + "] " + BotCheck + e.Message.Author.Username + "(" + e.Guild.GetMemberAsync(e.Author.Id).Result.Nickname + "): " + e.Message.Content + attlist);
+                        else
+                        {
+                            mlast_boi = e.Message.Author.Id;
+                            if (bmylog == true)
+                            {
+                                bmylog = false;
+                            }
+                            myMsgAddTxt("[" + e.Message.Channel.Name + "] " + BotCheck + e.Message.Author.Username + "(" + e.Guild.GetMemberAsync(e.Author.Id).Result.Nickname + "): " + e.Message.Content + attlist);
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                return Task.CompletedTask;
             }
             return Task.CompletedTask;
         }

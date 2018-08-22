@@ -29,7 +29,7 @@ namespace someBot.Commands.RanImg
 
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random Project Diva Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
@@ -66,7 +66,7 @@ namespace someBot.Commands.RanImg
 
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random Rin Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
@@ -99,7 +99,7 @@ namespace someBot.Commands.RanImg
 
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random Una Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
@@ -136,7 +136,7 @@ namespace someBot.Commands.RanImg
 
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random Gumi Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
@@ -173,7 +173,7 @@ namespace someBot.Commands.RanImg
 
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random Luka Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
@@ -210,7 +210,7 @@ namespace someBot.Commands.RanImg
 
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random IA Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
@@ -247,7 +247,7 @@ namespace someBot.Commands.RanImg
 
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random Yukari Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
@@ -284,7 +284,7 @@ namespace someBot.Commands.RanImg
 
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random Teto Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
@@ -321,7 +321,7 @@ namespace someBot.Commands.RanImg
 
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random Len Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
@@ -358,7 +358,7 @@ namespace someBot.Commands.RanImg
 
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random Kaito Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
@@ -395,7 +395,7 @@ namespace someBot.Commands.RanImg
 
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random Meiko Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
@@ -432,7 +432,7 @@ namespace someBot.Commands.RanImg
 
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random Fukase Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
@@ -466,7 +466,7 @@ namespace someBot.Commands.RanImg
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random Miku Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
@@ -500,7 +500,7 @@ namespace someBot.Commands.RanImg
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random Miki Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
@@ -534,7 +534,7 @@ namespace someBot.Commands.RanImg
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random Mayu Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
@@ -568,7 +568,7 @@ namespace someBot.Commands.RanImg
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random Aoki Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
@@ -602,7 +602,7 @@ namespace someBot.Commands.RanImg
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random Lily Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"

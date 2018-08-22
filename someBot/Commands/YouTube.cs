@@ -14,6 +14,8 @@ using Google.Apis.Upload;
 using Google.Apis.Util.Store;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Firefox;
 
 namespace someBot
 {
@@ -135,7 +137,7 @@ namespace someBot
 
                 var embed2 = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "YouTube Search",
                     ThumbnailUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/YouTube_Logo.svg/2000px-YouTube_Logo.svg.png",
                     Description = "Search for a YouTube video, channel or playlist!"
@@ -181,7 +183,7 @@ namespace someBot
                 {
                     var pickEmbed = new DiscordEmbedBuilder
                     {
-                        Color = new DiscordColor("#289b9a"),
+                        Color = new DiscordColor("#68D3D2"),
                         Title = "YouTube Search",
                         ThumbnailUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/YouTube_Logo.svg/2000px-YouTube_Logo.svg.png"
                     };
@@ -294,6 +296,91 @@ namespace someBot
             {
                 return;
             }
+        }
+
+        [Command("nnd")]
+        public async Task NND(CommandContext ctx, string listPick = null)
+        {
+            int offset = 0;
+            if (listPick.ToLower() == "hourly") offset = 0;
+            else if (listPick.ToLower() == "daily") offset = 20;
+            else if (listPick.ToLower() == "weekly") offset = 40;
+            else if (listPick.ToLower() == "monthly") offset = 60;
+            var inter = ctx.Client.GetInteractivity();
+            var init = await ctx.RespondAsync("this may take a while, be patient uwu");
+            IWebDriver driver;
+            var chromeDriverService = FirefoxDriverService.CreateDefaultService();
+            chromeDriverService.HideCommandPromptWindow = true; //selenium shows a commandprompt, this hides it
+            chromeDriverService.SuppressInitialDiagnosticInformation = true;
+            FirefoxOptions options = new FirefoxOptions();
+            options.AddArguments("--headless"); //to tell firefox to start in windowless mode
+            driver = new FirefoxDriver(chromeDriverService, options); //starts up firefox it in the directory already (called gecko)
+            driver.Navigate().GoToUrl("http://ex.nicovideo.jp/vocaloid/ranking"); //ig goes to the ranking pages
+            string[] allranks = new string[80]; // there are always 80 songs on that page! this is for the names
+            string[] allURLS = new string[80]; //it also gets the urls
+            int yeet = 0; //to add stuff to the array
+            DiscordColor meek = new DiscordColor("#68D3D2");
+            foreach (var vids in driver.FindElements(By.ClassName("ttl"))) //lit ay? all items in the ranking have the classname ttl
+            {
+                allranks[yeet] = vids.Text; //it gest the inner text which is the Name
+                allURLS[yeet] = driver.FindElement(By.LinkText(vids.Text)).GetAttribute("href"); //and the link from the "a" tag thats arond the Songname
+                yeet++;
+            }
+            var empty = ctx.Client.GetGuildAsync(401419401011920907).Result.GetEmojiAsync(435447550196318218).Result; //i have an emoji on my server thats just blank, i use it for spaces in shit here
+            List<Page> pgs = new List<Page>();
+            DiscordEmbedBuilder bassc = new DiscordEmbedBuilder
+            {
+                Color = meek,
+                Title = "NicoNicoDouga " + listPick + " Vocaloid Ranking",
+                Description = "Top 20 " + listPick + " songs!\n" + empty,
+                ThumbnailUrl = "https://japansaucedotnet.files.wordpress.com/2016/05/photo-22.gif"
+            };
+            //DiscordEmbedBuilder[] hourly = new DiscordEmbedBuilder[4];
+            int adv = 0;
+            int adv2 = 5;
+            for (int j = 0; j < 4; j++)
+            {
+                if (j == 1)
+                {
+                    adv = 5;
+                    adv2 = 10;
+                }
+                if (j == 2)
+                {
+                    adv = 10;
+                    adv2 = 15;
+                }
+                if (j == 3)
+                {
+                    adv = 15;
+                    adv2 = 20;
+                }
+                Console.WriteLine("whut");
+                DiscordEmbedBuilder hourly = new DiscordEmbedBuilder
+                {
+                    Color = meek,
+                    Title = "NicoNicoDouga " + listPick + " Vocaloid Ranking",
+                    Description = "Top 20 " + listPick + " songs!\n" + empty,
+                    ThumbnailUrl = "https://japansaucedotnet.files.wordpress.com/2016/05/photo-22.gif"
+                };
+                for (int i = (offset + adv); i < (offset + adv2); i++) //gets the first 5
+                {
+                    if (i < (offset + (adv2 - 1)))
+                    {
+                        hourly.AddField("#" + ((i - offset) + 1) + " " + allranks[i], allURLS[i]);
+                    }
+                    else
+                    {
+                        hourly.AddField("#" + ((i - offset) + 1) + " " + allranks[i], allURLS[i] + "\n" + empty);
+                    }
+                }
+                hourly.AddField("Page", $"{(j + 1)}/4");
+                pgs.Add(new Page { Embed = hourly.Build() });
+            }
+            driver.Quit();
+            //hourly.AddField("Page", pages + "/4\nEnter Page number or type ``exit`` to exit");
+            await init.DeleteAsync();
+            await inter.SendPaginatedMessage(ctx.Channel, ctx.Message.Author, pgs, timeoutoverride: TimeSpan.FromMinutes(2));
         }
     }
 }

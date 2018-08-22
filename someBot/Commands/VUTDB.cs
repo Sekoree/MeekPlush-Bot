@@ -52,7 +52,7 @@ namespace someBot
             {
                 var embed2 = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "VocaDB Search",
                     Description = "Multiple entries were found, select one!"
                 };
@@ -220,7 +220,7 @@ namespace someBot
             {
                 var embed2 = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "UtaiteDB Search",
                     Description = "Multiple entries were found, select one!"
                 };
@@ -386,7 +386,7 @@ namespace someBot
             {
                 var embed2 = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "TouhouDB Search",
                     Description = "Multiple entries were found, select one!"
                 };
@@ -530,7 +530,7 @@ namespace someBot
                 if (myresponse.items[select].pvs.Count != 0) tumurl = myresponse.items[select].pvs[0].thumbUrl;
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Results!",
                     Description = "Entry for " + myresponse.term,
                     ThumbnailUrl = tumurl
@@ -592,7 +592,7 @@ namespace someBot
                 if (myresponse.items[select].pvs.Count != 0) tumurl = myresponse.items[select].pvs[0].thumbUrl;
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Results!",
                     ThumbnailUrl = tumurl
                 };
@@ -605,7 +605,7 @@ namespace someBot
                     await init.DeleteAllReactionsAsync();
                     var embed2 = new DiscordEmbedBuilder
                     {
-                        Color = new DiscordColor("#289b9a"),
+                        Color = new DiscordColor("#68D3D2"),
                         Title = "Lyrics Entries!",
                         Description = "Multiple entries were found, select one!"
                     };
@@ -704,7 +704,7 @@ namespace someBot
                 //await ctx.RespondAsync("b4 build");
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Covers & Remixes!",
                     ThumbnailUrl = tumurl
                 };

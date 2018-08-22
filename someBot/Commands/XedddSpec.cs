@@ -18,7 +18,7 @@ namespace someBot
 {
     class XedddSpec : BaseCommandModule
     {
-        [Command("role"), Description("get a role to access a vocaloid channel")] //yeet
+        [Command("role"), Aliases("roles"), Description("get a role to access a vocaloid channel")] //yeet
         public async Task VocRole(CommandContext ctx, string role = null)
         {
             try
@@ -26,6 +26,7 @@ namespace someBot
                 string ServerJSON = "";
                 string Desc = "";
                 string Title = "";
+                StreamReader r;
                 if (ctx.Channel.GuildId == 373635826703400960) //Xeddd
                 {
                     if (role == null)
@@ -41,8 +42,16 @@ namespace someBot
                 {
                     if (role == null)
                     {
+                        r = new StreamReader("RinGroups.json");
+                        string json2 = r.ReadToEnd();
+                        var roles2 = JsonConvert.DeserializeObject<List<RootObject>>(json2);
+                        string avRoles = "";
+                        foreach(var ghd in roles2)
+                        {
+                            avRoles += $"'``{ghd.Name}``' ";
+                        }
                         await ctx.RespondAsync("**__Available Roles:__**\n" +
-                            "``rin, miku, len, una, aoki, luka, meiko, gumi, mayu, kaito, ia, maki``\n" +
+                            avRoles + "\n" +
                             "Usage: ``m!role RoleName``\n" +
                             "Example: ``m!role rin``");
                         return;
@@ -53,13 +62,13 @@ namespace someBot
                 }
                 else return;
                 role = role.ToLower();
-                StreamReader r = new StreamReader(ServerJSON);
+                r = new StreamReader(ServerJSON);
                 string json = r.ReadToEnd();
                 var roles = JsonConvert.DeserializeObject<List<RootObject>>(json);
                 int select = roles.FindIndex(x => x.Name == role);
                 DiscordEmbedBuilder RXEmbed = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Description = Desc,
                     Title = Title
                 };
@@ -104,6 +113,46 @@ namespace someBot
             }
         }//<@&467492990462459904>
 
+        [Command("crole"), RequireOwner]
+        public async Task creAtRole(CommandContext ctx, int pos, string color, string name)
+        {
+            try
+            {
+                var test = await ctx.Guild.CreateRoleAsync(name: name,permissions: Permissions.SendMessages, color: new DiscordColor($"#{color}"), hoist: true);
+                await test.ModifyPositionAsync(position: pos);
+            }
+            catch (Exception ex)
+            {
+                await ctx.RespondAsync($"{ex.Message}\n{ex.StackTrace}");
+            }
+        }
+
+        [Command("crolee"), RequireOwner]
+        public async Task ModRole(CommandContext ctx, ulong id, int pos, string name)
+        {
+            try
+            {
+                await ctx.Guild.GetRole(id).ModifyAsync(name: name);
+                await ctx.Guild.GetRole(id).ModifyPositionAsync(position: pos);
+            }
+            catch (Exception ex)
+            {
+                await ctx.RespondAsync($"{ex.Message}\n{ex.StackTrace}");
+            }
+        }
+
+        [Command("crolepos"), RequireOwner]
+        public async Task ModRolepos(CommandContext ctx, ulong id)
+        {
+            try
+            {
+                await ctx.RespondAsync("Position: " + ctx.Guild.GetRole(id).Position);
+            }
+            catch (Exception ex)
+            {
+                await ctx.RespondAsync($"{ex.Message}\n{ex.StackTrace}");
+            }
+        }
 
         public class RootObject
         {

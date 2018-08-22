@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using DSharpPlus.Lavalink;
 using DSharpPlus.Interactivity;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
@@ -32,18 +34,130 @@ namespace someBot
             await ctx.RespondAsync(":french_bread::french_bread::french_bread::french_bread::french_bread:");
         }
 
+        [Command("llmanco"), Description("yeet"), RequireOwner] //yeet
+        public async Task LLman(CommandContext ctx)
+        {
+            var oo = ctx.Client.GetLavalink();
+            Bot.guit[0].LLinkCon = await oo.ConnectAsync(Bot.lcfg);
+        }
+
+        [Command("getrid"), RequireOwner] //yeet
+        public async Task getRid(CommandContext ctx, [RemainingText] string rol)
+        {
+            var darol = ctx.Guild.Roles.Where(x => x.Name.ToLower().StartsWith(rol.ToLower()));
+            await ctx.RespondAsync(darol.First().Name + " " + darol.First().Id);
+        }
+
+        [Command("addprefix"), Description("change prefix uwu"), RequirePermissions(DSharpPlus.Permissions.ManageGuild)] //yeet
+        public async Task PFixChange(CommandContext ctx, string hell)
+        {
+            if (hell == null || hell == "")
+            {
+                return;
+            }
+            var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
+            if (pos == -1)
+            {
+                return;
+            }
+            Bot.guit[pos].prefix.Add(hell);
+            await ctx.RespondAsync($"prefix {hell} added!");
+        }
+
+        [Command("removeprefix"), Description("change prefix uwu"), RequirePermissions(DSharpPlus.Permissions.ManageGuild)] //yeet
+        public async Task PFixremoce(CommandContext ctx, int remID)
+        {
+            var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
+            if (pos == -1)
+            {
+                return;
+            }
+            if (Bot.guit[pos].prefix.Count == 1)
+            {
+                await ctx.RespondAsync($"This Guild has only 1 Prefix (``{Bot.guit[pos].prefix[0]}``) cannot remove last one");
+                return;
+            }
+            await ctx.RespondAsync($"prefix {Bot.guit[pos].prefix[remID]} was deleted");
+            Bot.guit[pos].prefix.RemoveAt(remID);
+        }
+
+        [Command("prefix"), Description("get this guilds prefixes"), Aliases("prefixes")] //yeet
+        public async Task PFix(CommandContext ctx)
+        {
+            var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
+            if (pos == -1)
+            {
+                await ctx.RespondAsync($"This guild has the default ``m!`` prefix!");
+                return;
+            }
+            //string owo = "";
+            DiscordEmbedBuilder bassc = new DiscordEmbedBuilder
+            {
+                Color = new DiscordColor("#68D3D2"),
+                Title = $"Prefixes of {ctx.Guild.Name}",
+                Description = "A list of all the prefixes this Guild has! and their ID (in case you want to remove one)",
+                ThumbnailUrl = ctx.Member.AvatarUrl
+            };
+            string owo = "";
+            int i = 0;
+            foreach(var oo in Bot.guit[pos].prefix)
+            {
+                owo += $"{i} ``{oo}``\n";
+                i++;
+            }
+            bassc.AddField("Usable Prefixes", owo);
+            bassc.AddField("How To Add Profixes:", $"Use ``{Bot.guit[pos].prefix[0]}addprefix <prefixname>`` to add a prefix!\nExample: ``{Bot.guit[pos].prefix[0]}addprefix test`` wil add the prefix ``test``\nso commands can start with ``test`` like ``testrin`` would show you a Rin-chan picture like ``{Bot.guit[pos].prefix[0]}rin`` would");
+            bassc.AddField("How To Remove A Prefix:", $"Use ``{Bot.guit[pos].prefix[0]}removeprefix <ID>`` to remove one (note removing all doesnt work)\nExample: {Bot.guit[pos].prefix[0]}removeprefix 0 will remove the first prefix");
+            bassc.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
+            await ctx.RespondAsync(embed: bassc.Build());
+        }
+
+        [Command("addopfix"), Description("change prefix uwu"), RequireOwner] //yeet
+        public async Task PFixChangeOwner(CommandContext ctx, string hell)
+        {
+            if (hell == null || hell == "")
+            {
+                return;
+            }
+            var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
+            if (pos == -1)
+            {
+                return;
+            }
+            Bot.guit[pos].prefix.Add(hell);
+            await ctx.RespondAsync($"prefix {hell} added");
+        }
+
+        [Command("removeopfix"), Description("change prefix uwu"), RequireOwner] //yeet
+        public async Task PFixremovOwner(CommandContext ctx, int remID)
+        {
+            var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
+            if (pos == -1)
+            {
+                return;
+            }
+            if (Bot.guit[pos].prefix.Count == 1)
+            {
+                await ctx.RespondAsync($"This Guild has only 1 Prefix (``{Bot.guit[pos].prefix[0]}``) cannot remove last one");
+                return;
+            }
+            await ctx.RespondAsync($"prefix {Bot.guit[pos].prefix[remID]} was deleted");
+            Bot.guit[pos].prefix.RemoveAt(remID);
+        }
+
         [Command("test"),Description("this should be called different but nah")] //i think u same some people use this, pretty simple
         public async Task Test(CommandContext ctx, [RemainingText]string oof)
         {
             await ctx.RespondAsync(oof);
         }
 
-        [Command("roles"), Description("list roles")]
+        [Command("rolesids"), Description("list roles")]
         public async Task roles(CommandContext ctx)
         {
             foreach(var oof in ctx.Guild.Roles)
             {
                 await ctx.Member.SendMessageAsync($"``{oof.Name} {oof.Id}``");
+                await Task.Delay(1000);
             }
         }
 
@@ -64,113 +178,10 @@ namespace someBot
                     "**SyncWatch**: https://srgg.de:8012/scripts/syncwatch/ (for this Method 3 is required + webinterface account needs to be bound to your discord account (!music for details)) !yt <ytlink> to watch videos of the sent link together");
         }
 
-        //https://www.youtube.com/embed?listType=search&list
-        [Command("nnd"), Description("See the Hourly, Daily, Weekly and Monthly NND Vocaloid Rankinglist" +
-                    "Please select a ranking list:\n" +
-                    "``m!nnd hourly``\n" +
-                    "``m!nnd daily``\n" +
-                    "``m!nnd weekly``\n" +
-                    "``m!nnd monthly``")] //see what i did there with the command error and the description? Note! if u just type !nnd it errors cause no string was defined
-        public async Task NND(CommandContext ctx, string listPick = null)//this was crazy
-        {
-            try
-            {
-                int offset = 0;
-                if (listPick.ToLower() == "hourly") offset = 0;
-                else if (listPick.ToLower() == "daily") offset = 20;
-                else if (listPick.ToLower() == "weekly") offset = 40;
-                else if (listPick.ToLower() == "monthly") offset = 60;
-                else //if u just type it wrong it spits out the help too
-                {
-                    await ctx.RespondAsync(ctx.Command.Description);
-                    return;
-                }
-                var inter = ctx.Client.GetInteractivity();
-                var init = await ctx.RespondAsync("this may take a while, be patient uwu");
-                IWebDriver driver;
-                var chromeDriverService = FirefoxDriverService.CreateDefaultService();
-                chromeDriverService.HideCommandPromptWindow = true; //selenium shows a commandprompt, this hides it
-                chromeDriverService.SuppressInitialDiagnosticInformation = true;
-                FirefoxOptions options = new FirefoxOptions();
-                options.AddArguments("--headless"); //to tell firefox to start in windowless mode
-                driver = new FirefoxDriver(chromeDriverService, options); //starts up firefox it in the directory already (called gecko)
-                driver.Navigate().GoToUrl("http://ex.nicovideo.jp/vocaloid/ranking"); //ig goes to the ranking pages
-                string[] allranks = new string[80]; // there are always 80 songs on that page! this is for the names
-                string[] allURLS = new string[80]; //it also gets the urls
-                int yeet = 0; //to add stuff to the array
-                DiscordColor meek = new DiscordColor("#289b9a");
-                foreach (var vids in driver.FindElements(By.ClassName("ttl"))) //lit ay? all items in the ranking have the classname ttl
-                {
-                    allranks[yeet] = vids.Text; //it gest the inner text which is the Name
-                    allURLS[yeet] = driver.FindElement(By.LinkText(vids.Text)).GetAttribute("href"); //and the link from the "a" tag thats arond the Songname
-                    yeet++;
-                }
-                var empty = ctx.Client.GetGuildAsync(401419401011920907).Result.GetEmojiAsync(435447550196318218).Result; //i have an emoji on my server thats just blank, i use it for spaces in shit here
-                List<Page> pgs = new List<Page>();
-                DiscordEmbedBuilder bassc = new DiscordEmbedBuilder
-                {
-                    Color = meek,
-                    Title = "NicoNicoDouga " + listPick + " Vocaloid Ranking",
-                    Description = "Top 20 " + listPick + " songs!\n" + empty,
-                    ThumbnailUrl = "https://japansaucedotnet.files.wordpress.com/2016/05/photo-22.gif"
-                };
-                //DiscordEmbedBuilder[] hourly = new DiscordEmbedBuilder[4];
-                int adv = 0;
-                int adv2 = 5;
-                for (int j = 0; j < 4; j++)
-                {
-                    if (j == 1)
-                    {
-                        adv = 5;
-                        adv2 = 10;
-                    }
-                    if (j == 2)
-                    {
-                        adv = 10;
-                        adv2 = 15;
-                    }
-                    if (j == 3)
-                    {
-                        adv = 15;
-                        adv2 = 20;
-                    }
-                    Console.WriteLine("whut");
-                    DiscordEmbedBuilder hourly = new DiscordEmbedBuilder
-                    {
-                        Color = meek,
-                        Title = "NicoNicoDouga " + listPick + " Vocaloid Ranking",
-                        Description = "Top 20 " + listPick + " songs!\n" + empty,
-                        ThumbnailUrl = "https://japansaucedotnet.files.wordpress.com/2016/05/photo-22.gif"
-                    };
-                    for (int i = (offset + adv); i < (offset + adv2); i++) //gets the first 5
-                    {
-                        if (i < (offset + (adv2 - 1)))
-                        {
-                            hourly.AddField("#" + ((i - offset) + 1) + " " + allranks[i], allURLS[i]);
-                        }
-                        else
-                        {
-                            hourly.AddField("#" + ((i - offset) + 1) + " " + allranks[i], allURLS[i] + "\n" + empty);
-                        }
-                    }
-                    hourly.AddField("Page", $"{(j+1)}/4");
-                    pgs.Add(new Page { Embed = hourly.Build() });
-                }
-                driver.Quit();
-                //hourly.AddField("Page", pages + "/4\nEnter Page number or type ``exit`` to exit");
-                await init.DeleteAsync();
-                await inter.SendPaginatedMessage(ctx.Channel, ctx.Message.Author, pgs, timeoutoverride: TimeSpan.FromMinutes(2));
-            }
-            catch
-            {
-                await ctx.RespondAsync("Hi! I'm missing either the Manage Messages or Embed Links Permission \nPlease add those so my commands work uwu");
-            }
-        }//invitehttps://discordapp.com/oauth2/authorize?client_id=451362137571328000&scope=bot&permissions=67497024
-
         [Command("invite"),Aliases("link"),Description("Invitelink for the bot")] //guess....
         public async Task Invite(CommandContext ctx)
         {
-            await ctx.RespondAsync("https://discordapp.com/oauth2/authorize?client_id=465675368775417856&scope=bot&permissions=67497025");
+            await ctx.RespondAsync("https://meek.moe/invite/");
         }
     }
 }

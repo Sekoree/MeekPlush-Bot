@@ -54,39 +54,48 @@ namespace someBot
         ulong xlast_boi = 0;
         public Task Bot_XedddMessageCreated(MessageCreateEventArgs e)
         {
-            if (!(e.Message.Channel.Type.ToString() == "Private")) //cheack if it aint in DM's 
+            try
             {
-                if (e.Guild.Id == 373635826703400960) //check if it in Xeddd server
+                if (!(e.Message.Channel.Type.ToString() == "Private")) //cheack if it aint in DM's 
                 {
-                    string proxy_urls = ""; //basically the discord url it spits out for uploaded files
-                    string attlist = "";
-                    string BotCheck = "";
+                    if (e.Guild.Id == 373635826703400960) //check if it in Xeddd server
+                    {
+                        string proxy_urls = ""; //basically the discord url it spits out for uploaded files
+                        string attlist = "";
+                        string BotCheck = "";
 
-                    if (e.Message.Attachments != null)
-                    {
-                        foreach (var files in e.Message.Attachments)
+                        if (e.Message.Attachments != null)
                         {
-                            proxy_urls += "\n  " + files.ProxyUrl; //puts the file urls in a nice list
+                            foreach (var files in e.Message.Attachments)
+                            {
+                                proxy_urls += "\n  " + files.ProxyUrl; //puts the file urls in a nice list
+                            }
                         }
-                    }
 
-                    if (!(proxy_urls == "")) attlist = "\n Attachments:" + proxy_urls; //if there are attachments it will add "Attachments:" in front of it, for extra neatness
-                    if (e.Message.Author.IsBot) BotCheck = "[Bot] "; //if a bot sent that it it adds [bot] infront
-                    if (e.Message.Author.Id == xlast_boi && !(proxy_urls == "")) //when u upload 2 images thes are treated as 2 messages, so if the author is the same it just sends the file link
-                    {
-                        xlast_boi = e.Message.Author.Id;
-                        xedddMsgAddTxt(proxy_urls);
-                    }
-                    else
-                    {
-                        xlast_boi = e.Message.Author.Id; //for the attachment thing
-                        if (bxeddd == true)
+                        if (!(proxy_urls == "")) attlist = "\n Attachments:" + proxy_urls; //if there are attachments it will add "Attachments:" in front of it, for extra neatness
+                        if (e.Message.Author.IsBot) BotCheck = "[Bot] "; //if a bot sent that it it adds [bot] infront
+                        if (e.Message.Author.Id == xlast_boi && !(proxy_urls == "")) //when u upload 2 images thes are treated as 2 messages, so if the author is the same it just sends the file link
                         {
-                            bxeddd = false;
+                            xlast_boi = e.Message.Author.Id;
+                            xedddMsgAddTxt(proxy_urls);
                         }
-                        xedddMsgAddTxt("[" + e.Message.Channel.Name + "] " + BotCheck + e.Message.Author.Username + "(" + e.Guild.GetMemberAsync(e.Author.Id).Result.Nickname + "): " + e.Message.Content + attlist);
+                        else
+                        {
+                            xlast_boi = e.Message.Author.Id; //for the attachment thing
+                            if (bxeddd == true)
+                            {
+                                bxeddd = false;
+                            }
+                            xedddMsgAddTxt("[" + e.Message.Channel.Name + "] " + BotCheck + e.Message.Author.Username + "(" + e.Guild.GetMemberAsync(e.Author.Id).Result.Nickname + "): " + e.Message.Content + attlist);
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                return Task.CompletedTask;
             }
             return Task.CompletedTask;
         }
@@ -142,38 +151,47 @@ namespace someBot
 
         public Task Bot_Dump(MessageCreateEventArgs e) //sends a message to owo if someone leaves the server
         {
-            if (!(e.Message.Channel.Type.ToString() == "Private"))
+            try
             {
-                StreamReader r = new StreamReader("XedddGroups.json");
-                string json = r.ReadToEnd();
-                var roles = JsonConvert.DeserializeObject<List<RootObject>>(json);
-                //var roles = JsonConvert.DeserializeObject<List<RootObject>>(responseFromServer);
-                //int select = roles.FindIndex(x => x.Name == role);
-                if (e.Guild.Id == 373635826703400960)
+                if (!(e.Message.Channel.Type.ToString() == "Private"))
                 {
-                    if (roles.Any(x => Convert.ToUInt64(x.ChannelID) == e.Channel.Id))
+                    StreamReader r = new StreamReader("XedddGroups.json");
+                    string json = r.ReadToEnd();
+                    var roles = JsonConvert.DeserializeObject<List<RootObject>>(json);
+                    //var roles = JsonConvert.DeserializeObject<List<RootObject>>(responseFromServer);
+                    //int select = roles.FindIndex(x => x.Name == role);
+                    if (e.Guild.Id == 373635826703400960)
                     {
-                        string proxy_urls = "";
-                        string attlist = "";
+                        if (roles.Any(x => Convert.ToUInt64(x.ChannelID) == e.Channel.Id))
+                        {
+                            string proxy_urls = "";
+                            string attlist = "";
 
-                        if (e.Message.Attachments != null)
-                        {
-                            foreach (var files in e.Message.Attachments)
+                            if (e.Message.Attachments != null)
                             {
-                                proxy_urls += "\n  " + files.ProxyUrl;
+                                foreach (var files in e.Message.Attachments)
+                                {
+                                    proxy_urls += "\n  " + files.ProxyUrl;
+                                }
                             }
-                        }
-                        if (!(proxy_urls == "")) attlist = proxy_urls;
-                        if (e.Message.Content.Contains("http"))
-                        {
-                            attlist += e.Message.Content;
-                        }
-                        if (attlist != "")
-                        {
-                            y.sendToChannel(466715815866269716, attlist);
+                            if (!(proxy_urls == "")) attlist = proxy_urls;
+                            if (e.Message.Content.Contains("http"))
+                            {
+                                attlist += e.Message.Content;
+                            }
+                            if (attlist != "")
+                            {
+                                y.sendToChannel(466715815866269716, attlist);
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                
             }
             return Task.CompletedTask;
         }

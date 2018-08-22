@@ -21,7 +21,7 @@ namespace someBot
             {
                 var HelpEmbed = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "MeekPlush Help",
                     Description = "(not so) useful commads that may help you!\n **Support me on Patreon!** [link](https://www.patreon.com/speyd3r)",
                     ThumbnailUrl = ctx.Client.CurrentUser.AvatarUrl
@@ -44,6 +44,8 @@ namespace someBot
                     HelpEmbed.AddField("-[Search Commands]-> **m!help search**", "search some sites ");
                     HelpEmbed.AddField("-[Songinfo Commands]-> **m!help info**", "weebmusic info uwu");
                     HelpEmbed.AddField("-[Image Commands]-> **m!help image**", "random pics from the web");
+                    HelpEmbed.AddField("-[Music Commands]-> **m!help music**", "music commands");
+                    HelpEmbed.AddField("-[Support Info]-> **m!help support**", "support server n stuff");
                     HelpEmbed.AddField("-[NSFW Commands]-> **m!help nsfw**", "only work in NSFW channels!");
                 }
                 else if (page.ToLower() == "random")
@@ -95,19 +97,61 @@ namespace someBot
                     HelpEmbed.AddField("m!aoki", "random Aoki image", true);
                     HelpEmbed.AddField("m!lily", "random Lily image", true);
                 }
+                else if (page.ToLower() == "music")
+                {
+                    HelpEmbed.AddField("m!join", "joins your voicechannel!", true);
+                    HelpEmbed.AddField("m!leave", "will leave the voicechannel (queue will be saved)\n", true);
+                    HelpEmbed.AddField("m!queue", "shows the current queue!\n" +
+                        "Aliases: ``m!q``", true);
+                    HelpEmbed.AddField("m!play <searchTermOrURL>", "joins your voicechannel and plays something (using this again will add stuff to the queue)!\n" +
+                        "Aliases: ``m!p``\n" +
+                        "Additionally: when using m!join and then loading a playlist, just use m!p or m!play to start playback!", true);
+                    HelpEmbed.AddField("m!skip", "skips the current song!", true);
+                    HelpEmbed.AddField("m!stop", "bot will stop and disconnect from the channel!", true);
+                    HelpEmbed.AddField("m!repeatall", "will loop the queue!\n" +
+                        "Aliases: ``m!ra``", true);
+                    HelpEmbed.AddField("m!repeat", "will loop the current song!\n" +
+                        "Aliases: ``m!r``", true);
+                    HelpEmbed.AddField("m!shuffle", "will play the queue in shuffle mode, in combination with ``m!repeat`` it will play the entire queue loopd and shuffled!\n" +
+                        "Aliases: ``m!s``", true);
+                    HelpEmbed.AddField("m!queueremove <queueNumber>", "will remove that particular song from the queue!\n" +
+                        "Aliases: ``m!qr``", true);
+                    HelpEmbed.AddField("m!nowplaying", "shows whats currently playing with some additional info!\n" +
+                        "Aliases: ``m!np``", true);
+                    HelpEmbed.AddField("m!queueclear", "removes everything from the queue!\n" +
+                        "Aliases: ``m!qc", true);
+                    HelpEmbed.AddField("m!pause", "will pause the current song!", true);
+                    HelpEmbed.AddField("m!resume", "will resume the paused song!", true);
+                    HelpEmbed.AddField("m!queueremovesome <start> <(optional)end>", "will remove every song between those 2 numbers in queue, if just 1 is provided everything after that number will be deleted from queue\n" +
+                        "Aliases: ``m!qrs``", true);
+                    HelpEmbed.AddField("m!volume <number>", "changes the volume (150 is max)!\n" +
+                        "Aliases: ``m!vol``", true);
+                    HelpEmbed.AddField("m!playlist <youtubePlaylistURL>", "adds a playlist to the queue (max 600 videos)!\n" +
+                        "Aliases: ``m!pp", true);
+                }
+                else if (page.ToLower() == "support")
+                {
+                    HelpEmbed.AddField("Support Server", "[Invite](https://discord.gg/mrMwkZ8)", true);
+                    HelpEmbed.AddField("Contact", "If u dont wanna join the support server, u can also just DM me (Speyd3r#3939)", true);
+                }
                 else if (page.ToLower() == "nsfw")
                 {
                     HelpEmbed.AddField("m!nl <category name>" ,"will display a random image from nekos.life, get the category names at (11) [nekos.life](https://nekos.life/api/v2/endpoints)", true);
                     HelpEmbed.AddField("m!thigh", "random thigh pic uwu", true);
                     HelpEmbed.AddField("m!nekopara", "random lewd nekopara image/gif uwu", true);
                 }
+                else
+                {
+                    return;
+                }
                 HelpEmbed.AddField("Like this?", "" +
                     "Please upvote [here](https://discordbots.org/bot/465675368775417856/vote), helps me very much uwu \n" +
                     "Github: [Link](https://github.com/Speyd3r/MeekPlush-Bot) \n" +
-                    "Support me and keep the bot alive UwU: [Paypal](https://www.paypal.me/speyd3r)");
+                    "Support me and keep the bot alive UwU: [Paypal](https://www.paypal.me/speyd3r) or [Patreon](https://www.patreon.com/speyd3r)");
                 string check = "";
-                var perms = ctx.Channel.Guild.CurrentMember.PermissionsIn(ctx.Channel);
-                if (!perms.HasPermission(Permissions.ManageMessages)) {
+                int ir = ctx.Channel.Guild.CurrentMember.Roles.ToList().FindIndex(x => x.CheckPermission(DSharpPlus.Permissions.Administrator) == DSharpPlus.PermissionLevel.Allowed);
+                int ir2 = ctx.Channel.Guild.CurrentMember.Roles.ToList().FindIndex(x => x.CheckPermission(DSharpPlus.Permissions.ManageMessages) == DSharpPlus.PermissionLevel.Allowed);
+                if (ir == -1 && ir2 == -1) {
                     check = "**Heya! I'm missing the 'Manage Messages' permission! I need that for some commands uwu (expecially the more advanced ones)**";
                 }
                 var yeet = await ctx.RespondAsync(content: check, embed: HelpEmbed.Build());
@@ -123,7 +167,7 @@ namespace someBot
             try { 
             var HelpEmbed = new DiscordEmbedBuilder
             {
-                Color = new DiscordColor("#289b9a"),
+                Color = new DiscordColor("#68D3D2"),
                 Title = "MeekPlush Help",
                 Description = "indev commands, dont expect them to work!",
                 ThumbnailUrl = ctx.Client.CurrentUser.AvatarUrl
@@ -145,9 +189,9 @@ namespace someBot
             {
                 var HelpEmbed = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "MeekPlush Stats",
-                    Description = "UwU",
+                    Description = "stats n stuff",
                     ThumbnailUrl = ctx.Client.CurrentUser.AvatarUrl
                 };
                 HelpEmbed.AddField("Guilds", $"{ctx.Client.Guilds.Count.ToString()}");
@@ -163,11 +207,18 @@ namespace someBot
                 HelpEmbed.AddField("Bot Owner", $"Speyd3r#3939");
                 HelpEmbed.AddField("Donations uwu", $"[Paypal](https://www.paypal.me/speyd3r)\n[Patreon](https://www.patreon.com/speyd3r)");
                 await ctx.RespondAsync(embed: HelpEmbed.Build());
+                //ctx.Guild.Members
             }
             catch
             {
                 await ctx.RespondAsync("Hi! I'm missing either the Manage Messages or Embed Links Permission \nPlease add those so my commands work uwu");
             }
+        }
+
+        [Command("support")] //i think u same some people use this, pretty simple
+        public async Task supportServer(CommandContext ctx)
+        {
+            await ctx.RespondAsync("https://discord.gg/mrMwkZ8");
         }
     }
 }

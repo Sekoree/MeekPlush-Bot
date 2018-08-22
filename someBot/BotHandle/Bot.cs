@@ -5,11 +5,16 @@ using DSharpPlus.VoiceNext;
 using DSharpPlus.Lavalink;
 using System;
 using System.Linq;
+using NYoutubeDL;
 using System.Threading.Tasks;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Entities;
 using System.Threading;
 using DSharpPlus.Net.Udp;
+using DiscordBotsList.Api;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace someBot
 {
@@ -19,9 +24,16 @@ namespace someBot
         private InteractivityExtension interactivity;
         private CommandsNextExtension commands;
         static VoiceNextExtension voice;
-        public LavalinkExtension Lavalink { get; }
+        public LavalinkExtension llink { get; }
         public LavalinkNodeConnection LavalinkNode { get; private set; }
         private CancellationTokenSource _cts;
+        public static LavalinkConfiguration lcfg = new LavalinkConfiguration
+        {
+            Password = "",
+            SocketEndpoint = new ConnectionEndpoint { Hostname = "localhost", Port = 8089 },
+            RestEndpoint = new ConnectionEndpoint { Hostname = "localhost", Port = 2335 }
+        };
+        public static List<Gsets> guit = new List<Gsets>();
 
         public Bot()
         {
@@ -42,22 +54,27 @@ namespace someBot
                 TokenType = TokenType.Bot,
                 UseInternalLogHandler = true
             });
-            interactivity = bot.UseInteractivity(new InteractivityConfiguration{}); //add the ineractivity stuff to it
+            interactivity = bot.UseInteractivity(new InteractivityConfiguration { }); //add the ineractivity stuff to it
 
             _cts = new CancellationTokenSource();
 
-            commands = bot.UseCommandsNext(new CommandsNextConfiguration() { 
-                StringPrefixes = (new[] { "m!"}),
+            commands = bot.UseCommandsNext(new CommandsNextConfiguration()
+            {
+                //StringPrefixes = (new[] { "m!" }),
                 EnableDefaultHelp = false,
                 IgnoreExtraArguments = false,
-                CaseSensitive = false
+                CaseSensitive = false,
+                PrefixResolver = PreGet
             });
+
+            //Commands.Voice voi = new Commands.Voice(this);
 
             commands.RegisterCommands<Random>(); //registers all the coammds from the different classes
             commands.RegisterCommands<YouTube>();
             commands.RegisterCommands<Wiki>();
             commands.RegisterCommands<Help>();
             commands.RegisterCommands<VUTDB>();
+            commands.RegisterCommands<YTDLC>();
             commands.RegisterCommands<Commands.RanImg.Derpy>();
             commands.RegisterCommands<Commands.RanImg.MeekMoe>();
             commands.RegisterCommands<Commands.RanImg.Nadeko>();
@@ -70,7 +87,16 @@ namespace someBot
             commands.CommandErrored += Bot_CMDErr;
 
             voice = bot.UseVoiceNext();
-            Lavalink = bot.UseLavalink();
+            llink = bot.UseLavalink();
+
+            llink.NodeDisconnected += async le =>
+            {
+                while(!le.LavalinkNode.IsConnected)
+                {
+                    await Task.Delay(5000);
+                    await llink.ConnectAsync(lcfg);
+                }
+            };
 
             bot.Ready += OnReadyAsync;
             bot.MessageCreated += this.Bot_MessageCreated;
@@ -85,35 +111,93 @@ namespace someBot
             bot.GuildMemberRemoved += XedddClass.Bot_XedddBoiLeave;
             bot.MessageReactionAdded += PandaClass.Bot_PandaGumiQuotes;
             bot.ClientErrored += this.Bot_ClientErrored;
+            bot.GuildMemberAdded += async e =>
+            {
+                if (e.Guild.Id == 481615569867767837)
+                {
+                    await e.Member.GrantRoleAsync(e.Guild.GetRole(481622541383892993));
+                }
+                await Task.CompletedTask;
+            };
+            bot.Heartbeated += async e =>
+            {
+                AuthDiscordBotListApi DblApi = new AuthDiscordBotListApi(465675368775417856, "");
+                var me = await DblApi.GetMeAsync();
+                await me.UpdateStatsAsync(e.Client.Guilds.Count);
+            };
             bot.Ready += async e =>
             {
                 DiscordActivity test = new DiscordActivity
                 {
                     Name = "m!help or m!help-dev for commands uwu",
-                    ActivityType = ActivityType.Streaming,
-                    StreamUrl = "https://meek.moe/"
+                    ActivityType = ActivityType.Playing
                 };
-                await bot.UpdateStatusAsync(activity: test);
-                Console.WriteLine("before Lava");
+                await bot.UpdateStatusAsync(activity: test, userStatus: UserStatus.Online);
+                await Task.Delay(500);
                 try
                 {
-                    if (this.LavalinkNode != null)
-                        return;
-
-                    var lava = e.Client.GetLavalink();
-                    this.LavalinkNode = await lava.ConnectAsync(new LavalinkConfiguration
+                    guit.Add(new Gsets
                     {
-                        Password = "",
-                        SocketEndpoint = new ConnectionEndpoint { Hostname = "", Port = 0 },
-                        RestEndpoint = new ConnectionEndpoint { Hostname = "", Port = 0 }
-                    }).ConfigureAwait(false);
-                    Console.WriteLine("Lava Connect");
+                        GID = 0,
+                        prefix = new List<string>(new string[] { "m!" }),
+                        queue = new List<Gsets2>(),
+                        playnow = new Gsets3(),
+                        repeat = false,
+                        offtime = DateTime.Now,
+                        timeout = false,
+                        shuffle = false,
+                        LLinkCon = await llink.ConnectAsync(lcfg),
+                        LLGuild = null,
+                        playing = false,
+                        rAint = 0,
+                        repeatAll = false
+                    });
+                    foreach (var guilds in e.Client.Guilds)
+                    {
+                        guit.Add(new Gsets {
+                            GID = guilds.Value.Id,
+                            prefix = new List<string>(new string[] { "m!" }),
+                            queue = new List<Gsets2>(),
+                            playnow = new Gsets3(),
+                            repeat = false,
+                            offtime = DateTime.Now,
+                            timeout = false,
+                            shuffle = false,
+                            LLGuild = null,
+                            playing = false,
+                            rAint = 0,
+                            repeatAll = false
+                        });
+                    }
+                    await Task.CompletedTask;
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                     Console.WriteLine(ex.StackTrace);
                 }
+            };
+            bot.GuildCreated += async e => {
+                var pos = guit.FindIndex(x => x.GID == e.Guild.Id);
+                if (pos == -1)
+                {
+                    guit.Add(new Gsets
+                    {
+                        GID = e.Guild.Id,
+                        prefix = new List<string>(new string[] { "m!" }),
+                        queue = new List<Gsets2>(),
+                        playnow = new Gsets3(),
+                        repeat = false,
+                        offtime = DateTime.Now,
+                        timeout = false,
+                        shuffle = false,
+                        LLGuild = null,
+                        playing = false,
+                        rAint = 0,
+                        repeatAll = false
+                    });
+                }
+                await Task.CompletedTask;
             };
         }
 
@@ -125,8 +209,29 @@ namespace someBot
 
         private async Task WaitForCancellationAsync()
         {
-            while(!_cts.IsCancellationRequested)
+            while (!_cts.IsCancellationRequested)
                 await Task.Delay(500);
+        }
+
+        private Task<int> PreGet(DiscordMessage msg)
+        {
+            int pos = guit.FindIndex(x => x.GID == msg.Channel.GuildId);
+            var wtf = msg.Content;
+            if (pos != -1)
+            {
+                var multiprefloc = guit[pos].prefix.FindIndex(x => wtf.StartsWith(x));
+                int prefloc;
+                if (multiprefloc != -1)
+                {
+                    prefloc = msg.GetStringPrefixLength(guit[pos].prefix[multiprefloc]);
+
+                    if (prefloc != -1)
+                    {
+                        return Task.FromResult(prefloc);
+                    }
+                }
+            }
+            return Task.FromResult(msg.GetStringPrefixLength(guit[0].prefix[0]));
         }
 
         private async Task OnReadyAsync(ReadyEventArgs e)
@@ -163,45 +268,64 @@ namespace someBot
 
         public async Task Bot_MessageCreated(MessageCreateEventArgs e)
         {
-            if (e.Message.Content.ToLower().StartsWith("speyd3r is retarded")) await e.Message.RespondAsync("no u");
-            //e.Message.RespondAsync(e.Message.Channel.Id.ToString() + " " + e.Message.Id);
-
-            if (e.Message.Channel.Type.ToString() == "Private") //DM Messages
+            try
             {
-                if (e.Message.Author.IsBot == false)
+                if (e.Message.Content.ToLower().StartsWith("speyd3r is retarded")) await e.Message.RespondAsync("no u");
+                //e.Message.RespondAsync(e.Message.Channel.Id.ToString() + " " + e.Message.Id);
+
+                if (e.Message.Channel.Type.ToString() == "Private") //DM Messages
                 {
-                    await e.Message.RespondAsync("no u");
+                    if (e.Message.Author.IsBot == false)
+                    {
+                        await e.Message.RespondAsync("no u");
+                    }
+                }
+
+                if (e.Message.Content.ToLower().StartsWith("uwu") && !(e.Message.Author.Id == 412572113191305226)) //the uwu react
+                {
+                    await e.Message.CreateReactionAsync(DiscordEmoji.FromUnicode("🇴"));
+                    await Task.Delay(TimeSpan.FromMilliseconds(500));
+                    await e.Message.CreateReactionAsync(DiscordEmoji.FromUnicode("🇼"));
+                    await Task.Delay(TimeSpan.FromMilliseconds(500));
+                    await e.Message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(bot, 455504120825249802)); // lengthy isnt it?
+                }
+
+                if (e.Message.Content.ToLower().StartsWith("uwu") && e.Message.Author.Id == 412572113191305226) //just to mess with monike from blodrodsgorls server hehe
+                {
+                    await e.Message.CreateReactionAsync(DiscordEmoji.FromUnicode("🇴"));
+                    await Task.Delay(TimeSpan.FromMilliseconds(500));
+                    await e.Message.CreateReactionAsync(DiscordEmoji.FromUnicode("🇲"));
+                    await Task.Delay(TimeSpan.FromMilliseconds(500));
+                    await e.Message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(bot, 455504120825249802));
                 }
             }
-
-            if (e.Message.Content.ToLower().StartsWith("uwu") && !(e.Message.Author.Id == 412572113191305226)) //the uwu react
+            catch (Exception ex)
             {
-                await e.Message.CreateReactionAsync(DiscordEmoji.FromUnicode("🇴"));
-                await Task.Delay(TimeSpan.FromMilliseconds(500));//this its not a normal o, look up the twitemoji preview page to get the emojis
-                await e.Message.CreateReactionAsync(DiscordEmoji.FromUnicode("🇼"));
-                await Task.Delay(TimeSpan.FromMilliseconds(500));
-                await e.Message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(bot, 455504120825249802)); // lengthy isnt it?
-            }
-
-            if (e.Message.Content.ToLower().StartsWith("uwu") && e.Message.Author.Id == 412572113191305226) //just to mess with monike from blodrodsgorls server hehe
-            {
-                await e.Message.CreateReactionAsync(DiscordEmoji.FromUnicode("🇴"));
-                await Task.Delay(TimeSpan.FromMilliseconds(500));
-                await e.Message.CreateReactionAsync(DiscordEmoji.FromUnicode("🇲"));
-                await Task.Delay(TimeSpan.FromMilliseconds(500));
-                await e.Message.CreateReactionAsync(DiscordEmoji.FromGuildEmote(bot, 455504120825249802));
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                //return Task.CompletedTask;
             }
             //await Task.CompletedTask;
         }
 
-        private Task Bot_CMDErr(CommandErrorEventArgs e) //if bot error
+        private async Task Bot_CMDErr(CommandErrorEventArgs e) //if bot error
         {
-            e.Context.RespondAsync($"**Error:**\n```{e.Exception.Message}```");
-            return Task.CompletedTask;
+            if (e.Exception.Message.ToLower().Contains("countdown"))
+            {
+                var er = await e.Context.RespondAsync("Error, please wait 5 seconds before issuing that command again");
+                await Task.Delay(2500);
+                await er.DeleteAsync();
+            }
+            //e.Context.RespondAsync($"**Error:**\n```{e.Exception.Message}```");
+            Console.WriteLine(e.Exception.Message);
+            Console.WriteLine(e.Exception.StackTrace);
+            await Task.CompletedTask;
         }
 
         private Task Bot_ClientErrored(ClientErrorEventArgs e) //if bot error
         {
+                Console.WriteLine(e.Exception.Message);
+                Console.WriteLine(e.Exception.StackTrace);
             return Task.CompletedTask;
         }
 
@@ -223,5 +347,53 @@ namespace someBot
             }
             return Task.CompletedTask;
         }
+    }
+
+    public class Gsets
+    {
+        [JsonProperty("GID")]
+        public ulong GID { get; set; }
+        [JsonProperty("LLinkCon")]
+        public LavalinkNodeConnection LLinkCon { get; set; }
+        [JsonProperty("LLGuild")]
+        public LavalinkGuildConnection LLGuild { get; set; }
+        [JsonProperty("prefix")]
+        public List<string> prefix { get; set; }
+        [JsonProperty("queue")]
+        public List<Gsets2> queue { get; set; }
+        [JsonProperty("playingnow")]
+        public Gsets3 playnow { get; set; }
+        [JsonProperty("offtime")]
+        public DateTime offtime { get; set; }
+        [JsonProperty("repeat")]
+        public bool repeat { get; set; }
+        [JsonProperty("repeatAll")]
+        public bool repeatAll { get; set; }
+        [JsonProperty("rtAll")]
+        public int rAint { get; set; }
+        [JsonProperty("shuffle")]
+        public bool shuffle { get; set; }
+        [JsonProperty("playing")]
+        public bool playing { get; set; }
+        [JsonProperty("timeout")]
+        public bool timeout { get; set; }
+    }
+
+    public class Gsets2
+    {
+        [JsonProperty("requester")]
+        public DiscordMember requester { get; set; }
+        [JsonProperty("LavaTrack")]
+        public LavalinkTrack LavaTrack { get; set; }
+    }
+
+    public class Gsets3
+    {
+        [JsonProperty("requester")]
+        public DiscordMember requester { get; set; }
+        [JsonProperty("LavaTrack")]
+        public LavalinkTrack LavaTrack { get; set; }
+        [JsonProperty("playtime")]
+        public DateTime playtime { get; set; }
     }
 }

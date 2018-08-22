@@ -53,39 +53,48 @@ namespace someBot
         // called when the bot receives a message
         public Task Bot_PandaMessageCreated(MessageCreateEventArgs e)
         {
-            if (!(e.Message.Channel.Type.ToString() == "Private"))
+            try
             {
-                if (e.Guild.Id == 448241243496120321)
+                if (!(e.Message.Channel.Type.ToString() == "Private"))
                 {
-                    string proxy_urls = "";
-                    string attlist = "";
-                    string BotCheck = "";
+                    if (e.Guild.Id == 448241243496120321)
+                    {
+                        string proxy_urls = "";
+                        string attlist = "";
+                        string BotCheck = "";
 
-                    if (e.Message.Attachments != null)
-                    {
-                        foreach (var files in e.Message.Attachments)
+                        if (e.Message.Attachments != null)
                         {
-                            proxy_urls += "\n  " + files.ProxyUrl;
+                            foreach (var files in e.Message.Attachments)
+                            {
+                                proxy_urls += "\n  " + files.ProxyUrl;
+                            }
                         }
-                    }
 
-                    if (!(proxy_urls == "")) attlist = "\n Attachments:" + proxy_urls;
-                    if (e.Message.Author.IsBot) BotCheck = "[Bot] ";
-                    if (e.Message.Author.Id == last_boi && !(proxy_urls == ""))
-                    {
-                        last_boi = e.Message.Author.Id;
-                        pMsgAddTxt(proxy_urls);
-                    }
-                    else
-                    {
-                        last_boi = e.Message.Author.Id;
-                        if (bpanda == true)
+                        if (!(proxy_urls == "")) attlist = "\n Attachments:" + proxy_urls;
+                        if (e.Message.Author.IsBot) BotCheck = "[Bot] ";
+                        if (e.Message.Author.Id == last_boi && !(proxy_urls == ""))
                         {
-                            bpanda = false;
+                            last_boi = e.Message.Author.Id;
+                            pMsgAddTxt(proxy_urls);
                         }
-                        pMsgAddTxt("[" + e.Message.Channel.Name + "] " + BotCheck + e.Message.Author.Username + "(" + e.Guild.GetMemberAsync(e.Author.Id).Result.Nickname + "): " + e.Message.Content + attlist);
+                        else
+                        {
+                            last_boi = e.Message.Author.Id;
+                            if (bpanda == true)
+                            {
+                                bpanda = false;
+                            }
+                            pMsgAddTxt("[" + e.Message.Channel.Name + "] " + BotCheck + e.Message.Author.Username + "(" + e.Guild.GetMemberAsync(e.Author.Id).Result.Nickname + "): " + e.Message.Content + attlist);
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                return Task.CompletedTask;
             }
             //412572113191305226 monika d-id
             return Task.CompletedTask;

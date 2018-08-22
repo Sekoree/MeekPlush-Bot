@@ -34,7 +34,7 @@ namespace someBot.Commands.RanImg
 
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#63E4E3"),
                     Title = "uwu",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"

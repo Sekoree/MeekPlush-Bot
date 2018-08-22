@@ -23,7 +23,7 @@ namespace someBot.Commands.RanImg
 
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random Cat Picture/Gif!",
                     Description = $"[Full Source Image Link]({response.ResponseUri.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={response.ResponseUri.ToString()}&resize=500"
@@ -57,7 +57,7 @@ namespace someBot.Commands.RanImg
 
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "Random Dog Picture/Gif!",
                     Description = $"[Full Source Image Link]({myresponse[0].url})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse[0].url}&resize=500"

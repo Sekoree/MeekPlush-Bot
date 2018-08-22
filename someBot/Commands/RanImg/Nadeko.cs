@@ -29,7 +29,7 @@ namespace someBot.Commands.RanImg
 
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "uwu",
                     Description = $"[Full Source Image Link]({myresponse.message.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.message.ToString()}&resize=500"
@@ -62,7 +62,7 @@ namespace someBot.Commands.RanImg
 
                 var emim = new DiscordEmbedBuilder
                 {
-                    Color = new DiscordColor("#289b9a"),
+                    Color = new DiscordColor("#68D3D2"),
                     Title = "uwu",
                     Description = $"[Full Source Image Link]({myresponse.message.ToString()})",
                     ImageUrl = $"https://api.meek.moe/im/?image={myresponse.message.ToString()}&resize=500"
