@@ -1,0 +1,107 @@
+﻿using DSharpPlus.Lavalink.EventArgs;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
+using System.Linq;
+
+namespace someBot.Commands.Audio
+{
+    public class Events
+    {
+        public async Task PlayFin(TrackFinishEventArgs lg)
+        {
+            var con = Bot.guit[0].LLinkCon;
+            var pos = Bot.guit.FindIndex(x => x.GID == lg.Player.Guild.Id);
+            if (pos == -1)
+            {
+                return;
+            }
+            if (Bot.guit[pos].playnow.LavaTrack.IsStream && !Bot.guit[pos].playnow.sstop)
+            {
+                var naet = await con.GetTracksAsync(new Uri(Bot.guit[pos].playnow.LavaTrack.Uri.OriginalString));
+                Bot.guit[pos].queue.Insert(0, new Gsets2
+                {
+                    LavaTrack = Bot.guit[pos].playnow.LavaTrack,
+                    requester = Bot.guit[pos].playnow.requester,
+                    addtime = Bot.guit[pos].playnow.addtime
+                });
+                Console.WriteLine("LL Stream Error");
+            }
+            Console.WriteLine("end event triggered");
+            Bot.guit[pos].playing = false;
+            await Task.CompletedTask;
+        }
+
+        public async Task PlayStu(TrackStuckEventArgs ts)
+        {
+            var con = Bot.guit[0].LLinkCon;
+            var pos = Bot.guit.FindIndex(x => x.GID == ts.Player.Guild.Id);
+            if (pos == -1)
+            {
+                return;
+            }
+            if (Bot.guit[pos].playnow.LavaTrack.IsStream && !Bot.guit[pos].playnow.sstop)
+            {
+                var naet = await con.GetTracksAsync(new Uri(Bot.guit[pos].playnow.LavaTrack.Uri.OriginalString));
+                Bot.guit[pos].queue.Insert(0, new Gsets2
+                {
+                    LavaTrack = Bot.guit[pos].playnow.LavaTrack,
+                    requester = Bot.guit[pos].playnow.requester,
+                    addtime = Bot.guit[pos].playnow.addtime
+                });
+            }
+            await ts.Player.Guild.GetChannel(Bot.guit[pos].cmdChannel).SendMessageAsync("Track was stuck, so it was skipped >>");
+            Console.WriteLine("LL Stuck");
+            Bot.guit[pos].playing = false;
+            await Task.CompletedTask;
+        }
+
+        public async Task PlayErr(TrackExceptionEventArgs ts)
+        {
+            var con = Bot.guit[0].LLinkCon;
+            var pos = Bot.guit.FindIndex(x => x.GID == ts.Player.Guild.Id);
+            if (pos == -1)
+            {
+                return;
+            }
+            if (Bot.guit[pos].playnow.LavaTrack.IsStream && !Bot.guit[pos].playnow.sstop)
+            {
+                var naet = await con.GetTracksAsync(new Uri(Bot.guit[pos].playnow.LavaTrack.Uri.OriginalString));
+                Bot.guit[pos].queue.Insert(0, new Gsets2
+                {
+                    LavaTrack = Bot.guit[pos].playnow.LavaTrack,
+                    requester = Bot.guit[pos].playnow.requester,
+                    addtime = Bot.guit[pos].playnow.addtime
+                });
+            }
+            await ts.Player.Guild.GetChannel(Bot.guit[pos].cmdChannel).SendMessageAsync($"There was an error with the track, so it was skipped ({ts.Error.First()})>>");
+            Console.WriteLine("LL Error");
+            Bot.guit[pos].playing = false;
+            await Task.CompletedTask;
+        }
+
+        public Task setPlay(int pos)
+        {
+            Bot.guit[pos].playing = true;
+            return Task.CompletedTask;
+        }
+
+        public Task setNP(int pos, Gsets2 queue)
+        {
+            Bot.guit[pos].playnow.LavaTrack = queue.LavaTrack;
+            Bot.guit[pos].playnow.requester = queue.requester;
+            Bot.guit[pos].playnow.addtime = queue.addtime;
+            Bot.guit[pos].paused = false;
+            if (queue.LavaTrack.IsStream)
+            {
+                Bot.guit[pos].playnow.sstop = false;
+            }
+            else
+            {
+                Bot.guit[pos].playnow.sstop = true;
+            }
+            return Task.CompletedTask;
+        }
+    }
+}

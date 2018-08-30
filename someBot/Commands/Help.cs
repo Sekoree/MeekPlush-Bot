@@ -45,7 +45,7 @@ namespace someBot
                     HelpEmbed.AddField("-[Songinfo Commands]-> **m!help info**", "weebmusic info uwu");
                     HelpEmbed.AddField("-[Image Commands]-> **m!help image**", "random pics from the web");
                     HelpEmbed.AddField("-[Music Commands]-> **m!help music**", "music commands");
-                    HelpEmbed.AddField("-[Support Info]-> **m!help support**", "support server n stuff");
+                    HelpEmbed.AddField("-[Other Stuff]-> **m!help other**", "support server and feedback command");
                     HelpEmbed.AddField("-[NSFW Commands]-> **m!help nsfw**", "only work in NSFW channels!");
                 }
                 else if (page.ToLower() == "random")
@@ -129,9 +129,10 @@ namespace someBot
                     HelpEmbed.AddField("m!playlist <youtubePlaylistURL>", "adds a playlist to the queue (max 600 videos)!\n" +
                         "Aliases: ``m!pp``", true);
                 }
-                else if (page.ToLower() == "support")
+                else if (page.ToLower() == "support" || page.ToLower() == "other")
                 {
-                    HelpEmbed.AddField("Support Server", "[Invite](https://discord.gg/mrMwkZ8)", true);
+                    HelpEmbed.AddField("m!feedback <message>", "Send feedback!", true);
+                    HelpEmbed.AddField("Support Server", "[Invite](https://discord.gg/YPPA2Pu)", true);
                     HelpEmbed.AddField("Contact", "If u dont wanna join the support server, u can also just DM me (Speyd3r#3939)", true);
                 }
                 else if (page.ToLower() == "nsfw")
@@ -218,7 +219,31 @@ namespace someBot
         [Command("support")] //i think u same some people use this, pretty simple
         public async Task supportServer(CommandContext ctx)
         {
-            await ctx.RespondAsync("https://discord.gg/mrMwkZ8");
+            await ctx.RespondAsync("https://discord.gg/YPPA2Pu");
+        }
+
+        [Command("llinfo"), RequireOwner] //i think u same some people use this, pretty simple
+        public async Task llinfo(CommandContext ctx)
+        {
+            var oo = Bot.guit[0].LLinkCon;
+            await ctx.RespondAsync($"Players: {oo.Statistics.ActivePlayers}\n" +
+                $"AllPlayers: {oo.Statistics.TotalPlayers}\n" +
+                $"Uptime: {oo.Statistics.Uptime}");
+        }
+
+        [Command("feedback"), Description("send feedback uwu")] //yeet
+        public async Task Feetforth(CommandContext ctx, [RemainingText] string message)
+        {
+            var em = new DiscordEmbedBuilder
+            {
+                Title = "Feedback!",
+                Description = $"**User:** {ctx.Member.Username} ({ctx.Member.Mention})\n" +
+                $"**Message:** {message}",
+                Color = new DiscordColor("#68D3D2")
+            };
+            var send = ctx.Client.GetChannelAsync(484698696974336012).Result.SendMessageAsync(embed: em.Build());
+            send.Wait();
+            await ctx.RespondAsync("Feedback sent!");
         }
     }
 }

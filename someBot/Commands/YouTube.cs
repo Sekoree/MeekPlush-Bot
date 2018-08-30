@@ -24,31 +24,30 @@ namespace someBot
         [Command("yts"), Description("Search a YouTube Video!")]
         public async Task YtSearchV(CommandContext ctx, [Description("Searchterm"), RemainingText]string term)
         {
-                try //got this from the youtube .net examples, works lol
+            try //got this from the youtube .net examples, works lol
+            {
+                var youtubeService = new YouTubeService(new BaseClientService.Initializer()
                 {
-                    var youtubeService = new YouTubeService(new BaseClientService.Initializer()
-                    {
-                        ApiKey = "AIzaSyDbj184qjOOS8fE6PlHcuyasA8VB_gr_f0", //i dont care about my api key lol, but if u make ur ever public, change it plz
-                        ApplicationName = this.GetType().ToString()
-                    });
+                    ApiKey = "AIzaSyDbj184qjOOS8fE6PlHcuyasA8VB_gr_f0", 
+                    ApplicationName = this.GetType().ToString()
+                });
 
-                    var searchListRequest = youtubeService.Search.List("snippet"); //its always snippet
-                    searchListRequest.Q = term; // Replace with your search term.
-                    searchListRequest.MaxResults = 1;
-                    searchListRequest.Type = "video"; //needs to be lowercase!
+                var searchListRequest = youtubeService.Search.List("snippet");
+                searchListRequest.Q = term; 
+                searchListRequest.MaxResults = 1;
+                searchListRequest.Type = "video"; 
 
-                    // Call the search.list method to retrieve results matching the specified query term.
-                    var searchListResponse = await searchListRequest.ExecuteAsync();
+                var searchListResponse = await searchListRequest.ExecuteAsync();
 
-                    await ctx.RespondAsync("https://www.youtube.com/watch?v=" + searchListResponse.Items[0].Id.VideoId); //gets the first searchresults video id and add ot to the link yeet
-                }
-                catch (AggregateException ex)
+                await ctx.RespondAsync("https://www.youtube.com/watch?v=" + searchListResponse.Items[0].Id.VideoId);
+            }
+            catch (AggregateException ex)
+            {
+                foreach (var e in ex.InnerExceptions)
                 {
-                    foreach (var e in ex.InnerExceptions)
-                    {
-                        await ctx.RespondAsync("Error: " + e.Message);
-                    }
+                    await ctx.RespondAsync("Error: " + e.Message);
                 }
+            }
         }
         [Command("ytsc"), Description("Search a YouTube Channel!")] //same for this and the next one but with channels and playlists
         public async Task YtSearchC(CommandContext ctx, [Description("Searchterm"), RemainingText]string term)

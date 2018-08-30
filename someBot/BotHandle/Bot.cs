@@ -67,8 +67,6 @@ namespace someBot
                 PrefixResolver = PreGet
             });
 
-            //Commands.Voice voi = new Commands.Voice(this);
-
             commands.RegisterCommands<Random>(); //registers all the coammds from the different classes
             commands.RegisterCommands<YouTube>();
             commands.RegisterCommands<Wiki>();
@@ -111,11 +109,53 @@ namespace someBot
             bot.GuildMemberRemoved += XedddClass.Bot_XedddBoiLeave;
             bot.MessageReactionAdded += PandaClass.Bot_PandaGumiQuotes;
             bot.ClientErrored += this.Bot_ClientErrored;
+            bot.VoiceStateUpdated += async e => {
+                try
+                {
+                    var pos = guit.FindIndex(x => x.GID == e.Guild.Id);
+                    if (pos != -1)
+                    {
+                        await Task.Delay(500);
+                        if (guit[pos].LLGuild.Channel.Id == e.Before.Channel.Id)
+                        {
+                            if (guit[pos].LLGuild.Channel.Users.Where(x => x.IsBot == false).Count() == 0)
+                            {
+                                guit[pos].alone = true;
+                            }
+                            else
+                            {
+                                guit[pos].alone = false;
+                            }
+                            if (guit[pos].LLGuild.Channel.Users.Where(x => x.IsBot == false).Count() == 0 && guit[pos].queue.Count > 0 && guit[pos].LLGuild.Channel.Id == e.Before.Channel.Id && !guit[pos].paused)
+                            {
+                                await e.Guild.GetChannel(guit[pos].cmdChannel).SendMessageAsync("Playback was paused since everybody left the voicechannel, use ``m!resume`` to unpause");
+                                guit[pos].LLGuild.Pause();
+                                guit[pos].paused = true;
+                            }
+                            handleVoidisc(pos);
+                        }
+                    }
+                }
+                catch
+                {
+                    try
+                    {
+                        var pos = guit.FindIndex(x => x.GID == e.Guild.Id);
+                        if (pos != -1)
+                        {
+                            handleVoidisc(pos);
+                        }
+                    }
+                    catch{}
+                }
+                await Task.CompletedTask;
+            };
+            //bot.VoiceStateUpdated += TimoutODisc;
             bot.GuildMemberAdded += async e =>
             {
-                if (e.Guild.Id == 481615569867767837)
+                if (e.Guild.Id == 483279257431441410)
                 {
-                    await e.Member.GrantRoleAsync(e.Guild.GetRole(481622541383892993));
+                    await e.Member.GrantRoleAsync(e.Guild.GetRole(483280207927574528));
                 }
                 await Task.CompletedTask;
             };
@@ -125,7 +165,7 @@ namespace someBot
                 var me = await DblApi.GetMeAsync();
                 await me.UpdateStatsAsync(e.Client.Guilds.Count);
             };
-            bot.Ready += async e =>
+            bot.GuildDownloadCompleted += async e =>
             {
                 DiscordActivity test = new DiscordActivity
                 {
@@ -150,7 +190,10 @@ namespace someBot
                         LLGuild = null,
                         playing = false,
                         rAint = 0,
-                        repeatAll = false
+                        repeatAll = false,
+                        alone = false,
+                        paused = true,
+                        stoppin = false
                     });
                     foreach (var guilds in e.Client.Guilds)
                     {
@@ -166,7 +209,14 @@ namespace someBot
                             LLGuild = null,
                             playing = false,
                             rAint = 0,
-                            repeatAll = false
+                            repeatAll = false,
+                            alone = false,
+                            paused = true,
+                            audioPlay = new Commands.Audio.Playback(),
+                            audioFunc = new Commands.Audio.Functions(),
+                            audioQueue = new Commands.Audio.Queue(),
+                            audioEvents = new Commands.Audio.Events(),
+                            stoppin = false
                         });
                     }
                     await Task.CompletedTask;
@@ -194,7 +244,14 @@ namespace someBot
                         LLGuild = null,
                         playing = false,
                         rAint = 0,
-                        repeatAll = false
+                        repeatAll = false,
+                        alone = false,
+                        paused = true,
+                        audioPlay = new Commands.Audio.Playback(),
+                        audioFunc = new Commands.Audio.Functions(),
+                        audioQueue = new Commands.Audio.Queue(),
+                        audioEvents = new Commands.Audio.Events(),
+                        stoppin = false
                     });
                 }
                 await Task.CompletedTask;
@@ -264,6 +321,34 @@ namespace someBot
         public void sendToChannel(ulong channelId, string msg) //if a message needs to be sent to another channel, in commands this is not needed
         {
             bot.GetChannelAsync(channelId).Result.SendMessageAsync(msg);
+        }
+
+        public async void handleVoidisc(int pos) //if a message needs to be sent to another channel, in commands this is not needed
+        {
+            try
+            {
+                guit[pos].offtime = DateTime.Now;
+                while (guit[pos].alone || guit[pos].queue.Count < 1)
+                {
+                    if (DateTime.Now.Subtract(guit[pos].offtime).TotalMinutes > 5)
+                    {
+                        guit[pos].LLGuild.PlaybackFinished -= guit[pos].audioEvents.PlayFin;
+                        guit[pos].LLGuild.TrackStuck -= guit[pos].audioEvents.PlayStu;
+                        guit[pos].LLGuild.TrackException -= guit[pos].audioEvents.PlayErr;
+                        guit[pos].LLGuild.Disconnect();
+                        guit[pos].LLGuild = null;
+                        guit[pos].offtime = DateTime.Now;
+                        guit[pos].paused = false;
+                        break;
+                    }
+                    else
+                    {
+                        await Task.Delay(10000);
+                    }
+
+                }
+            }
+            catch{ }
         }
 
         public async Task Bot_MessageCreated(MessageCreateEventArgs e)
@@ -377,6 +462,22 @@ namespace someBot
         public bool playing { get; set; }
         [JsonProperty("timeout")]
         public bool timeout { get; set; }
+        [JsonProperty("alone")]
+        public bool alone { get; set; }
+        [JsonProperty("paused")]
+        public bool paused { get; set; }
+        [JsonProperty("stoppin")]
+        public bool stoppin { get; set; }
+        [JsonProperty("cmdChannel")]
+        public ulong cmdChannel { get; set; }
+        [JsonProperty("audioPlay")]
+        public Commands.Audio.Playback audioPlay { get; set; }
+        [JsonProperty("audioFunc")]
+        public Commands.Audio.Functions audioFunc { get; set; }
+        [JsonProperty("audioQueue")]
+        public Commands.Audio.Queue audioQueue { get; set; }
+        [JsonProperty("audioEvents")]
+        public Commands.Audio.Events audioEvents { get; set; }
     }
 
     public class Gsets2
@@ -385,6 +486,8 @@ namespace someBot
         public DiscordMember requester { get; set; }
         [JsonProperty("LavaTrack")]
         public LavalinkTrack LavaTrack { get; set; }
+        [JsonProperty("addtime")]
+        public DateTime addtime { get; set; }
     }
 
     public class Gsets3
@@ -395,5 +498,7 @@ namespace someBot
         public LavalinkTrack LavaTrack { get; set; }
         [JsonProperty("sstop")]
         public bool sstop { get; set; }
+        [JsonProperty("addtime")]
+        public DateTime addtime { get; set; }
     }
 }

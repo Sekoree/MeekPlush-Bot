@@ -4,6 +4,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Lavalink.EventArgs;
+using DSharpPlus.VoiceNext;
 using DSharpPlus.Entities;
 using System.Linq;
 using System.Collections.Generic;
@@ -31,12 +32,11 @@ namespace someBot.Commands
                 {
                     return;
                 }
+                Bot.guit[pos].cmdChannel = ctx.Channel.Id;
                 var con = Bot.guit[0].LLinkCon;
                 if (Bot.guit[pos].LLGuild == null)
                 {
-                    //if(Bot.guit[pos].LLGuild.Channel != chn) {
-                        Bot.guit[pos].LLGuild = await con.ConnectAsync(chn);
-                    //}
+                    Bot.guit[pos].LLGuild = await con.ConnectAsync(chn);
                 }
             }
             catch (Exception ex) {
@@ -62,173 +62,59 @@ namespace someBot.Commands
                 {
                     return;
                 }
+                Bot.guit[pos].cmdChannel = ctx.Channel.Id;
                 var con = Bot.guit[0].LLinkCon;
+                bool wasdisc = false;
                 if (Bot.guit[pos].LLGuild == null)
                 {
                     Bot.guit[pos].LLGuild = await con.ConnectAsync(chn);
+                    wasdisc = true;
                 }
-                if (uri == null)
+                else if (!Bot.guit[pos].LLGuild.IsConnected)
                 {
-                    await ctx.RespondAsync("Playing preloaded playlist/queue!");
-                    Bot.guit[pos].LLGuild.PlaybackFinished += PlayFin;
-                    Bot.guit[pos].LLGuild.TrackStuck += PlayStu;
-                    Bot.guit[pos].LLGuild.TrackException += PlayErr;
+                    Bot.guit[pos].LLGuild = await con.ConnectAsync(chn);
+                    wasdisc = true;
                 }
-                else if (Bot.guit[pos].playing)
+                if (wasdisc && uri == null)
                 {
-                    if (chn != Bot.guit[pos].LLGuild.Channel)
+                    if (Bot.guit[pos].queue.Count != 0)
                     {
-                        return;
+                        await ctx.RespondAsync("Resuming queue!");
                     }
-                    if (!uri.StartsWith("https://") && !uri.StartsWith("http://"))
+                    Bot.guit[pos].audioPlay.QueueLoop(pos, ctx);
+                }
+                else if (wasdisc && uri != null)
+                {
+                    if (Bot.guit[pos].queue.Count != 0)
                     {
-                        var datrack = await con.GetTracksAsync(uri);
-                        Bot.guit[pos].queue.Add(new Gsets2
-                        {
-                            LavaTrack = datrack.First(),
-                            requester = ctx.Member
-                        });
-                        int yoyo = Bot.guit[pos].queue.FindIndex(x => x.LavaTrack.Uri == datrack.First().Uri);
-                        string uwu = Bot.guit[pos].queue[yoyo].requester.Username;
-                        if (Bot.guit[pos].queue[yoyo].requester.Nickname != null) uwu += $" ({Bot.guit[pos].queue[yoyo].requester.Nickname})";
-                        await ctx.RespondAsync($"Added: **{Bot.guit[pos].queue[yoyo].LavaTrack.Title}** by **{Bot.guit[pos].queue[yoyo].LavaTrack.Author}** to the queue!\nRequested by: {uwu}");
+                        await ctx.RespondAsync("Resuming queue!");
                     }
-                    else
+                    Bot.guit[pos].audioPlay.PlaySong(pos, ctx, uri);
+                }
+                else if (!wasdisc && Bot.guit[pos].queue.Count < 1 && !Bot.guit[pos].playing)
+                {
+                    Bot.guit[pos].audioPlay.PlaySong(pos, ctx, uri);
+                }
+                else if (!wasdisc && Bot.guit[pos].queue.Count > 1 && Bot.guit[pos].playing)
+                {
+                    var q_It = Bot.guit[pos].audioPlay.QueueSong(pos, ctx, uri);
+                    q_It.Wait();
+                }
+                else if (!wasdisc && Bot.guit[pos].queue.Count < 1 && Bot.guit[pos].playing)
+                {
+                    Bot.guit[pos].queue.Add(new Gsets2
                     {
-                        var datrack = await con.GetTracksAsync(new Uri(uri));
-                        Bot.guit[pos].queue.Add(new Gsets2
-                        {
-                            LavaTrack = datrack.First(),
-                            requester = ctx.Member
-                        });
-                        int yoyo = Bot.guit[pos].queue.FindIndex(x => x.LavaTrack.Uri == datrack.First().Uri);
-                        string uwu = Bot.guit[pos].queue[yoyo].requester.Username;
-                        if (Bot.guit[pos].queue[yoyo].requester.Nickname != null) uwu += $" ({Bot.guit[pos].queue[yoyo].requester.Nickname})";
-                        await ctx.RespondAsync($"Added: **{Bot.guit[pos].queue[yoyo].LavaTrack.Title}** by **{Bot.guit[pos].queue[yoyo].LavaTrack.Author}** to the queue!\nRequested by: {uwu}");
-                    }
-                    
-                    return;
+                        LavaTrack = Bot.guit[pos].playnow.LavaTrack,
+                        requester = Bot.guit[pos].playnow.requester,
+                        addtime = Bot.guit[pos].playnow.addtime
+                    });
+                    var q_It = Bot.guit[pos].audioPlay.QueueSong(pos, ctx, uri);
+                    q_It.Wait();
                 }
                 else
                 {
-                    if (!uri.StartsWith("https://") && !uri.StartsWith("http://"))
-                    {
-                        var datrack = await con.GetTracksAsync(uri);
-                        Bot.guit[pos].queue.Add(new Gsets2
-                        {
-                            LavaTrack = datrack.First(),
-                            requester = ctx.Member
-                        });
-                        int yoyo = Bot.guit[pos].queue.FindIndex(x => x.LavaTrack.Uri == datrack.First().Uri);
-                        string uwu = Bot.guit[pos].queue[yoyo].requester.Username;
-                        if (Bot.guit[pos].queue[yoyo].requester.Nickname != null) uwu += $" ({Bot.guit[pos].queue[yoyo].requester.Nickname})";
-                        await ctx.RespondAsync($"Playing: **{Bot.guit[pos].queue[yoyo].LavaTrack.Title}** by **{Bot.guit[pos].queue[yoyo].LavaTrack.Author}**\nRequested by: {uwu}");
-                    }
-                    else
-                    {
-                        var datrack = await con.GetTracksAsync(new Uri(uri));
-                        Bot.guit[pos].queue.Add(new Gsets2
-                        {
-                            LavaTrack = datrack.First(),
-                            requester = ctx.Member
-                        });
-                        int yoyo = Bot.guit[pos].queue.FindIndex(x => x.LavaTrack.Uri == datrack.First().Uri);
-                        string uwu = Bot.guit[pos].queue[yoyo].requester.Username;
-                        if (Bot.guit[pos].queue[yoyo].requester.Nickname != null) uwu += $" ({Bot.guit[pos].queue[yoyo].requester.Nickname})";
-                        await ctx.RespondAsync($"Playing: **{Bot.guit[pos].queue[yoyo].LavaTrack.Title}** by **{Bot.guit[pos].queue[yoyo].LavaTrack.Author}**\nRequested by: {uwu}");
-                    }
-                    Bot.guit[pos].LLGuild.PlaybackFinished += PlayFin;
-                    Bot.guit[pos].LLGuild.TrackStuck += PlayStu;
-                    Bot.guit[pos].LLGuild.TrackException += PlayErr;
-                }
-                while (Bot.guit[pos].queue.Count != 0)
-                {
-                    System.Random rnd = new System.Random();
-                    int rr = 0;
-                    if (Bot.guit[pos].shuffle)
-                    {
-                        rr = rnd.Next(0, Bot.guit[pos].queue.Count);
-                    }
-                    if (Bot.guit[pos].repeatAll)
-                    {
-                        Bot.guit[pos].rAint++;
-                        rr = Bot.guit[pos].rAint;
-                        if (Bot.guit[pos].rAint == Bot.guit[pos].queue.Count)
-                        {
-                            Bot.guit[pos].rAint = 0;
-                            rr = 0;
-                        }
-                    }
-                    await Task.Delay(250);
-                    Bot.guit[pos].playnow.LavaTrack = Bot.guit[pos].queue[rr].LavaTrack;
-                    Bot.guit[pos].playnow.requester = Bot.guit[pos].queue[rr].requester;
-                    if (Bot.guit[pos].playnow.LavaTrack.IsStream)
-                    {
-                        Bot.guit[pos].playnow.sstop = false;
-                    }
-                    else
-                    {
-                        Bot.guit[pos].playnow.sstop = true;
-                    }
-                    await Task.Delay(500);
-                    if (Bot.guit[pos].queue[rr].LavaTrack.Author != null)
-                    {
-                        if (Bot.guit[pos].playnow.LavaTrack.IsStream)
-                        {
-                            var naet = await con.GetTracksAsync(new Uri(Bot.guit[pos].playnow.LavaTrack.Uri.OriginalString));
-                            Bot.guit[pos].playnow.LavaTrack = naet.First();
-                        }
-                        await Task.Delay(500);
-                        Bot.guit[pos].LLGuild.Play(Bot.guit[pos].playnow.LavaTrack);
-                        await Task.Delay(500);
-                        Bot.guit[pos].playing = true;
-                        await Task.Delay(500);
-                        //await ctx.RespondAsync($"Playing: **{Bot.guit[pos].queue[0].LavaTrack.Title}** by **{Bot.guit[pos].queue[0].LavaTrack.Author}**");
-                        while (Bot.guit[pos].playing)
-                        {
-                            if (ctx.Client.GetGuildAsync(Bot.guit[pos].GID).Result.GetMemberAsync(ctx.Client.CurrentUser.Id).Result.VoiceState?.Channel.Users.Where(x => x.IsBot == false).Count() == 0)
-                            {
-                                if (DateTime.Now.Subtract(Bot.guit[pos].offtime).TotalMinutes > 5)
-                                {
-                                    Bot.guit[pos].LLGuild.PlaybackFinished -= PlayFin;
-                                    Bot.guit[pos].LLGuild.TrackStuck -= PlayStu;
-                                    Bot.guit[pos].LLGuild.TrackException -= PlayErr;
-                                    Bot.guit[pos].LLGuild.Disconnect();
-                                    Bot.guit[pos].LLGuild = null;
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                Bot.guit[pos].offtime = DateTime.Now;
-                            }
-                            await Task.Delay(1000);
-                        }
-                    }
-                    if (!Bot.guit[pos].repeat && !Bot.guit[pos].repeatAll)
-                    {
-                        try
-                        {
-                            Bot.guit[pos].queue.RemoveAt(rr);
-                        }
-                        catch { }
-                    }
-                }
-                try
-                {
-                    Bot.guit[pos].LLGuild.PlaybackFinished -= PlayFin;
-                    Bot.guit[pos].LLGuild.TrackStuck -= PlayStu;
-                    Bot.guit[pos].LLGuild.TrackException -= PlayErr;
-                }
-                catch { }
-                if (ctx.Client.GetGuildAsync(Bot.guit[pos].GID).Result.GetMemberAsync(ctx.Client.CurrentUser.Id).Result.VoiceState?.Channel.Users.Where(x => x.IsBot == false).Count() == 0 || Bot.guit[pos].queue.Count < 1)
-                {
-                    await Task.Delay(TimeSpan.FromMinutes(5));
-                    if (DateTime.Now.Subtract(Bot.guit[pos].offtime).TotalMinutes > 5)
-                    {
-                        Bot.guit[pos].LLGuild.Disconnect();
-                        Bot.guit[pos].LLGuild = null;
-                    }
+                    var q_It = Bot.guit[pos].audioPlay.QueueSong(pos, ctx, uri);
+                    q_It.Wait();
                 }
             }
             catch (Exception ex)
@@ -236,74 +122,6 @@ namespace someBot.Commands
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
             }
-        }
-
-        public async Task PlayFin(TrackFinishEventArgs lg)
-        {
-            var con = Bot.guit[0].LLinkCon;
-            var pos = Bot.guit.FindIndex(x => x.GID == lg.Player.Guild.Id);
-            if (pos == -1)
-            {
-                return;
-            }
-            if (Bot.guit[pos].playnow.LavaTrack.IsStream && !Bot.guit[pos].playnow.sstop)
-            {
-                var naet = await con.GetTracksAsync(new Uri(Bot.guit[pos].playnow.LavaTrack.Uri.OriginalString));
-                Bot.guit[pos].queue.Insert(0, new Gsets2
-                {
-                    LavaTrack = Bot.guit[pos].playnow.LavaTrack,
-                    requester = Bot.guit[pos].playnow.requester
-                });
-                Console.WriteLine("LL Stream Error");
-            }
-            Bot.guit[pos].playing = false;
-            await Task.CompletedTask;
-        }
-
-        public async Task PlayStu(TrackStuckEventArgs ts)
-        {
-            var con = Bot.guit[0].LLinkCon;
-            var pos = Bot.guit.FindIndex(x => x.GID == ts.Player.Guild.Id);
-            if (pos == -1)
-            {
-                return;
-            }
-            if (Bot.guit[pos].playnow.LavaTrack.IsStream)
-            {
-                var naet = await con.GetTracksAsync(new Uri(Bot.guit[pos].playnow.LavaTrack.Uri.OriginalString));
-                Bot.guit[pos].queue.Insert(0, new Gsets2
-                {
-                    LavaTrack = Bot.guit[pos].playnow.LavaTrack,
-                    requester = Bot.guit[pos].playnow.requester
-                });
-            }
-            await ts.Player.Channel.SendMessageAsync("Track was stuck, so it was skipped >>");
-            Console.WriteLine("LL Stuck");
-            Bot.guit[pos].playing = false;
-            await Task.CompletedTask;
-        }
-
-        public async Task PlayErr(TrackExceptionEventArgs ts)
-        {
-            var con = Bot.guit[0].LLinkCon;
-            var pos = Bot.guit.FindIndex(x => x.GID == ts.Player.Guild.Id);
-            if (pos == -1)
-            {
-                return;
-            }
-            if (Bot.guit[pos].playnow.LavaTrack.IsStream)
-            {
-                var naet = await con.GetTracksAsync(new Uri(Bot.guit[pos].playnow.LavaTrack.Uri.OriginalString));
-                Bot.guit[pos].queue.Insert(0, new Gsets2
-                {
-                    LavaTrack = Bot.guit[pos].playnow.LavaTrack,
-                    requester = Bot.guit[pos].playnow.requester
-                });
-            }
-            await ts.Player.Channel.SendMessageAsync($"There was an error with the track, so it was skipped ({ts.Error.First()})>>");
-            Console.WriteLine("LL Error");
-            Bot.guit[pos].playing = false;
-            await Task.CompletedTask;
         }
 
         [Command("leave")]
@@ -322,6 +140,7 @@ namespace someBot.Commands
                 {
                     return;
                 }
+                Bot.guit[pos].cmdChannel = ctx.Channel.Id;
                 if (!Bot.guit[pos].LLGuild.IsConnected)
                 {
                     return;
@@ -330,9 +149,10 @@ namespace someBot.Commands
                 {
                     Bot.guit[pos].playnow.sstop = true;
                 }
-                Bot.guit[pos].LLGuild.Stop();
+                Bot.guit[pos].paused = false;
                 Bot.guit[pos].LLGuild.Disconnect();
                 Bot.guit[pos].LLGuild = null;
+                Bot.guit[pos].playing = false;
                 await ctx.RespondAsync("disconnected");
             }
             catch (Exception ex)
@@ -358,6 +178,7 @@ namespace someBot.Commands
                 {
                     return;
                 }
+                Bot.guit[pos].cmdChannel = ctx.Channel.Id;
                 if (!Bot.guit[pos].LLGuild.IsConnected)
                 {
                     return;
@@ -366,7 +187,10 @@ namespace someBot.Commands
                 {
                     Bot.guit[pos].playnow.sstop = true;
                 }
-                Bot.guit[pos].LLGuild.Stop();
+                var stop = Bot.guit[pos].audioFunc.Stop(pos);
+                stop.Wait();
+                await Task.Delay(2500);
+                Bot.guit[pos].stoppin = false;
                 await ctx.RespondAsync("stopped");
             }
             catch (Exception ex)
@@ -392,13 +216,19 @@ namespace someBot.Commands
                 {
                     return;
                 }
+                Bot.guit[pos].cmdChannel = ctx.Channel.Id;
                 if (!Bot.guit[pos].LLGuild.IsConnected)
                 {
                     return;
                 }
-                if (Bot.guit[pos].queue.Count < 1)
+                if (Bot.guit[pos].queue.Count > 1)
                 {
-                    Bot.guit[pos].playing = false;
+                    if (Bot.guit[pos].playnow.LavaTrack.IsStream)
+                    {
+                        Bot.guit[pos].playnow.sstop = true;
+                    }
+                    var stop = Bot.guit[pos].audioFunc.Skip(pos);
+                    stop.Wait();
                     await ctx.RespondAsync("skipped");
                 }
                 else
@@ -407,7 +237,8 @@ namespace someBot.Commands
                     {
                         Bot.guit[pos].playnow.sstop = true;
                     }
-                    Bot.guit[pos].LLGuild.Stop();
+                    var stop = Bot.guit[pos].audioFunc.Skip(pos);
+                    stop.Wait();
                     await ctx.RespondAsync("skipped");
                 }
             }
@@ -434,6 +265,7 @@ namespace someBot.Commands
                 {
                     return;
                 }
+                Bot.guit[pos].cmdChannel = ctx.Channel.Id;
                 if (!Bot.guit[pos].LLGuild.IsConnected)
                 {
                     return;
@@ -465,11 +297,13 @@ namespace someBot.Commands
                 {
                     return;
                 }
+                Bot.guit[pos].cmdChannel = ctx.Channel.Id;
                 if (!Bot.guit[pos].LLGuild.IsConnected)
                 {
                     return;
                 }
-                Bot.guit[pos].LLGuild.Pause();
+                var pause = Bot.guit[pos].audioFunc.Pause(pos);
+                pause.Wait();
                 await ctx.RespondAsync($"**Paused**");
             }
             catch (Exception ex)
@@ -495,11 +329,31 @@ namespace someBot.Commands
                 {
                     return;
                 }
+                Bot.guit[pos].cmdChannel = ctx.Channel.Id;
                 if (!Bot.guit[pos].LLGuild.IsConnected)
                 {
                     return;
                 }
-                Bot.guit[pos].LLGuild.Resume();
+                var botusr = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
+                if (Bot.guit[pos].playing)
+                {
+                    var resume = Bot.guit[pos].audioFunc.Resume(pos);
+                    resume.Wait();
+                }
+                else
+                {
+                    try
+                    {
+                        Bot.guit[pos].LLGuild.PlaybackFinished -= Bot.guit[pos].audioEvents.PlayFin;
+                        Bot.guit[pos].LLGuild.TrackStuck -= Bot.guit[pos].audioEvents.PlayStu;
+                        Bot.guit[pos].LLGuild.TrackException -= Bot.guit[pos].audioEvents.PlayErr;
+                    }
+                    catch { }
+                    Bot.guit[pos].LLGuild.PlaybackFinished += Bot.guit[pos].audioEvents.PlayFin;
+                    Bot.guit[pos].LLGuild.TrackStuck += Bot.guit[pos].audioEvents.PlayStu;
+                    Bot.guit[pos].LLGuild.TrackException += Bot.guit[pos].audioEvents.PlayErr;
+                    Bot.guit[pos].audioPlay.QueueLoop(pos, ctx);
+                }
                 await ctx.RespondAsync($"**Resumed**");
             }
             catch (Exception ex)
@@ -525,16 +379,22 @@ namespace someBot.Commands
                 {
                     return;
                 }
+                Bot.guit[pos].cmdChannel = ctx.Channel.Id;
                 if (!Bot.guit[pos].LLGuild.IsConnected || Bot.guit[pos].queue.Count == 1)
                 {
                     return;
                 }
                 int pos2 = ctx.Member.Roles.ToList().FindIndex(x => x.CheckPermission(DSharpPlus.Permissions.ManageMessages) == DSharpPlus.PermissionLevel.Allowed);
                 int pos3 = ctx.Member.Roles.ToList().FindIndex(x => x.CheckPermission(DSharpPlus.Permissions.Administrator) == DSharpPlus.PermissionLevel.Allowed);
-                if (ctx.Member == Bot.guit[pos].queue[r].requester || pos2 != -1 || pos3 != -1)
+                if (r > Bot.guit[pos].queue.Count - 1)
+                {
+                    return;
+                }
+                else if (ctx.Member == Bot.guit[pos].queue[r].requester || pos2 != -1 || pos3 != -1)
                 {
                     await ctx.RespondAsync($"Removed: **{Bot.guit[pos].queue[r].LavaTrack.Title}** by **{Bot.guit[pos].queue[r].LavaTrack.Author}**");
-                    Bot.guit[pos].queue.RemoveAt(r);
+                    var oi = Bot.guit[pos].audioQueue.queueRemove(pos, r);
+                    oi.Wait();
                 }
                 else
                 {
@@ -564,7 +424,8 @@ namespace someBot.Commands
                 {
                     return;
                 }
-                if (!Bot.guit[pos].LLGuild.IsConnected || Bot.guit[pos].queue.Count == 1)
+                Bot.guit[pos].cmdChannel = ctx.Channel.Id;
+                if (!Bot.guit[pos].LLGuild.IsConnected || Bot.guit[pos].queue.Count == 1 || end > Bot.guit[pos].queue.Count - beg - 1)
                 {
                     return;
                 }
@@ -573,7 +434,8 @@ namespace someBot.Commands
                     end = Bot.guit[pos].queue.Count - beg - 1;
                 }
                 await ctx.RespondAsync($"Removed: **{end + 1 - beg} Songs**");
-                Bot.guit[pos].queue.RemoveRange(beg, end);
+                var qrs = Bot.guit[pos].audioQueue.queueRemoveSome(pos, beg, end);
+                qrs.Wait();
             }
             catch (Exception ex)
             {
@@ -585,134 +447,24 @@ namespace someBot.Commands
         [Command("queue"), Aliases("q")]
         public async Task queueAllLL(CommandContext ctx)
         {
-            var intbi = ctx.Client.GetInteractivity();
-            var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
-            var chn = ctx.Member?.VoiceState?.Channel;
-            if (pos == -1 || Bot.guit[pos].LLGuild.Channel != chn)
+            try
             {
-                return;
-            }
-            //int i = 0;
-            int pagamount = Bot.guit[pos].queue.Count / 5;
-            int pagrest = Bot.guit[pos].queue.Count % 5;
-            List<Page> dapa = new List<Page>();
-            int ushere2 = 0;
-            if (pagamount != 0)
-            {
-                int pagup = 0;
-                int ushere = 0;
-                bool another = false;
-                while (ushere != pagamount)
+                var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
+                var chn = ctx.Member?.VoiceState?.Channel;
+                if (pos == -1)
                 {
-                    if (ushere == 1)
-                    {
-                        pagup = 5;
-                    }
-                    else if (ushere != 0)
-                    {
-                        if (ushere % 2 == 1)
-                        {
-                            pagup = Convert.ToInt32(Convert.ToString(ushere2) + Convert.ToString(5));
-                        }
-                        else
-                        {
-                            pagup = Convert.ToInt32(Convert.ToString(ushere2) + Convert.ToString(0));
-                        }
-                    }
-                    var eb = new DiscordEmbedBuilder
-                    {
-                        Color = new DiscordColor("#68D3D2"),
-                        Title = "Current Queue",
-                        Description = "more",
-                        ThumbnailUrl = ctx.Client.CurrentUser.AvatarUrl
-                    };
-                    for (int norpag = 0; norpag < 5; norpag++)
-                    {
-                        if (pagup == 0)
-                        {
-                            var que = Bot.guit[pos].queue;
-                            eb.WithDescription("**__Now Playing:__**");
-                            eb.AddField($"{que[pagup].LavaTrack.Title} ({que[pagup].LavaTrack.Length})", $"By **{que[pagup].LavaTrack.Author}** [Link]({que[pagup].LavaTrack.Uri}) **||** Requested by {que[pagup].requester.Mention}\n-----");
-                        }
-                        else
-                        {
-                            var que = Bot.guit[pos].queue;
-                            eb.AddField($"{pagup}.{que[pagup].LavaTrack.Title} ({que[pagup].LavaTrack.Length})", $"By **{que[pagup].LavaTrack.Author}** [Link]({que[pagup].LavaTrack.Uri}) **||** Requested by {que[pagup].requester.Mention}\nᵕ");
-                        }
-                        pagup++;
-                    }
-                    dapa.Add(new Page
-                    {
-                        Embed = eb.Build()
-                    });
-                    ushere++;
-                    if (another)
-                    {
-                        ushere2++;
-                        another = false;
-                    }
-                    else
-                    {
-                        another = true;
-                    }
+                    return;
                 }
+                var getQ = Bot.guit[pos].audioQueue.QueueList(pos, ctx);
+                getQ.Wait();
+                Bot.guit[pos].cmdChannel = ctx.Channel.Id;
             }
-            if (pagrest != 0)
+            catch (Exception ex)
             {
-                int resup = 0;
-                if (pagamount == 1)
-                {
-                    resup = 5;
-                }
-                else if (pagamount != 0)
-                {
-                    if (pagamount % 2 == 0)
-                    {
-                        resup = Convert.ToInt32(Convert.ToString(ushere2) + Convert.ToString(0));
-                    }
-                    else
-                    {
-                        resup = Convert.ToInt32(Convert.ToString(ushere2) + Convert.ToString(5));
-                    }
-                }
-                var eb = new DiscordEmbedBuilder
-                {
-                    Color = new DiscordColor("#68D3D2"),
-                    Title = "Current Queue",
-                    Description = "more",
-                    ThumbnailUrl = ctx.Client.CurrentUser.AvatarUrl
-                };
-                for (int norpag = 0; norpag < pagrest; norpag++)
-                {
-                    if (resup == 0)
-                    {
-                        var que = Bot.guit[pos].queue;
-                        eb.WithDescription("**__Now Playing:__**");
-                        eb.AddField($"{que[resup].LavaTrack.Title} ({que[resup].LavaTrack.Length})", $"By **{que[resup].LavaTrack.Author}** [Link]({que[resup].LavaTrack.Uri}) **||** Requested by {que[resup].requester.Mention}\n**-----**");
-                    }
-                    else
-                    {
-                        var que = Bot.guit[pos].queue;
-                        eb.AddField($"{resup}.{que[resup].LavaTrack.Title} ({que[resup].LavaTrack.Length})", $"By **{que[resup].LavaTrack.Author}** [Link]({que[resup].LavaTrack.Uri}) **||** Requested by {que[resup].requester.Mention}\nᵕ");
-                    }
-                    resup++;
-                }
-                dapa.Add(new Page {
-                    Embed = eb.Build()
-                });
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
-            if (dapa.Count > 1)
-            {
-                await intbi.SendPaginatedMessage(ctx.Channel, ctx.Member, dapa, timeoutoverride: TimeSpan.FromMinutes(2));
-            }
-            else if (dapa.Count == 0 || dapa == null)
-            {
-                await ctx.RespondAsync("Queue is empty uwu");
-            }
-            else
-            {
-                await ctx.RespondAsync(embed: dapa[0].Embed);
-            }
+            await Task.CompletedTask;
         }
 
         [Command("repeat"), Aliases("r")]
@@ -724,7 +476,9 @@ namespace someBot.Commands
             {
                 return;
             }
-            Bot.guit[pos].repeat = !Bot.guit[pos].repeat;
+            Bot.guit[pos].cmdChannel = ctx.Channel.Id;
+            var repeat = Bot.guit[pos].audioFunc.Repeat(pos);
+            repeat.Wait();
             await ctx.RespondAsync("Repeat is set to " + Bot.guit[pos].repeat.ToString().ToLower());
         }
 
@@ -737,7 +491,9 @@ namespace someBot.Commands
             {
                 return;
             }
-            Bot.guit[pos].repeatAll = !Bot.guit[pos].repeatAll;
+            Bot.guit[pos].cmdChannel = ctx.Channel.Id;
+            var repeatall = Bot.guit[pos].audioFunc.RepeatAll(pos);
+            repeatall.Wait();
             await ctx.RespondAsync("Repeat all is set to " + Bot.guit[pos].repeatAll.ToString().ToLower());
         }
 
@@ -750,7 +506,9 @@ namespace someBot.Commands
             {
                 return;
             }
-            Bot.guit[pos].shuffle = !Bot.guit[pos].shuffle;
+            Bot.guit[pos].cmdChannel = ctx.Channel.Id;
+            var shuffle = Bot.guit[pos].audioFunc.Shuffle(pos);
+            shuffle.Wait();
             await ctx.RespondAsync("Shuffle is set to " + Bot.guit[pos].shuffle.ToString().ToLower());
         }
 
@@ -763,35 +521,63 @@ namespace someBot.Commands
             {
                 return;
             }
-            Bot.guit[pos].queue.RemoveRange(0, Bot.guit[pos].queue.Count - 1);
+            Bot.guit[pos].cmdChannel = ctx.Channel.Id;
+            if (Bot.guit[pos].playing)
+            {
+                Bot.guit[pos].queue.RemoveRange(1, Bot.guit[pos].queue.Count - 1);
+            }
+            else
+            {
+                Bot.guit[pos].queue.Clear();
+            }
             await ctx.RespondAsync("Cleared Queue");
         }
 
         [Command("playlist"), Aliases("pp")]
         public async Task QueP(CommandContext ctx, [RemainingText] string uri)
         {
-            var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
-            var chn = ctx.Member?.VoiceState?.Channel;
-            if (pos == -1 || Bot.guit[pos].LLGuild.Channel != chn)
+            try
             {
-                return;
-            }
-            if (!uri.StartsWith("https://") && !uri.StartsWith("http://"))
-            {
-                await ctx.RespondAsync("no valid playlist link");
-                return;
-            }
-            var con = Bot.guit[0].LLinkCon;
-            var datrack = await con.GetTracksAsync(new Uri(uri));
-            foreach (var dracks in datrack)
-            {
-                Bot.guit[pos].queue.Add(new Gsets2
+                var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
+                var chn = ctx.Member?.VoiceState?.Channel;
+                if (pos == -1 || Bot.guit[pos].LLGuild.Channel != chn)
                 {
-                    LavaTrack = dracks,
-                    requester = ctx.Member
-                });
+                    return;
+                }
+                Bot.guit[pos].cmdChannel = ctx.Channel.Id;
+                if (!uri.StartsWith("https://") && !uri.StartsWith("http://"))
+                {
+                    await ctx.RespondAsync("no valid playlist link");
+                    return;
+                }
+                var con = Bot.guit[0].LLinkCon;
+                var datrack = await con.GetTracksAsync(new Uri(uri));
+                int couldadd = datrack.Count();
+                foreach (var dracks in datrack)
+                {
+                    if (dracks.Author == null)
+                    {
+                        couldadd--;
+                        continue;
+                    }
+                    Bot.guit[pos].queue.Add(new Gsets2
+                    {
+                        LavaTrack = dracks,
+                        requester = ctx.Member,
+                        addtime = DateTime.Now
+                    });
+                }
+                await ctx.RespondAsync($"Added {datrack.Count()} songs to queue ({Bot.guit[pos].queue.Count} in queue now)");
+                if (couldadd != datrack.Count())
+                {
+                    await ctx.RespondAsync("Not all Songs were loaded, this could be due to an error or the video being blocked");
+                }
             }
-            await ctx.RespondAsync($"Added {datrack.Count()} songs to queue ({Bot.guit[pos].queue.Count} in queue now)");
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
         }
 
         [Command("nowplaying"), Aliases("np")]
@@ -799,10 +585,11 @@ namespace someBot.Commands
         {
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
             var chn = ctx.Member?.VoiceState?.Channel;
-            if (pos == -1 || Bot.guit[pos].LLGuild.Channel != chn)
+            if (pos == -1 || Bot.guit[pos].LLGuild.Channel != chn || Bot.guit[pos].playnow.requester == null)
             {
                 return;
             }
+            Bot.guit[pos].cmdChannel = ctx.Channel.Id;
             var eb = new DiscordEmbedBuilder
             {
                 Color = new DiscordColor("#68D3D2"),
@@ -822,13 +609,24 @@ namespace someBot.Commands
                     });
 
                     var searchListRequest = youtubeService.Search.List("snippet");
-                    searchListRequest.Q = que.LavaTrack.Title; // Replace with your search term.
+                    searchListRequest.Q = que.LavaTrack.Title + " " + que.LavaTrack.Author; // Replace with your search term.
                     searchListRequest.MaxResults = 1;
                     searchListRequest.Type = "video";
-
+                    string time1 = "";
+                    string time2 = "";
+                    if (que.LavaTrack.Length.Hours < 1)
+                    {
+                        time1 = Bot.guit[pos].LLGuild.CurrentState.PlaybackPosition.ToString(@"mm\:ss");
+                        time2 = que.LavaTrack.Length.ToString(@"mm\:ss");
+                    }
+                    else
+                    {
+                        time1 = Bot.guit[pos].LLGuild.CurrentState.PlaybackPosition.ToString(@"hh\:mm\:ss");
+                        time2 = que.LavaTrack.Length.ToString(@"hh\:mm\:ss");
+                    }
                     // Call the search.list method to retrieve results matching the specified query term.
                     var searchListResponse = await searchListRequest.ExecuteAsync();
-                    eb.AddField($"{que.LavaTrack.Title} ({que.LavaTrack.Length})", $"[Video Link]({que.LavaTrack.Uri})\n" +
+                    eb.AddField($"{que.LavaTrack.Title} ({time1}/{time2})", $"[Video Link]({que.LavaTrack.Uri})\n" +
                         $"[{que.LavaTrack.Author}](https://www.youtube.com/channel/" + searchListResponse.Items[0].Snippet.ChannelId +")");
                     eb.AddField("Description", searchListResponse.Items[0].Snippet.Description);
                     eb.WithImageUrl(searchListResponse.Items[0].Snippet.Thumbnails.High.Url);
@@ -840,7 +638,19 @@ namespace someBot.Commands
             }
             else
             {
-                eb.AddField($"{que.LavaTrack.Title} ({que.LavaTrack.Length})", $"By {que.LavaTrack.Author}\n[Link]({que.LavaTrack.Uri})\nRequested by {que.requester.Mention}");
+                string time1 = "";
+                string time2 = "";
+                if (que.LavaTrack.Length.Hours < 1)
+                {
+                    time1 = Bot.guit[pos].LLGuild.CurrentState.PlaybackPosition.ToString(@"mm\:ss");
+                    time2 = que.LavaTrack.Length.ToString(@"mm\:ss");
+                }
+                else
+                {
+                    time1 = Bot.guit[pos].LLGuild.CurrentState.PlaybackPosition.ToString(@"hh\:mm\:ss");
+                    time2 = que.LavaTrack.Length.ToString(@"hh\:mm\:ss");
+                }
+                eb.AddField($"{que.LavaTrack.Title} ({time1}/{time2})", $"By {que.LavaTrack.Author}\n[Link]({que.LavaTrack.Uri})\nRequested by {que.requester.Mention}");
             }
             await ctx.RespondAsync(embed: eb.Build());
         }
