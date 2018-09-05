@@ -113,12 +113,14 @@ namespace someBot.Commands
             var chn = ctx.Member.VoiceState?.Channel;
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
-            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null) {
+            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null)
+            {
                 await Task.CompletedTask;
                 return;
             }
             Bot.guit[pos].cmdChannel = ctx.Channel.Id;
             await Task.Run(() => Bot.guit[pos].audioFunc.Repeat(pos));
+            await ctx.RespondAsync($"Repeat set to {Bot.guit[pos].repeat}");
             Console.WriteLine($"[{ctx.Guild.Id}] Repeat set to {Bot.guit[pos].repeat}");
             await Task.CompletedTask;
         }
@@ -128,12 +130,14 @@ namespace someBot.Commands
             var chn = ctx.Member.VoiceState?.Channel;
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
-            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null) {
+            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null)
+            {
                 await Task.CompletedTask;
                 return;
             }
             Bot.guit[pos].cmdChannel = ctx.Channel.Id;
             await Task.Run(() => Bot.guit[pos].audioFunc.RepeatAll(pos));
+            await ctx.RespondAsync($"Repeat all set to {Bot.guit[pos].repeatAll}");
             Console.WriteLine($"[{ctx.Guild.Id}] RepeatAll set to {Bot.guit[pos].repeatAll}");
             await Task.CompletedTask;
         }
@@ -143,12 +147,14 @@ namespace someBot.Commands
             var chn = ctx.Member.VoiceState?.Channel;
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
-            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null) {
+            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null)
+            {
                 await Task.CompletedTask;
                 return;
             }
             Bot.guit[pos].cmdChannel = ctx.Channel.Id;
             await Task.Run(() => Bot.guit[pos].audioFunc.Shuffle(pos));
+            await ctx.RespondAsync($"Shuffle set to {Bot.guit[pos].shuffle}");
             Console.WriteLine($"[{ctx.Guild.Id}] Shuffle set to {Bot.guit[pos].shuffle}");
             await Task.CompletedTask;
         }

@@ -4,15 +4,13 @@ using DSharpPlus.Interactivity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using someBot;
 
 namespace someBot.Commands.Audio
 {
     public class Queue
     {
-        public async Task QueueList(int pos,CommandContext ctx)
+        public async Task QueueList(int pos, CommandContext ctx)
         {
             try
             {
@@ -73,17 +71,34 @@ namespace someBot.Commands.Audio
                         emboi.WithDescription("**__Now Playing:__**");
                         string time1 = "";
                         string time2 = "";
-                        if (Bot.guit[pos].playnow.LavaTrack.Length.Hours < 1)
+                        if (Bot.guit[pos].playnow.requester == null)
                         {
-                            time1 = Bot.guit[pos].LLGuild.CurrentState.PlaybackPosition.ToString(@"mm\:ss");
-                            time2 = Bot.guit[pos].playnow.LavaTrack.Length.ToString(@"mm\:ss");
+                            if (Bot.guit[pos].queue.First().LavaTrack.Length.Hours < 1)
+                            {
+                                time1 = Bot.guit[pos].LLGuild.CurrentState.PlaybackPosition.ToString(@"mm\:ss");
+                                time2 = Bot.guit[pos].queue.First().LavaTrack.Length.ToString(@"mm\:ss");
+                            }
+                            else
+                            {
+                                time1 = Bot.guit[pos].LLGuild.CurrentState.PlaybackPosition.ToString(@"hh\:mm\:ss");
+                                time2 = Bot.guit[pos].queue.First().LavaTrack.Length.ToString(@"hh\:mm\:ss");
+                            }
+                            emboi.AddField($"{Bot.guit[pos].queue.First().LavaTrack.Title} ({time1}/{time2})", $"By **{Bot.guit[pos].queue.First().LavaTrack.Author}** [Link]({Bot.guit[pos].queue.First().LavaTrack.Uri}) **||** Requested by {Bot.guit[pos].queue.First().requester.Mention}\n-----");
                         }
                         else
                         {
-                            time1 = Bot.guit[pos].LLGuild.CurrentState.PlaybackPosition.ToString(@"hh\:mm\:ss");
-                            time2 = Bot.guit[pos].playnow.LavaTrack.Length.ToString(@"hh\:mm\:ss");
+                            if (Bot.guit[pos].playnow.LavaTrack.Length.Hours < 1)
+                            {
+                                time1 = Bot.guit[pos].LLGuild.CurrentState.PlaybackPosition.ToString(@"mm\:ss");
+                                time2 = Bot.guit[pos].playnow.LavaTrack.Length.ToString(@"mm\:ss");
+                            }
+                            else
+                            {
+                                time1 = Bot.guit[pos].LLGuild.CurrentState.PlaybackPosition.ToString(@"hh\:mm\:ss");
+                                time2 = Bot.guit[pos].playnow.LavaTrack.Length.ToString(@"hh\:mm\:ss");
+                            }
+                            emboi.AddField($"{Bot.guit[pos].playnow.LavaTrack.Title} ({time1}/{time2})", $"By **{Bot.guit[pos].playnow.LavaTrack.Author}** [Link]({Bot.guit[pos].playnow.LavaTrack.Uri}) **||** Requested by {Bot.guit[pos].playnow.requester.Mention}\n-----");
                         }
-                        emboi.AddField($"{Bot.guit[pos].playnow.LavaTrack.Title} ({time1}/{time2})", $"By **{Bot.guit[pos].playnow.LavaTrack.Author}** [Link]({Bot.guit[pos].playnow.LavaTrack.Uri}) **||** Requested by {Bot.guit[pos].playnow.requester.Mention}\n-----");
                     }
                     else
                     {
