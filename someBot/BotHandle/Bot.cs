@@ -80,7 +80,7 @@ namespace someBot
             commands.RegisterCommands<Commands.RanImg.Other>();
             commands.RegisterCommands<XedddSpec>();
             commands.RegisterCommands<VoWiki>();
-            commands.RegisterCommands<Commands.Voice>();
+            commands.RegisterCommands<Commands.VoiceNew>();
 
             commands.CommandErrored += Bot_CMDErr;
 
@@ -180,31 +180,18 @@ namespace someBot
                     {
                         GID = 0,
                         prefix = new List<string>(new string[] { "m!" }),
-                        queue = new List<Gsets2>(),
-                        playnow = new Gsets3(),
-                        repeat = false,
-                        offtime = DateTime.Now,
-                        timeout = false,
-                        shuffle = false,
-                        LLinkCon = await llink.ConnectAsync(lcfg),
-                        LLGuild = null,
-                        playing = false,
-                        rAint = 0,
-                        repeatAll = false,
-                        alone = false,
-                        paused = true,
-                        stoppin = false
+                        LLinkCon = await llink.ConnectAsync(lcfg)
                     });
                     foreach (var guilds in e.Client.Guilds)
                     {
-                        guit.Add(new Gsets {
+                        guit.Add(new Gsets
+                        {
                             GID = guilds.Value.Id,
                             prefix = new List<string>(new string[] { "m!" }),
                             queue = new List<Gsets2>(),
                             playnow = new Gsets3(),
                             repeat = false,
                             offtime = DateTime.Now,
-                            timeout = false,
                             shuffle = false,
                             LLGuild = null,
                             playing = false,
@@ -219,6 +206,7 @@ namespace someBot
                             stoppin = false
                         });
                     }
+                    Console.WriteLine("all added");
                     await Task.CompletedTask;
                 }
                 catch (Exception ex)
@@ -239,7 +227,6 @@ namespace someBot
                         playnow = new Gsets3(),
                         repeat = false,
                         offtime = DateTime.Now,
-                        timeout = false,
                         shuffle = false,
                         LLGuild = null,
                         playing = false,
@@ -436,69 +423,40 @@ namespace someBot
 
     public class Gsets
     {
-        [JsonProperty("GID")]
         public ulong GID { get; set; }
-        [JsonProperty("LLinkCon")]
         public LavalinkNodeConnection LLinkCon { get; set; }
-        [JsonProperty("LLGuild")]
         public LavalinkGuildConnection LLGuild { get; set; }
-        [JsonProperty("prefix")]
         public List<string> prefix { get; set; }
-        [JsonProperty("queue")]
         public List<Gsets2> queue { get; set; }
-        [JsonProperty("playingnow")]
         public Gsets3 playnow { get; set; }
-        [JsonProperty("offtime")]
         public DateTime offtime { get; set; }
-        [JsonProperty("repeat")]
         public bool repeat { get; set; }
-        [JsonProperty("repeatAll")]
         public bool repeatAll { get; set; }
-        [JsonProperty("rtAll")]
         public int rAint { get; set; }
-        [JsonProperty("shuffle")]
         public bool shuffle { get; set; }
-        [JsonProperty("playing")]
         public bool playing { get; set; }
-        [JsonProperty("timeout")]
-        public bool timeout { get; set; }
-        [JsonProperty("alone")]
-        public bool alone { get; set; }
-        [JsonProperty("paused")]
         public bool paused { get; set; }
-        [JsonProperty("stoppin")]
         public bool stoppin { get; set; }
-        [JsonProperty("cmdChannel")]
+        public bool alone { get; set; }
         public ulong cmdChannel { get; set; }
-        [JsonProperty("audioPlay")]
         public Commands.Audio.Playback audioPlay { get; set; }
-        [JsonProperty("audioFunc")]
         public Commands.Audio.Functions audioFunc { get; set; }
-        [JsonProperty("audioQueue")]
         public Commands.Audio.Queue audioQueue { get; set; }
-        [JsonProperty("audioEvents")]
         public Commands.Audio.Events audioEvents { get; set; }
     }
 
     public class Gsets2
     {
-        [JsonProperty("requester")]
         public DiscordMember requester { get; set; }
-        [JsonProperty("LavaTrack")]
         public LavalinkTrack LavaTrack { get; set; }
-        [JsonProperty("addtime")]
         public DateTime addtime { get; set; }
     }
 
     public class Gsets3
     {
-        [JsonProperty("requester")]
         public DiscordMember requester { get; set; }
-        [JsonProperty("LavaTrack")]
         public LavalinkTrack LavaTrack { get; set; }
-        [JsonProperty("sstop")]
-        public bool sstop { get; set; }
-        [JsonProperty("addtime")]
         public DateTime addtime { get; set; }
+        public bool sstop { get; set; }
     }
 }

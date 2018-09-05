@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using DSharpPlus.CommandsNext;
+using someBot;
 
 namespace someBot.Commands.Audio
 {
@@ -28,7 +30,6 @@ namespace someBot.Commands.Audio
                 });
                 Console.WriteLine("LL Stream Error");
             }
-            Console.WriteLine("end event triggered");
             Bot.guit[pos].playing = false;
             await Task.CompletedTask;
         }
@@ -85,6 +86,17 @@ namespace someBot.Commands.Audio
         {
             Bot.guit[pos].playing = true;
             return Task.CompletedTask;
+        }
+
+        public async Task stuckCheck(int pos, CommandContext ctx)
+        {
+            await Task.Delay(5000);
+            if (!Bot.guit[pos].playing && Bot.guit[pos].queue.Any())
+            {
+                await ctx.Guild.GetChannel(Bot.guit[pos].cmdChannel).SendMessageAsync("Seems like something got stuck uwu, restarting playback >>");
+                Bot.guit[pos].audioPlay.QueueLoop(pos, ctx);
+            }
+            await Task.CompletedTask;
         }
 
         public Task setNP(int pos, Gsets2 queue)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using someBot;
 
 namespace someBot.Commands.Audio
 {
@@ -11,6 +12,18 @@ namespace someBot.Commands.Audio
         {
             Bot.guit[pos].paused = true;
             Bot.guit[pos].LLGuild.Pause();
+            return Task.CompletedTask;
+        }
+
+        public Task Leave(int pos)
+        {
+            Bot.guit[pos].paused = false;
+            Bot.guit[pos].playing = false;
+            Bot.guit[pos].rAint = 0;
+            Bot.guit[pos].repeat = false;
+            Bot.guit[pos].repeatAll = false;
+            Bot.guit[pos].shuffle = false;
+            Bot.guit[pos].stoppin = false;
             return Task.CompletedTask;
         }
 
