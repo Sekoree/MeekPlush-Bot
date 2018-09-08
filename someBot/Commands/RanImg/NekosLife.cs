@@ -14,7 +14,7 @@ namespace someBot.Commands.RanImg
 {
     class NekosLife : BaseCommandModule
     {
-        [Command("catgirl"), Description("Show you a Random catgirl image")]
+        [Command("neko"), Description("Show you a Random catgirl image")]
         public async Task NekoPic(CommandContext ctx)
         {
             try

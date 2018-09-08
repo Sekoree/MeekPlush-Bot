@@ -15,6 +15,9 @@ using DiscordBotsList.Api;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
+using DSharpPlus.CommandsNext.Exceptions;
+using DSharpPlus.CommandsNext.Attributes;
+using someBot.Commands.Audio;
 
 namespace someBot
 {
@@ -150,7 +153,6 @@ namespace someBot
                 }
                 await Task.CompletedTask;
             };
-            //bot.VoiceStateUpdated += TimoutODisc;
             bot.GuildMemberAdded += async e =>
             {
                 if (e.Guild.Id == 483279257431441410)
@@ -169,7 +171,7 @@ namespace someBot
             {
                 DiscordActivity test = new DiscordActivity
                 {
-                    Name = "m!help or m!help-dev for commands uwu",
+                    Name = "m!help for commands uwu",
                     ActivityType = ActivityType.Playing
                 };
                 await bot.UpdateStatusAsync(activity: test, userStatus: UserStatus.Online);
@@ -199,10 +201,6 @@ namespace someBot
                             repeatAll = false,
                             alone = false,
                             paused = true,
-                            audioPlay = new Commands.Audio.Playback(),
-                            audioFunc = new Commands.Audio.Functions(),
-                            audioQueue = new Commands.Audio.Queue(),
-                            audioEvents = new Commands.Audio.Events(),
                             stoppin = false
                         });
                     }
@@ -234,10 +232,6 @@ namespace someBot
                         repeatAll = false,
                         alone = false,
                         paused = true,
-                        audioPlay = new Commands.Audio.Playback(),
-                        audioFunc = new Commands.Audio.Functions(),
-                        audioQueue = new Commands.Audio.Queue(),
-                        audioEvents = new Commands.Audio.Events(),
                         stoppin = false
                     });
                 }
@@ -319,9 +313,9 @@ namespace someBot
                 {
                     if (DateTime.Now.Subtract(guit[pos].offtime).TotalMinutes > 5)
                     {
-                        guit[pos].LLGuild.PlaybackFinished -= guit[pos].audioEvents.PlayFin;
-                        guit[pos].LLGuild.TrackStuck -= guit[pos].audioEvents.PlayStu;
-                        guit[pos].LLGuild.TrackException -= guit[pos].audioEvents.PlayErr;
+                        guit[pos].LLGuild.PlaybackFinished -= Events.PlayFin;
+                        guit[pos].LLGuild.TrackStuck -= Events.PlayStu;
+                        guit[pos].LLGuild.TrackException -= Events.PlayErr;
                         guit[pos].LLGuild.Disconnect();
                         guit[pos].LLGuild = null;
                         guit[pos].offtime = DateTime.Now;
@@ -380,17 +374,25 @@ namespace someBot
             //await Task.CompletedTask;
         }
 
-        private async Task Bot_CMDErr(CommandErrorEventArgs e) //if bot error
+        private async Task Bot_CMDErr(CommandErrorEventArgs ex) //if bot error
         {
-            if (e.Exception.Message.ToLower().Contains("countdown"))
+            if (ex.Exception is ChecksFailedException exx)
             {
-                var er = await e.Context.RespondAsync("Error, please wait 5 seconds before issuing that command again");
-                await Task.Delay(2500);
-                await er.DeleteAsync();
+                foreach (CheckBaseAttribute a in exx.FailedChecks)
+                {
+                    if (a is CooldownAttribute cd)
+                    {
+                        await ex.Context.RespondAsync($"Cooldown, {(int)cd.GetRemainingCooldown(ex.Context).TotalSeconds}s left");
+                    }
+                    if (a is RequireBotPermissionsAttribute bpa)
+                    {
+                        await ex.Context.Member.SendMessageAsync($"Heya, sorry for the DM but I need to be able to ``Send Messages`` and ``Embed Links`` in order to use the music functions!");
+                    }
+                }
             }
             //e.Context.RespondAsync($"**Error:**\n```{e.Exception.Message}```");
-            Console.WriteLine(e.Exception.Message);
-            Console.WriteLine(e.Exception.StackTrace);
+            Console.WriteLine(ex.Exception.Message);
+            Console.WriteLine(ex.Exception.StackTrace);
             await Task.CompletedTask;
         }
 
@@ -439,10 +441,6 @@ namespace someBot
         public bool stoppin { get; set; }
         public bool alone { get; set; }
         public ulong cmdChannel { get; set; }
-        public Commands.Audio.Playback audioPlay { get; set; }
-        public Commands.Audio.Functions audioFunc { get; set; }
-        public Commands.Audio.Queue audioQueue { get; set; }
-        public Commands.Audio.Events audioEvents { get; set; }
     }
 
     public class Gsets2

@@ -5,27 +5,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using someBot;
+using someBot.Commands.Audio;
 
 namespace someBot.Commands.Audio
 {
     public class Playback
     {
-        public async void PlaySong(int pos, CommandContext ctx, string song) //Queue then play
+        public static async void PlaySong(int pos, CommandContext ctx, string song) //Queue then play
         {
             if (song == null && Bot.guit[pos].queue.Count > 0) {
                 await ctx.RespondAsync("Playing preloaded playlist/resuming queue!");
                 Console.WriteLine($"[{ctx.Guild.Id}] Resuming queue");
             }
             if (song != null) {
-                var q = QueueSong(pos, ctx, song);
-                q.Wait();
-            }       
+                await Task.Run(() => QueueSong(pos, ctx, song));
+            }
+            //Console.WriteLine("it got back here");
             QueueLoop(pos, ctx);
             await Task.CompletedTask;
         }
 
-        public async Task QueueSong(int pos, CommandContext ctx, string song) //Queue only
+        public static async Task QueueSong(int pos, CommandContext ctx, string song) //Queue only
         {
             DSharpPlus.Lavalink.LavalinkTrack track;
             string pora = "Playing";
@@ -67,12 +67,14 @@ namespace someBot.Commands.Audio
             await Task.CompletedTask;
         }
 
-        public async void QueueLoop(int pos, CommandContext ctx) //Start playback without queueing
+        public static async void QueueLoop(int pos, CommandContext ctx) //Start playback without queueing
         {
+            //Console.WriteLine("loop");
             var con = Bot.guit[0].LLinkCon;
             while (Bot.guit[pos].queue.Count != 0) {
+                //Console.WriteLine("ok");
                 if (Bot.guit[pos].LLGuild == null || Bot.guit[pos].stoppin) break;
-                var P = Bot.guit[pos].audioEvents.setPlay(pos);
+                var P = Events.setPlay(pos);
                 P.Wait();
                 System.Random rnd = new System.Random();
                 int rr = 0;
@@ -86,8 +88,8 @@ namespace someBot.Commands.Audio
                         rr = 0;
                     }
                 }
-                var NP = Bot.guit[pos].audioEvents.setNP(pos, Bot.guit[pos].queue[rr]);
-                NP.Wait();
+                //Console.WriteLine("bef np");
+                await Task.Run(() => Events.setNP(pos, Bot.guit[pos].queue[rr]));
                 Console.WriteLine($"[{ctx.Guild.Id}] Started playing: {Bot.guit[pos].playnow.LavaTrack.Title} by {Bot.guit[pos].playnow.LavaTrack.Author}");
                 await LavaLinkHandOff(pos, Bot.guit[pos].playnow.LavaTrack, ctx, rr);
                 if (!Bot.guit[pos].repeat && !Bot.guit[pos].repeatAll && Bot.guit[pos].LLGuild != null && !Bot.guit[pos].stoppin) {
@@ -100,7 +102,7 @@ namespace someBot.Commands.Audio
             await Task.CompletedTask;
         }
 
-        public async Task LavaLinkHandOff(int pos, DSharpPlus.Lavalink.LavalinkTrack track, CommandContext ctx, int rr)
+        public static async Task LavaLinkHandOff(int pos, DSharpPlus.Lavalink.LavalinkTrack track, CommandContext ctx, int rr)
         {
             if (Bot.guit[pos].playnow.LavaTrack.IsStream)
             {

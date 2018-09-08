@@ -26,21 +26,17 @@ namespace someBot
                     Description = "(not so) useful commads that may help you!\n **Support me on Patreon!** [link](https://www.patreon.com/speyd3r)",
                     ThumbnailUrl = ctx.Client.CurrentUser.AvatarUrl
                 };
-
                 if (page == null)
                 {
-                    if (!(ctx.Message.Channel.Type.ToString() == "Private")) //DM Messages
+                    if (ctx.Channel?.Guild?.Id == 373635826703400960)
                     {
-                        if (ctx.Channel.GuildId == 373635826703400960)
-                        {
-                            HelpEmbed.AddField("Xeddd Specific Commands", "**m!roles <rolename>**\nPlease refer to <#467001692429484032> for further instructions and available Roles!");
-                        }
-                        if (ctx.Channel.GuildId == 469661736534802432)
-                        {
-                            HelpEmbed.AddField("Rin Specific Commands", "**m!roles <rolename>**\nTo get one or more vocaloid roles! to see all available roles, just type ``m!role``");
-                        }
+                        HelpEmbed.AddField("Xeddd Specific Commands", "**m!roles <rolename>**\nPlease refer to <#467001692429484032> for further instructions and available Roles!");
                     }
-                    HelpEmbed.AddField("-[Random Commands]-> **m!help random**", "stuff i cant catogorize lol");
+                    if (ctx.Channel?.Guild?.Id == 469661736534802432)
+                    {
+                        HelpEmbed.AddField("Rin Specific Commands", "**m!roles <rolename>**\nTo get one or more vocaloid roles! to see all available roles, just type ``m!role``");
+                    }
+                    HelpEmbed.AddField("-[Random Commands]-> **m!help random**", "stuff i cant categorize lol");
                     HelpEmbed.AddField("-[Search Commands]-> **m!help search**", "search some sites ");
                     HelpEmbed.AddField("-[Songinfo Commands]-> **m!help info**", "weebmusic info uwu");
                     HelpEmbed.AddField("-[Image Commands]-> **m!help image**", "random pics from the web");
@@ -50,96 +46,91 @@ namespace someBot
                 }
                 else if (page.ToLower() == "random")
                 {
-                    HelpEmbed.AddField("m!emotes", "displays all server emotes", true);
-                    HelpEmbed.AddField("m!info", "some bot info", true);
-                    HelpEmbed.AddField("m!baguette", "yeet", true);
-                    HelpEmbed.AddField("m!test <message>", "the bot will send that message", true);
-                    HelpEmbed.AddField("m!knowledge", "gives you a random Wikipedia page", true);
+                    HelpEmbed.AddField("Random Commands:", "" +
+                        "**m!emotes** --Display all server emotes\n" +
+                        "**m!info** --Some bot info\n" +
+                        "**m!baguette** --yeet\n" +
+                        "**m!test <message>** --The bot will say that\n" +
+                        "**m!knowledge** --Random Wikipedia artikle!");
                 }
                 else if (page.ToLower() == "search")
                 {
-                    HelpEmbed.AddField("m!wiki <searchterm>", "search for a wikipedia page!", true);
-                    HelpEmbed.AddField("m!touhouwiki <searchterm", "Touhouwiki search!", true);
-                    HelpEmbed.AddField("m!yts <searchterm>", "will search a YouTube video", true);
-                    HelpEmbed.AddField("m!ytsc <searchterm>", "will search a YouTube channel", true);
-                    HelpEmbed.AddField("m!ytsp <searchterm>", "will search a YouTube playlist", true);
-                    HelpEmbed.AddField("m!yt", "same as the 3 above but with a `convenient´ menu!", true);
+                    HelpEmbed.AddField("Search stuff!", "" +
+                        "**m!wiki <text>** --Search Wikipedia\n" +
+                        "**m!touhouwiki <text>** --Search Touhouwiki\n--Aliases: **m!tohowiki <text>**\n" +
+                        "**m!yts <text>** --Search a YouTube video\n" +
+                        "**m!ytsc <text>** --Search a YouTube channel\n" +
+                        "**m!ytsp <text>** --Search a Youtube playlist\n" +
+                        "**m!yt** --Can do the same as the 3 above but with a guided menu");
                 }
                 else if (page.ToLower() == "info")
                 {
-                    HelpEmbed.AddField("m!vocadb <songname>", "search for a Vocaloid song! (+lyrics if available)", true);
-                    HelpEmbed.AddField("m!utaitedb <songname>", "search UtaiteDB!(+lyrics if available)", true);
-                    HelpEmbed.AddField("m!touhoudb <songname>", "search for a Touhou song! (+lyrics if available)", true);
-                    HelpEmbed.AddField("m!nnd <hourly/daily/weekly/monthly>", "shows the corresponding Niconico Vocaloid Ranking", true);
+                    HelpEmbed.AddField("Song if stuff uwu", "" +
+                        "**m!vocadb <songname>** --Search VocaDB for a song!\n" +
+                        "**m!utaitedb <songname>** --Search UtaiteDB for a song!\n" +
+                        "**m!touhoudb <songname>** --Search TouhouDB for a song!\n--Aliases: **m!tohodb <songname>**\n" +
+                        "**m!nnd <hourly|daily|weekly|montly>** --Look up the current Vocaloid song ranking from NND!");
                 }
                 else if (page.ToLower() == "images" || page.ToLower() == "image")
                 {
-                    HelpEmbed.AddField("m!cat" ,"random Cat Pic!", true);
-                    HelpEmbed.AddField("m!dog" ,"random Dog Pic", true);
-                    HelpEmbed.AddField("m!catgirl" ,"random Catgirl Pic!", true);
-                    HelpEmbed.AddField("m!foxgirl", "random Foxgirl Pic!", true);
-                    HelpEmbed.AddField("m!kanna", "random Kanna image!", true);
-                    HelpEmbed.AddField("m!diva", "random Project Diva Image (from the loading screens, not ingame footage lmao)", true);
-                    HelpEmbed.AddField("m!rin", "random Rin image!", true);
-                    HelpEmbed.AddField("m!una", "random Una image!", true);
-                    HelpEmbed.AddField("m!gumi", "random Gumi image", true);
-                    HelpEmbed.AddField("m!luka", "random Luka image!", true);
-                    HelpEmbed.AddField("m!ia", "random IA image", true);
-                    HelpEmbed.AddField("m!yukari", "random Yukari image", true);
-                    HelpEmbed.AddField("m!meiko", "random Meiko image", true);
-                    HelpEmbed.AddField("m!teto", "random Teto image");
-                    HelpEmbed.AddField("m!len", "random Len image", true);
-                    HelpEmbed.AddField("m!kaito", "random Kaito image", true);
-                    HelpEmbed.AddField("m!fukase", "random Fukase image", true);
-                    HelpEmbed.AddField("m!miku", "random Miku image", true);
-                    HelpEmbed.AddField("m!miki", "random Miki image", true);
-                    HelpEmbed.AddField("m!mayu", "random Mayu image", true);
-                    HelpEmbed.AddField("m!aoki", "random Aoki image", true);
-                    HelpEmbed.AddField("m!lily", "random Lily image", true);
+                    HelpEmbed.AddField("'Normal' images","" +
+                        "**m!cat** --Random cat picture!\n" +
+                        "**m!dog** --Random dog Picture!\n" +
+                        "**m!neko** --Random neko image uwu\n" +
+                        "**m!kanna** --Random Kanna image uwu");
+                    HelpEmbed.AddField("Vocaloid (and UTAU) images!", "" +
+                        "**m!diva** --Radom Project Diva loadingscreen image!\n" +
+                        "**m!rin** --Random Rin image!\n" +
+                        "**m!una** --Random Una image!\n" +
+                        "**m!gumi** --Random Gumi image!\n" +
+                        "**m!luka** --Random Luka image!\n" +
+                        "**m!ia** --Random IA image!\n" +
+                        "**m!yukari** --Random Yukari image!\n" +
+                        "**m!meiko** --Random Meiko image!\n" +
+                        "**m!teto** --Random Teto image!\n" +
+                        "**m!len** --Random Len image!\n" +
+                        "**m!kaito** --Random Kaito image!\n" +
+                        "**m!fukase** --Random Fukase image!\n" +
+                        "**m!miku** --Random Miku image!\n" +
+                        "**m!miki** --Random Miki image!");
+                    HelpEmbed.AddField("more (cause ↑ hit the 1024 character limit)", "" +
+                        "**m!mayu** --Random Mayu image!\n" +
+                        "**m!aoki** --Random Aoki image!\n" +
+                        "**m!lily** --Random Lily image!");
                 }
                 else if (page.ToLower() == "music")
                 {
-                    HelpEmbed.AddField("m!join", "joins your voicechannel!", true);
-                    HelpEmbed.AddField("m!leave", "will leave the voicechannel (queue will be saved)\n", true);
-                    HelpEmbed.AddField("m!queue", "shows the current queue!\n" +
-                        "Aliases: ``m!q``", true);
-                    HelpEmbed.AddField("m!play <searchTermOrURL>", "joins your voicechannel and plays something (using this again will add stuff to the queue)!\n" +
-                        "Aliases: ``m!p``\n" +
-                        "Additionally: when using m!join and then loading a playlist, just use m!p or m!play to start playback!", true);
-                    HelpEmbed.AddField("m!skip", "skips the current song!", true);
-                    HelpEmbed.AddField("m!stop", "bot will stop and disconnect from the channel!", true);
-                    HelpEmbed.AddField("m!repeatall", "will loop the queue!\n" +
-                        "Aliases: ``m!ra``", true);
-                    HelpEmbed.AddField("m!repeat", "will loop the current song!\n" +
-                        "Aliases: ``m!r``", true);
-                    HelpEmbed.AddField("m!shuffle", "will play the queue in shuffle mode, in combination with ``m!repeat`` it will play the entire queue loopd and shuffled!\n" +
-                        "Aliases: ``m!s``", true);
-                    HelpEmbed.AddField("m!queueremove <queueNumber>", "will remove that particular song from the queue!\n" +
-                        "Aliases: ``m!qr``", true);
-                    HelpEmbed.AddField("m!nowplaying", "shows whats currently playing with some additional info!\n" +
-                        "Aliases: ``m!np``", true);
-                    HelpEmbed.AddField("m!queueclear", "removes everything from the queue!\n" +
-                        "Aliases: ``m!qc``", true);
-                    HelpEmbed.AddField("m!pause", "will pause the current song!", true);
-                    HelpEmbed.AddField("m!resume", "will resume the paused song!", true);
-                    HelpEmbed.AddField("m!queueremovesome <start> <(optional)end>", "will remove every song between those 2 numbers in queue, if just 1 is provided everything after that number will be deleted from queue\n" +
-                        "Aliases: ``m!qrs``", true);
-                    HelpEmbed.AddField("m!volume <number>", "changes the volume (150 is max)!\n" +
-                        "Aliases: ``m!vol``", true);
-                    HelpEmbed.AddField("m!playlist <youtubePlaylistURL>", "adds a playlist to the queue (max 600 videos)!\n" +
-                        "Aliases: ``m!pp``", true);
+                    HelpEmbed.AddField("Music commands!", "" +
+                        "**m%join** - Joins the Voice Channel you are in\n" +
+                        "**m%leave** - Leaves the Voice Channel (queue will be saved)\n" +
+                        "**m%play (URL or search term²)** - Play a song! If there are still songs in queue just using **m%play** will resume that -- Alias: m%p (URL or search term)\n" +
+                        "**m%stop** - stops playback, to resume use **m%play**\n" +
+                        "**m%skip** - skips the current song\n" +
+                        "**m%repeat** - repeat the current song -- Alias: m%r\n" +
+                        "**m%repeatall** - repats the entire queue -- Alias: m%ra\n" +
+                        "**m%shuffle** - play the queue in shuffle mode, yes this works with the repeat command -- Alias: m%s");
+                    HelpEmbed.AddField("more (cause ↑ hit the 1024 character limit)", "" +
+                        "**m%queue** - shows you the current queue -- Alias: m%q\n" +
+                        "**m%queueclear** - clear the queue -- Alias: m%qc\n" +
+                        "**m%queueremove (number)** - remove that entry from the queue -- Alias: m%qr (number)\n" +
+                        "**m%playlist** - load a playlist into queue -- Alias: m%pp\n" +
+                        "**m%volume (volume)** - Change the music volume (Max 150) -- Alias: m%vol (number)\n" +
+                        "**m%pause** - Pause the music!\n" +
+                        "**m%resume** - Resume the music");
                 }
                 else if (page.ToLower() == "support" || page.ToLower() == "other")
                 {
-                    HelpEmbed.AddField("m!feedback <message>", "Send feedback!", true);
-                    HelpEmbed.AddField("Support Server", "[Invite](https://discord.gg/YPPA2Pu)", true);
-                    HelpEmbed.AddField("Contact", "If u dont wanna join the support server, u can also just DM me (Speyd3r#3939)", true);
+                    HelpEmbed.AddField("Support stuff uwu", "" +
+                        "**m!feedback <message>** Send feedback!\n\n" +
+                        "**Support server:** [Invite](https://discord.gg/YPPA2Pu)\n\n" +
+                        "**Contact:** If you dont wanna join the support server, you can also just DM me (Speyd3r#3939)");
                 }
                 else if (page.ToLower() == "nsfw")
                 {
-                    HelpEmbed.AddField("m!nl <category name>" ,"will display a random image from nekos.life, get the category names at (11) [nekos.life](https://nekos.life/api/v2/endpoints)", true);
-                    HelpEmbed.AddField("m!thigh", "random thigh pic uwu", true);
-                    HelpEmbed.AddField("m!nekopara", "random lewd nekopara image/gif uwu", true);
+                    HelpEmbed.AddField("Lewd stuff uwu", "" +
+                        "**m!nl <categoryName>** --Will display a random image from nekos.life, get the category names at (11) [nekos.life](https://nekos.life/api/v2/endpoints)\n" +
+                        "**m!thigh** --Random thigh pic uwu\n" +
+                        "m!nekopara** --Random lewd nekopara image/gif uwu");
                 }
                 else
                 {

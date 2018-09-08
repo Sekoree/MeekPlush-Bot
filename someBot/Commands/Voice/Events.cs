@@ -11,7 +11,7 @@ namespace someBot.Commands.Audio
 {
     public class Events
     {
-        public async Task PlayFin(TrackFinishEventArgs lg)
+        public static async Task PlayFin(TrackFinishEventArgs lg)
         {
             var con = Bot.guit[0].LLinkCon;
             var pos = Bot.guit.FindIndex(x => x.GID == lg.Player.Guild.Id);
@@ -34,7 +34,7 @@ namespace someBot.Commands.Audio
             await Task.CompletedTask;
         }
 
-        public async Task PlayStu(TrackStuckEventArgs ts)
+        public static async Task PlayStu(TrackStuckEventArgs ts)
         {
             var con = Bot.guit[0].LLinkCon;
             var pos = Bot.guit.FindIndex(x => x.GID == ts.Player.Guild.Id);
@@ -58,7 +58,7 @@ namespace someBot.Commands.Audio
             await Task.CompletedTask;
         }
 
-        public async Task PlayErr(TrackExceptionEventArgs ts)
+        public static async Task PlayErr(TrackExceptionEventArgs ts)
         {
             var con = Bot.guit[0].LLinkCon;
             var pos = Bot.guit.FindIndex(x => x.GID == ts.Player.Guild.Id);
@@ -82,24 +82,24 @@ namespace someBot.Commands.Audio
             await Task.CompletedTask;
         }
 
-        public Task setPlay(int pos)
+        public static Task setPlay(int pos)
         {
             Bot.guit[pos].playing = true;
             return Task.CompletedTask;
         }
 
-        public async Task stuckCheck(int pos, CommandContext ctx)
+        public static async Task stuckCheck(int pos, CommandContext ctx)
         {
             await Task.Delay(5000);
             if (!Bot.guit[pos].playing && Bot.guit[pos].queue.Any())
             {
                 await ctx.Guild.GetChannel(Bot.guit[pos].cmdChannel).SendMessageAsync("Seems like something got stuck uwu, restarting playback >>");
-                Bot.guit[pos].audioPlay.QueueLoop(pos, ctx);
+                Playback.QueueLoop(pos, ctx);
             }
             await Task.CompletedTask;
         }
 
-        public Task setNP(int pos, Gsets2 queue)
+        public static Task setNP(int pos, Gsets2 queue)
         {
             Bot.guit[pos].playnow.LavaTrack = queue.LavaTrack;
             Bot.guit[pos].playnow.requester = queue.requester;

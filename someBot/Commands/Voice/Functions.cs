@@ -8,14 +8,14 @@ namespace someBot.Commands.Audio
 {
     public class Functions
     {
-        public Task Pause(int pos)
+        public static Task Pause(int pos)
         {
             Bot.guit[pos].paused = true;
             Bot.guit[pos].LLGuild.Pause();
             return Task.CompletedTask;
         }
 
-        public Task Leave(int pos)
+        public static Task Leave(int pos)
         {
             Bot.guit[pos].paused = false;
             Bot.guit[pos].playing = false;
@@ -27,34 +27,34 @@ namespace someBot.Commands.Audio
             return Task.CompletedTask;
         }
 
-        public Task Resume(int pos)
+        public static Task Resume(int pos)
         {
             Bot.guit[pos].paused = false;
             Bot.guit[pos].LLGuild.Resume();
             return Task.CompletedTask;
         }
-        public Task Repeat(int pos)
+        public static Task Repeat(int pos)
         {
             Bot.guit[pos].repeat = !Bot.guit[pos].repeat;
             return Task.CompletedTask;
         }
-        public Task RepeatAll(int pos)
+        public static Task RepeatAll(int pos)
         {
             Bot.guit[pos].repeatAll = !Bot.guit[pos].repeatAll;
             return Task.CompletedTask;
         }
-        public Task Shuffle(int pos)
+        public static Task Shuffle(int pos)
         {
             Bot.guit[pos].shuffle = !Bot.guit[pos].shuffle;
             return Task.CompletedTask;
         }
-        public Task Skip(int pos)
+        public static Task Skip(int pos)
         {
             Bot.guit[pos].paused = false;
             Bot.guit[pos].LLGuild.Stop();
             return Task.CompletedTask;
         }
-        public Task Stop(int pos)
+        public static Task Stop(int pos)
         {
             Bot.guit[pos].paused = false;
             Bot.guit[pos].stoppin = true;
