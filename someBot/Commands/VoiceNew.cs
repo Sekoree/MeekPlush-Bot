@@ -118,7 +118,8 @@ namespace someBot.Commands
                 return;
             }
             Bot.guit[pos].cmdChannel = ctx.Channel.Id;
-            await Task.Run(() => Functions.Repeat(pos));
+            var r = Functions.Repeat(pos);
+            r.Wait();
             await ctx.RespondAsync($"Repeat set to {Bot.guit[pos].repeat}");
             Console.WriteLine($"[{ctx.Guild.Id}] Repeat set to {Bot.guit[pos].repeat}");
             await Task.CompletedTask;
@@ -134,7 +135,8 @@ namespace someBot.Commands
                 return;
             }
             Bot.guit[pos].cmdChannel = ctx.Channel.Id;
-            await Task.Run(() => Functions.RepeatAll(pos));
+            var ra = Functions.RepeatAll(pos);
+            ra.Wait();
             await ctx.RespondAsync($"Repeat all set to {Bot.guit[pos].repeatAll}");
             Console.WriteLine($"[{ctx.Guild.Id}] RepeatAll set to {Bot.guit[pos].repeatAll}");
             await Task.CompletedTask;
@@ -150,7 +152,8 @@ namespace someBot.Commands
                 return;
             }
             Bot.guit[pos].cmdChannel = ctx.Channel.Id;
-            await Task.Run(() => Functions.Shuffle(pos));
+            var s = Functions.Shuffle(pos);
+            s.Wait();
             await ctx.RespondAsync($"Shuffle set to {Bot.guit[pos].shuffle}");
             Console.WriteLine($"[{ctx.Guild.Id}] Shuffle set to {Bot.guit[pos].shuffle}");
             await Task.CompletedTask;
@@ -411,6 +414,11 @@ namespace someBot.Commands
                 return;
             } if (Bot.guit[pos].playnow.LavaTrack.IsStream) {
                 Bot.guit[pos].playnow.sstop = true;
+            }
+            if (Bot.guit[pos].queue.Count > 1 && Bot.guit[pos].repeat)
+            {
+                try { Bot.guit[pos].queue.RemoveAt(0); }
+                catch { }
             }
             var stop = Functions.Skip(pos);
             stop.Wait();

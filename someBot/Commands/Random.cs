@@ -9,7 +9,8 @@ using DSharpPlus.Lavalink;
 using DSharpPlus.Interactivity;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
-
+using Sagitta.Clients;
+using Sagitta;
 
 namespace someBot
 {
@@ -20,6 +21,9 @@ namespace someBot
         [Command("emotes"),Description("lists all customs server emotes")] //same as if u just type emotes, 
         public async Task Emotes(CommandContext ctx)
         {
+            var pixivClient = new PixivClient("CLIENT_ID", "CLIENT_SECRET");
+            var imgs = await pixivClient.Search.IllustAsync("kagamine", Sagitta.Enum.SearchTarget.PartialMatchForTags, Sagitta.Enum.SortOrder.PopularDesc);
+            var img = imgs.Illusts.First().ImageUrls.Original;
             string emotelist = "";
             foreach (var emotes in ctx.Guild.Emojis)
             {
