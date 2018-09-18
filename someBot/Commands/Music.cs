@@ -1,19 +1,15 @@
-﻿using System;
-using System.Threading.Tasks;
-using DSharpPlus.CommandsNext;
+﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Interactivity;
-using DSharpPlus.Lavalink.EventArgs;
 using DSharpPlus.Entities;
-using System.Linq;
-using System.Collections.Generic;
-using Google.Apis.YouTube.v3;
 using Google.Apis.Services;
-using someBot.Commands.Audio;
+using Google.Apis.YouTube.v3;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace someBot.Commands
 {
-    class VoiceNew : BaseCommandModule
+    class Music : BaseCommandModule
     {
         [Command("join"), Description("Bot join voicechannel"), RequireBotPermissions(DSharpPlus.Permissions.SendMessages)]
         public async Task Join(CommandContext ctx)
@@ -22,17 +18,18 @@ namespace someBot.Commands
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
             var con = Bot.guit[0].LLinkCon;
-            if (chn == null || pos == -1 || bot.VoiceState?.Channel == chn) {
+            if (chn == null || pos == -1 || bot.VoiceState?.Channel == chn)
+            {
                 await Task.CompletedTask;
                 return;
             }
             Bot.guit[pos].cmdChannel = ctx.Channel.Id;
             Bot.guit[pos].LLGuild = await con.ConnectAsync(chn);
-            Bot.guit[pos].LLGuild.PlaybackFinished += Events.PlayFin;
-            Bot.guit[pos].LLGuild.TrackException += Events.PlayErr;
-            Bot.guit[pos].LLGuild.TrackStuck += Events.PlayStu;
+            Bot.guit[pos].LLGuild.PlaybackFinished += Bot.guit[pos].AudioEvents.PlayFin;
+            Bot.guit[pos].LLGuild.TrackException += Bot.guit[pos].AudioEvents.PlayErr;
+            Bot.guit[pos].LLGuild.TrackStuck += Bot.guit[pos].AudioEvents.PlayStu;
             Console.WriteLine($"[{ctx.Guild.Id}] Joined");
-            await ctx.RespondAsync("Heya!");
+            await ctx.RespondAsync($"Heya {ctx.Member.Mention}!");
             await Task.CompletedTask;
         }
         [Command("leave"), Description("Bot leaves voicechannel"), RequireBotPermissions(DSharpPlus.Permissions.SendMessages)]
@@ -42,26 +39,30 @@ namespace someBot.Commands
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
             var con = Bot.guit[0].LLinkCon;
-            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null) {
+            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null)
+            {
                 await Task.CompletedTask;
                 return;
             }
             Bot.guit[pos].cmdChannel = ctx.Channel.Id;
-            if (LeaveOptions == "reset" || LeaveOptions == "r") {
-                await Task.Run(() => Functions.Leave(pos));
+            if (LeaveOptions == "reset" || LeaveOptions == "r")
+            {
+                await Task.Run(() => Bot.guit[pos].AudioFunctions.Leave(pos));
                 Bot.guit[pos].LLGuild.Disconnect();
-                Bot.guit[pos].LLGuild.PlaybackFinished -= Events.PlayFin;
-                Bot.guit[pos].LLGuild.TrackException -= Events.PlayErr;
-                Bot.guit[pos].LLGuild.TrackStuck -= Events.PlayStu;
+                Bot.guit[pos].LLGuild.PlaybackFinished -= Bot.guit[pos].AudioEvents.PlayFin;
+                Bot.guit[pos].LLGuild.TrackException -= Bot.guit[pos].AudioEvents.PlayErr;
+                Bot.guit[pos].LLGuild.TrackStuck -= Bot.guit[pos].AudioEvents.PlayStu;
                 Bot.guit[pos].LLGuild = null;
                 Bot.guit[pos].queue.Clear();
                 Bot.guit[pos].playnow = new Gsets3();
-            } else {
-                await Task.Run(() => Functions.Leave(pos));
+            }
+            else
+            {
+                await Task.Run(() => Bot.guit[pos].AudioFunctions.Leave(pos));
                 Bot.guit[pos].LLGuild.Disconnect();
-                Bot.guit[pos].LLGuild.PlaybackFinished -= Events.PlayFin;
-                Bot.guit[pos].LLGuild.TrackException -= Events.PlayErr;
-                Bot.guit[pos].LLGuild.TrackStuck -= Events.PlayStu;
+                Bot.guit[pos].LLGuild.PlaybackFinished -= Bot.guit[pos].AudioEvents.PlayFin;
+                Bot.guit[pos].LLGuild.TrackException -= Bot.guit[pos].AudioEvents.PlayErr;
+                Bot.guit[pos].LLGuild.TrackStuck -= Bot.guit[pos].AudioEvents.PlayStu;
                 Bot.guit[pos].LLGuild = null;
             }
             await ctx.RespondAsync("Bye bye~! uwu");
@@ -74,17 +75,22 @@ namespace someBot.Commands
             var chn = ctx.Member.VoiceState?.Channel;
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
-            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null) {
+            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null)
+            {
                 await Task.CompletedTask;
                 return;
             }
             Bot.guit[pos].cmdChannel = ctx.Channel.Id;
-            if (Bot.guit[pos].paused == true) {
-                await Task.Run(() => Functions.Resume(pos));
+            if (Bot.guit[pos].paused)
+            {
+                await Task.Run(() => Bot.guit[pos].AudioFunctions.Resume(pos));
                 await ctx.RespondAsync($"**Resumed**");
                 Console.WriteLine($"[{ctx.Guild.Id}] Resumed");
-            } else {
-                await Task.Run(() => Functions.Pause(pos));
+            }
+            else
+            {
+                Bot.guit[pos].paused = true;
+                await Task.Run(() => Bot.guit[pos].AudioFunctions.Pause(pos));
                 await ctx.RespondAsync($"**Paused**");
                 Console.WriteLine($"[{ctx.Guild.Id}] Paused");
             }
@@ -96,13 +102,27 @@ namespace someBot.Commands
             var chn = ctx.Member.VoiceState?.Channel;
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
-            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null) {
+            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null)
+            {
                 await Task.CompletedTask;
                 return;
             }
             Bot.guit[pos].cmdChannel = ctx.Channel.Id;
-            if (Bot.guit[pos].playing) await Task.Run(() => Functions.Resume(pos));
-            else Playback.QueueLoop(pos, ctx);
+            if (Bot.guit[pos].playing) await Task.Run(() => Bot.guit[pos].AudioFunctions.Resume(pos));
+            else
+            {
+                await Bot.guit[pos].AudioEvents.setPlay(pos);
+                int nextSong = 0;
+                System.Random rnd = new System.Random();
+                if (Bot.guit[pos].shuffle) nextSong = rnd.Next(0, Bot.guit[pos].queue.Count);
+                if (Bot.guit[pos].repeatAll)
+                {
+                    Bot.guit[pos].rAint++; nextSong = Bot.guit[pos].rAint;
+                    if (Bot.guit[pos].rAint == Bot.guit[pos].queue.Count) { Bot.guit[pos].rAint = 0; nextSong = 0; }
+                }
+                await Bot.guit[pos].AudioEvents.setNP(pos, Bot.guit[pos].queue[nextSong]);
+                Bot.guit[pos].LLGuild.Play(Bot.guit[pos].playnow.LavaTrack);
+            }
             await ctx.RespondAsync($"**Resumed**");
             Console.WriteLine($"[{ctx.Guild.Id}] Resumed");
             await Task.CompletedTask;
@@ -113,13 +133,13 @@ namespace someBot.Commands
             var chn = ctx.Member.VoiceState?.Channel;
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
-            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null) {
+            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null)
+            {
                 await Task.CompletedTask;
                 return;
             }
             Bot.guit[pos].cmdChannel = ctx.Channel.Id;
-            var r = Functions.Repeat(pos);
-            r.Wait();
+            await Bot.guit[pos].AudioFunctions.Repeat(pos);
             await ctx.RespondAsync($"Repeat set to {Bot.guit[pos].repeat}");
             Console.WriteLine($"[{ctx.Guild.Id}] Repeat set to {Bot.guit[pos].repeat}");
             await Task.CompletedTask;
@@ -130,13 +150,13 @@ namespace someBot.Commands
             var chn = ctx.Member.VoiceState?.Channel;
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
-            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null) {
+            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null)
+            {
                 await Task.CompletedTask;
                 return;
             }
             Bot.guit[pos].cmdChannel = ctx.Channel.Id;
-            var ra = Functions.RepeatAll(pos);
-            ra.Wait();
+            await Bot.guit[pos].AudioFunctions.RepeatAll(pos);
             await ctx.RespondAsync($"Repeat all set to {Bot.guit[pos].repeatAll}");
             Console.WriteLine($"[{ctx.Guild.Id}] RepeatAll set to {Bot.guit[pos].repeatAll}");
             await Task.CompletedTask;
@@ -147,13 +167,13 @@ namespace someBot.Commands
             var chn = ctx.Member.VoiceState?.Channel;
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
-            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null) {
+            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null)
+            {
                 await Task.CompletedTask;
                 return;
             }
             Bot.guit[pos].cmdChannel = ctx.Channel.Id;
-            var s = Functions.Shuffle(pos);
-            s.Wait();
+            await Bot.guit[pos].AudioFunctions.Shuffle(pos);
             await ctx.RespondAsync($"Shuffle set to {Bot.guit[pos].shuffle}");
             Console.WriteLine($"[{ctx.Guild.Id}] Shuffle set to {Bot.guit[pos].shuffle}");
             await Task.CompletedTask;
@@ -165,30 +185,36 @@ namespace someBot.Commands
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
             var con = Bot.guit[0].LLinkCon;
-            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null) {
+            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null)
+            {
                 await Task.CompletedTask;
                 return;
             }
             Bot.guit[pos].cmdChannel = ctx.Channel.Id;
-            if (!uri.StartsWith("https://") && !uri.StartsWith("http://")) {
+            if (!uri.StartsWith("https://") && !uri.StartsWith("http://"))
+            {
                 await ctx.RespondAsync("no valid playlist link");
                 return;
             }
             var datrack = await con.GetTracksAsync(new Uri(uri));
             int couldadd = datrack.Tracks.Count();
-            foreach (var dracks in datrack.Tracks) {
-                if (dracks.Author == null) {
+            foreach (var dracks in datrack.Tracks)
+            {
+                if (dracks.Author == null)
+                {
                     couldadd--;
                     continue;
                 }
-                Bot.guit[pos].queue.Add(new Gsets2 {
+                Bot.guit[pos].queue.Add(new Gsets2
+                {
                     LavaTrack = dracks,
                     requester = ctx.Member,
                     addtime = DateTime.Now
                 });
             }
             await ctx.RespondAsync($"Added {datrack.Tracks.Count()} songs to queue ({Bot.guit[pos].queue.Count} in queue now)");
-            if (couldadd != datrack.Tracks.Count()) {
+            if (couldadd != datrack.Tracks.Count())
+            {
                 await ctx.RespondAsync("Not all Songs were loaded, this could be due to an error or the video being blocked");
             }
             Console.WriteLine($"[{ctx.Guild.Id}] Playlist loaded {uri}");
@@ -200,14 +226,18 @@ namespace someBot.Commands
             var chn = ctx.Member.VoiceState?.Channel;
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
-            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null) {
+            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null)
+            {
                 await Task.CompletedTask;
                 return;
             }
             Bot.guit[pos].cmdChannel = ctx.Channel.Id;
-            if (Bot.guit[pos].playing) {
+            if (Bot.guit[pos].playing)
+            {
                 Bot.guit[pos].queue.RemoveRange(1, Bot.guit[pos].queue.Count - 1);
-            } else {
+            }
+            else
+            {
                 Bot.guit[pos].queue.Clear();
             }
             Console.WriteLine($"[{ctx.Guild.Id}] Queue cleard");
@@ -219,12 +249,13 @@ namespace someBot.Commands
             var chn = ctx.Member.VoiceState?.Channel;
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
-            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null) {
+            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null)
+            {
                 await Task.CompletedTask;
                 return;
             }
             Bot.guit[pos].cmdChannel = ctx.Channel.Id;
-            await Task.Run(() => Audio.Queue.QueueList(pos, ctx));
+            await Task.Run(() => Bot.guit[pos].AudioQueue.QueueList(pos, ctx));
             Console.WriteLine($"[{ctx.Guild.Id}] Showing queue");
             await Task.CompletedTask;
         }
@@ -235,7 +266,8 @@ namespace someBot.Commands
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
             var con = Bot.guit[0].LLinkCon;
-            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null) {
+            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null)
+            {
                 await Task.CompletedTask;
                 return;
             }
@@ -252,16 +284,20 @@ namespace someBot.Commands
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
             var con = Bot.guit[0].LLinkCon;
-            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null || r > Bot.guit[pos].queue.Count - 1) {
+            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null || r > Bot.guit[pos].queue.Count - 1)
+            {
                 await Task.CompletedTask;
                 return;
             }
             int pos2 = ctx.Member.Roles.ToList().FindIndex(x => x.CheckPermission(DSharpPlus.Permissions.ManageMessages) == DSharpPlus.PermissionLevel.Allowed);
             int pos3 = ctx.Member.Roles.ToList().FindIndex(x => x.CheckPermission(DSharpPlus.Permissions.Administrator) == DSharpPlus.PermissionLevel.Allowed);
-            if (ctx.Member == Bot.guit[pos].queue[r].requester || pos2 != -1 || pos3 != -1) {
+            if (ctx.Member == Bot.guit[pos].queue[r].requester || pos2 != -1 || pos3 != -1)
+            {
                 await ctx.RespondAsync($"Removed: **{Bot.guit[pos].queue[r].LavaTrack.Title}** by **{Bot.guit[pos].queue[r].LavaTrack.Author}**");
-                await Task.Run(() => Audio.Queue.queueRemove(pos, r));
-            } else {
+                await Task.Run(() => Bot.guit[pos].AudioQueue.queueRemove(pos, r));
+            }
+            else
+            {
                 await ctx.RespondAsync("You need the manage messages permission to delete others tracks");
             }
             Console.WriteLine($"[{ctx.Guild.Id}] Song Removed");
@@ -274,21 +310,26 @@ namespace someBot.Commands
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
             var con = Bot.guit[0].LLinkCon;
-            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null) {
+            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null)
+            {
                 await Task.CompletedTask;
                 return;
             }
             Bot.guit[pos].cmdChannel = ctx.Channel.Id;
-            var eb = new DiscordEmbedBuilder{
+            var eb = new DiscordEmbedBuilder
+            {
                 Color = new DiscordColor("#68D3D2"),
                 Title = "Now Playing",
                 Description = "**__Current Song:__**",
                 ThumbnailUrl = ctx.Client.CurrentUser.AvatarUrl
             };
             var que = Bot.guit[pos].playnow;
-            if (que.LavaTrack.Uri.ToString().Contains("youtu")) {
-                try {
-                    var youtubeService = new YouTubeService(new BaseClientService.Initializer(){
+            if (que.LavaTrack.Uri.ToString().Contains("youtu"))
+            {
+                try
+                {
+                    var youtubeService = new YouTubeService(new BaseClientService.Initializer()
+                    {
                         ApiKey = "AIzaSyDbj184qjOOS8fE6PlHcuyasA8VB_gr_f0",
                         ApplicationName = this.GetType().ToString()
                     });
@@ -298,10 +339,13 @@ namespace someBot.Commands
                     searchListRequest.Type = "video";
                     string time1 = "";
                     string time2 = "";
-                    if (que.LavaTrack.Length.Hours < 1) {
+                    if (que.LavaTrack.Length.Hours < 1)
+                    {
                         time1 = Bot.guit[pos].LLGuild.CurrentState.PlaybackPosition.ToString(@"mm\:ss");
                         time2 = que.LavaTrack.Length.ToString(@"mm\:ss");
-                    } else {
+                    }
+                    else
+                    {
                         time1 = Bot.guit[pos].LLGuild.CurrentState.PlaybackPosition.ToString(@"hh\:mm\:ss");
                         time2 = que.LavaTrack.Length.ToString(@"hh\:mm\:ss");
                     }
@@ -311,16 +355,23 @@ namespace someBot.Commands
                     if (searchListResponse.Items[0].Snippet.Description.Length > 500) eb.AddField("Description", searchListResponse.Items[0].Snippet.Description.Substring(0, 500) + "...");
                     else eb.AddField("Description", searchListResponse.Items[0].Snippet.Description);
                     eb.WithImageUrl(searchListResponse.Items[0].Snippet.Thumbnails.High.Url);
-                } catch {
+                }
+                catch
+                {
                     eb.AddField($"{que.LavaTrack.Title} ({que.LavaTrack.Length})", $"By {que.LavaTrack.Author}\n[Link]({que.LavaTrack.Uri})\nRequested by {que.requester.Mention}");
                 }
-            } else {
+            }
+            else
+            {
                 string time1 = "";
                 string time2 = "";
-                if (que.LavaTrack.Length.Hours < 1) {
+                if (que.LavaTrack.Length.Hours < 1)
+                {
                     time1 = Bot.guit[pos].LLGuild.CurrentState.PlaybackPosition.ToString(@"mm\:ss");
                     time2 = que.LavaTrack.Length.ToString(@"mm\:ss");
-                } else {
+                }
+                else
+                {
                     time1 = Bot.guit[pos].LLGuild.CurrentState.PlaybackPosition.ToString(@"hh\:mm\:ss");
                     time2 = que.LavaTrack.Length.ToString(@"hh\:mm\:ss");
                 }
@@ -337,45 +388,51 @@ namespace someBot.Commands
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
             var con = Bot.guit[0].LLinkCon;
-            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null) {
+            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null)
+            {
                 await Task.CompletedTask;
                 return;
-            } if (Bot.guit[pos].playnow.LavaTrack.IsStream) {
-                Bot.guit[pos].playnow.sstop = true;
-            } if (Options == "reset" || Options == "r") {
+            }
+            if (Options == "reset" || Options == "r")
+            {
                 Bot.guit[pos].repeat = false;
                 Bot.guit[pos].repeatAll = false;
                 Bot.guit[pos].shuffle = false;
-                if (Bot.guit[pos].playing) {
+                if (Bot.guit[pos].playing)
+                {
                     Bot.guit[pos].queue.RemoveRange(1, Bot.guit[pos].queue.Count - 1);
-                } else {
+                }
+                else
+                {
                     Bot.guit[pos].queue.Clear();
                 }
             }
-            await Task.Run(() => Functions.Stop(pos));
+            await Task.Run(() => Bot.guit[pos].AudioFunctions.Stop(pos));
             await Task.Delay(2500);
-            Bot.guit[pos].stoppin = false;
             Console.WriteLine($"[{ctx.Guild.Id}] Stopped");
             await ctx.RespondAsync("Stopped!");
             await Task.CompletedTask;
         }
-        [Command("play"),Aliases("p"), Cooldown(1, 5, CooldownBucketType.Guild), RequireBotPermissions(DSharpPlus.Permissions.SendMessages)]
-        public async Task Play(CommandContext ctx, [RemainingText] string Song = null){
+        [Command("play"), Aliases("p"), Cooldown(1, 5, CooldownBucketType.Guild), RequireBotPermissions(DSharpPlus.Permissions.SendMessages)]
+        public async Task Play(CommandContext ctx, [RemainingText] string Song = null)
+        {
             var chn = ctx.Member.VoiceState?.Channel;
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
             var con = Bot.guit[0].LLinkCon;
-            if (chn == null || pos == -1) {
+            if (chn == null || pos == -1)
+            {
                 await Task.CompletedTask;
                 return;
             }
-            if (bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null || !Bot.guit[pos].LLGuild.IsConnected){
+            if (bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null || !Bot.guit[pos].LLGuild.IsConnected)
+            {
                 if (Bot.guit[pos].LLGuild == null)
                 {
                     Bot.guit[pos].LLGuild = await con.ConnectAsync(chn);
-                    Bot.guit[pos].LLGuild.PlaybackFinished += Events.PlayFin;
-                    Bot.guit[pos].LLGuild.TrackException += Events.PlayErr;
-                    Bot.guit[pos].LLGuild.TrackStuck += Events.PlayStu;
+                    Bot.guit[pos].LLGuild.PlaybackFinished += Bot.guit[pos].AudioEvents.PlayFin;
+                    Bot.guit[pos].LLGuild.TrackException += Bot.guit[pos].AudioEvents.PlayErr;
+                    Bot.guit[pos].LLGuild.TrackStuck += Bot.guit[pos].AudioEvents.PlayStu;
                 }
                 else
                 {
@@ -384,22 +441,47 @@ namespace someBot.Commands
             }
             var QueueCount = Bot.guit[pos].queue.Count;
             var B = Bot.guit[pos];
-            if(QueueCount != 0 && !B.playing && Song == null) {
+            if (QueueCount != 0 && !B.playing && (Song == null || Song == "" || Song == " "))
+            {
                 Console.WriteLine($"[{ctx.Guild.Id}] Continuing queue");
                 await ctx.RespondAsync("continouing queue/starting preloaded playlist");
-                Playback.QueueLoop(pos, ctx);
+                await Bot.guit[pos].AudioEvents.setPlay(pos);
+                int nextSong = 0;
+                System.Random rnd = new System.Random();
+                if (Bot.guit[pos].shuffle) nextSong = rnd.Next(0, Bot.guit[pos].queue.Count);
+                if (Bot.guit[pos].repeatAll)
+                {
+                    Bot.guit[pos].rAint++; nextSong = Bot.guit[pos].rAint;
+                    if (Bot.guit[pos].rAint == Bot.guit[pos].queue.Count) { Bot.guit[pos].rAint = 0; nextSong = 0; }
+                }
+                await Bot.guit[pos].AudioEvents.setNP(pos, Bot.guit[pos].queue[nextSong]);
+                Bot.guit[pos].LLGuild.Play(Bot.guit[pos].playnow.LavaTrack);
             }
-            else if(QueueCount == 0 && !B.playing && Song == null) {
+            else if (QueueCount == 0 && !B.playing && (Song == null || Song == "" || Song == " "))
+            {
                 Console.WriteLine($"[{ctx.Guild.Id}] No Song Proviuded");
                 await ctx.RespondAsync("Please provide a songname or URL");
             }
-            else if(QueueCount == 0 && !B.playing && Song != null) {
+            else if (QueueCount == 0 && !B.playing && Song != null)
+            {
+                await Bot.guit[pos].AudioQueue.QueueSong(pos, ctx, Song);
                 Console.WriteLine($"[{ctx.Guild.Id}] Playing {Song}");
-                Playback.PlaySong(pos, ctx, Song);
+                await Bot.guit[pos].AudioEvents.setPlay(pos);
+                int nextSong = 0;
+                System.Random rnd = new System.Random();
+                if (Bot.guit[pos].shuffle) nextSong = rnd.Next(0, Bot.guit[pos].queue.Count);
+                if (Bot.guit[pos].repeatAll)
+                {
+                    Bot.guit[pos].rAint++; nextSong = Bot.guit[pos].rAint;
+                    if (Bot.guit[pos].rAint == Bot.guit[pos].queue.Count) { Bot.guit[pos].rAint = 0; nextSong = 0; }
+                }
+                await Bot.guit[pos].AudioEvents.setNP(pos, Bot.guit[pos].queue[nextSong]);
+                Bot.guit[pos].LLGuild.Play(Bot.guit[pos].playnow.LavaTrack);
             }
-            else {
+            else
+            {
                 Console.WriteLine($"[{ctx.Guild.Id}] Adding {Song}");
-                await Task.Run(() => Playback.QueueSong(pos, ctx, Song));
+                await Task.Run(() => Bot.guit[pos].AudioQueue.QueueSong(pos, ctx, Song));
             }
             await Task.CompletedTask;
         }
@@ -409,19 +491,22 @@ namespace someBot.Commands
             var chn = ctx.Member.VoiceState?.Channel;
             var bot = await ctx.Guild.GetMemberAsync(ctx.Client.CurrentUser.Id);
             var pos = Bot.guit.FindIndex(x => x.GID == ctx.Guild.Id);
-            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null) {
+            if (chn == null || pos == -1 || bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null)
+            {
                 await Task.CompletedTask;
                 return;
-            } if (Bot.guit[pos].playnow.LavaTrack.IsStream) {
-                Bot.guit[pos].playnow.sstop = true;
             }
             if (Bot.guit[pos].queue.Count > 1 && Bot.guit[pos].repeat)
             {
-                try { Bot.guit[pos].queue.RemoveAt(0); }
-                catch { }
+                await Task.Run(() => Bot.guit[pos].AudioFunctions.Repeat(pos));
+                await Task.Run(() => Bot.guit[pos].AudioFunctions.Skip(pos));
+                await Task.Delay(1000);
+                await Task.Run(() => Bot.guit[pos].AudioFunctions.Repeat(pos));
             }
-            var stop = Functions.Skip(pos);
-            stop.Wait();
+            else
+            {
+                await Task.Run(() => Bot.guit[pos].AudioFunctions.Skip(pos));
+            }
             Console.WriteLine($"[{ctx.Guild.Id}] Skipped");
             await ctx.RespondAsync("Skipped!");
         }

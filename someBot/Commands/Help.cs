@@ -101,22 +101,22 @@ namespace someBot
                 else if (page.ToLower() == "music")
                 {
                     HelpEmbed.AddField("Music commands!", "" +
-                        "**m%join** - Joins the Voice Channel you are in\n" +
-                        "**m%leave** - Leaves the Voice Channel (queue will be saved)\n" +
-                        "**m%play (URL or search term²)** - Play a song! If there are still songs in queue just using **m%play** will resume that -- Alias: m%p (URL or search term)\n" +
-                        "**m%stop** - stops playback, to resume use **m%play**\n" +
-                        "**m%skip** - skips the current song\n" +
-                        "**m%repeat** - repeat the current song -- Alias: m%r\n" +
-                        "**m%repeatall** - repats the entire queue -- Alias: m%ra\n" +
-                        "**m%shuffle** - play the queue in shuffle mode, yes this works with the repeat command -- Alias: m%s");
+                        "**m!join** - Joins the Voice Channel you are in\n" +
+                        "**m!leave** - Leaves the Voice Channel (queue will be saved)\n" +
+                        "**m!play (URL or search term)** - Play a song! If there are still songs in queue just using **m%play** will resume that -- Alias: m%p (URL or search term)\n" +
+                        "**m!stop** - stops playback, to resume use **m%play**\n" +
+                        "**m!skip** - skips the current song\n" +
+                        "**m!repeat** - repeat the current song -- Alias: m%r\n" +
+                        "**m!repeatall** - repats the entire queue -- Alias: m%ra\n" +
+                        "**m!shuffle** - play the queue in shuffle mode, yes this works with the repeat command -- Alias: m%s");
                     HelpEmbed.AddField("more (cause ↑ hit the 1024 character limit)", "" +
-                        "**m%queue** - shows you the current queue -- Alias: m%q\n" +
-                        "**m%queueclear** - clear the queue -- Alias: m%qc\n" +
-                        "**m%queueremove (number)** - remove that entry from the queue -- Alias: m%qr (number)\n" +
-                        "**m%playlist** - load a playlist into queue -- Alias: m%pp\n" +
-                        "**m%volume (volume)** - Change the music volume (Max 150) -- Alias: m%vol (number)\n" +
-                        "**m%pause** - Pause the music!\n" +
-                        "**m%resume** - Resume the music");
+                        "**m!queue** - shows you the current queue -- Alias: m%q\n" +
+                        "**m!queueclear** - clear the queue -- Alias: m%qc\n" +
+                        "**m!queueremove (number)** - remove that entry from the queue -- Alias: m%qr (number)\n" +
+                        "**m!playlist** - load a playlist into queue -- Alias: m%pp\n" +
+                        "**m!volume (volume)** - Change the music volume (Max 150) -- Alias: m%vol (number)\n" +
+                        "**m!pause** - Pause the music!\n" +
+                        "**m!resume** - Resume the music");
                 }
                 else if (page.ToLower() == "support" || page.ToLower() == "other")
                 {

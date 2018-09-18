@@ -1,7 +1,6 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Interactivity;
 using DSharpPlus.CommandsNext;
-using DSharpPlus.VoiceNext;
 using DSharpPlus.Lavalink;
 using System;
 using System.Linq;
@@ -17,7 +16,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.CommandsNext.Attributes;
-using someBot.Commands.Audio;
+using someBot.Commands.MusicEx;
 
 namespace someBot
 {
@@ -26,7 +25,6 @@ namespace someBot
         private DiscordClient bot;
         private InteractivityExtension interactivity;
         private CommandsNextExtension commands;
-        static VoiceNextExtension voice;
         public LavalinkExtension llink { get; }
         public LavalinkNodeConnection LavalinkNode { get; private set; }
         private CancellationTokenSource _cts;
@@ -83,11 +81,10 @@ namespace someBot
             commands.RegisterCommands<Commands.RanImg.Other>();
             commands.RegisterCommands<XedddSpec>();
             commands.RegisterCommands<VoWiki>();
-            commands.RegisterCommands<Commands.VoiceNew>();
+            commands.RegisterCommands<Commands.Music>();
 
             commands.CommandErrored += Bot_CMDErr;
 
-            voice = bot.UseVoiceNext();
             llink = bot.UseLavalink();
 
             llink.NodeDisconnected += async le =>
@@ -95,7 +92,7 @@ namespace someBot
                 while(!le.LavalinkNode.IsConnected)
                 {
                     await Task.Delay(5000);
-                    await llink.ConnectAsync(lcfg);
+                    var ok = await llink.ConnectAsync(lcfg);
                 }
             };
 
@@ -112,44 +109,32 @@ namespace someBot
             bot.GuildMemberRemoved += XedddClass.Bot_XedddBoiLeave;
             bot.MessageReactionAdded += PandaClass.Bot_PandaGumiQuotes;
             bot.ClientErrored += this.Bot_ClientErrored;
-            bot.VoiceStateUpdated += async e => {
+            bot.VoiceStateUpdated += async e =>
+            {
                 try
                 {
+                    var con = guit[0].LLinkCon;
                     var pos = guit.FindIndex(x => x.GID == e.Guild.Id);
-                    if (pos != -1)
+                    if (pos == -1 || !con.IsConnected || con == null) { await Task.CompletedTask; return; }
+                    var norm = e?.Channel?.Id;
+                    var afte = e?.After?.Channel?.Id;
+                    var befo = e?.Before?.Channel?.Id;
+                    if (norm == guit[pos].LLGuild?.Channel?.Id || afte == guit[pos].LLGuild?.Channel?.Id || befo == guit[pos].LLGuild?.Channel?.Id)
                     {
-                        await Task.Delay(500);
-                        if (guit[pos].LLGuild.Channel.Id == e.Before.Channel.Id)
+                        if (guit[pos].LLGuild?.Channel?.Users.Where(x => !x.IsBot).Count() == 0)
                         {
-                            if (guit[pos].LLGuild.Channel.Users.Where(x => x.IsBot == false).Count() == 0)
-                            {
-                                guit[pos].alone = true;
-                            }
-                            else
-                            {
-                                guit[pos].alone = false;
-                            }
-                            if (guit[pos].LLGuild.Channel.Users.Where(x => x.IsBot == false).Count() == 0 && guit[pos].queue.Count > 0 && guit[pos].LLGuild.Channel.Id == e.Before.Channel.Id && !guit[pos].paused)
-                            {
-                                await e.Guild.GetChannel(guit[pos].cmdChannel).SendMessageAsync("Playback was paused since everybody left the voicechannel, use ``m!resume`` to unpause");
-                                guit[pos].LLGuild.Pause();
-                                guit[pos].paused = true;
-                            }
-                            handleVoidisc(pos);
+                            Bot.guit[pos].paused = true;
+                            await Task.Run(() => guit[pos].AudioFunctions.Pause(pos));
+                            await e.Guild.GetChannel(guit[pos].cmdChannel).SendMessageAsync("Playbacvk was pauses since everybode left the channel! unse ``m!resume`` to resume, other wise I'll also disconnect in ~5min");
+                            var haDi = handleVoidisc(pos);
+                            haDi.Wait(millisecondsTimeout: 2500);
                         }
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    try
-                    {
-                        var pos = guit.FindIndex(x => x.GID == e.Guild.Id);
-                        if (pos != -1)
-                        {
-                            handleVoidisc(pos);
-                        }
-                    }
-                    catch{}
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
                 }
                 await Task.CompletedTask;
             };
@@ -199,12 +184,14 @@ namespace someBot
                             playing = false,
                             rAint = 0,
                             repeatAll = false,
-                            alone = false,
-                            paused = true,
-                            stoppin = false
+                            AudioEvents = new LLEvents(),
+                            AudioFunctions = new Functions(),
+                            AudioQueue = new Queue(),
+                            sstop = false,
+                            paused = false
                         });
                     }
-                    Console.WriteLine("all added");
+                    Console.WriteLine("GuildList done!");
                     await Task.CompletedTask;
                 }
                 catch (Exception ex)
@@ -230,9 +217,11 @@ namespace someBot
                         playing = false,
                         rAint = 0,
                         repeatAll = false,
-                        alone = false,
-                        paused = true,
-                        stoppin = false
+                        AudioEvents = new LLEvents(),
+                        AudioFunctions = new Functions(),
+                        AudioQueue = new Queue(),
+                        sstop = false,
+                        paused = false
                     });
                 }
                 await Task.CompletedTask;
@@ -304,32 +293,34 @@ namespace someBot
             bot.GetChannelAsync(channelId).Result.SendMessageAsync(msg);
         }
 
-        public async void handleVoidisc(int pos) //if a message needs to be sent to another channel, in commands this is not needed
+        public async Task handleVoidisc(int pos) //if a message needs to be sent to another channel, in commands this is not needed
         {
             try
             {
                 guit[pos].offtime = DateTime.Now;
-                while (guit[pos].alone || guit[pos].queue.Count < 1)
+                await Task.CompletedTask;
+                while (guit[pos].LLGuild.Channel.Users.Where(x => !x.IsBot).Count() == 0 || guit[pos].queue.Count < 1)
                 {
+                    //Console.WriteLine("Disc");
                     if (DateTime.Now.Subtract(guit[pos].offtime).TotalMinutes > 5)
                     {
-                        guit[pos].LLGuild.PlaybackFinished -= Events.PlayFin;
-                        guit[pos].LLGuild.TrackStuck -= Events.PlayStu;
-                        guit[pos].LLGuild.TrackException -= Events.PlayErr;
+                        guit[pos].LLGuild.PlaybackFinished -= guit[pos].AudioEvents.PlayFin;
+                        guit[pos].LLGuild.TrackStuck -= guit[pos].AudioEvents.PlayStu;
+                        guit[pos].LLGuild.TrackException -= guit[pos].AudioEvents.PlayErr;
                         guit[pos].LLGuild.Disconnect();
+                        guit[pos].playing = false;
                         guit[pos].LLGuild = null;
                         guit[pos].offtime = DateTime.Now;
-                        guit[pos].paused = false;
                         break;
                     }
                     else
                     {
                         await Task.Delay(10000);
                     }
-
                 }
             }
-            catch{ }
+            catch { }
+            await Task.CompletedTask;
         }
 
         public async Task Bot_MessageCreated(MessageCreateEventArgs e)
@@ -437,10 +428,12 @@ namespace someBot
         public int rAint { get; set; }
         public bool shuffle { get; set; }
         public bool playing { get; set; }
-        public bool paused { get; set; }
-        public bool stoppin { get; set; }
-        public bool alone { get; set; }
+        public bool sstop { get; set; }
         public ulong cmdChannel { get; set; }
+        public bool paused { get; set; }
+        public LLEvents AudioEvents { get; set; }
+        public Functions AudioFunctions { get; set; }
+        public Queue AudioQueue { get; set; }
     }
 
     public class Gsets2
@@ -455,6 +448,5 @@ namespace someBot
         public DiscordMember requester { get; set; }
         public LavalinkTrack LavaTrack { get; set; }
         public DateTime addtime { get; set; }
-        public bool sstop { get; set; }
     }
 }
