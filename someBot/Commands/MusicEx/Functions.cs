@@ -21,7 +21,6 @@ namespace someBot.Commands.MusicEx
             Bot.guit[pos].repeat = false;
             Bot.guit[pos].repeatAll = false;
             Bot.guit[pos].shuffle = false;
-            //Bot.guit[pos].stoppin = false;
             return Task.CompletedTask;
         }
 

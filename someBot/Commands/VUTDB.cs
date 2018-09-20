@@ -139,37 +139,15 @@ namespace someBot
                 var emoji3 = DiscordEmoji.FromName(ctx.Client, ":movie_camera:");
                 var emoji4 = DiscordEmoji.FromName(ctx.Client, ":x:");
                 var emoji5 = DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:");//:arrow_double_down: 
-                var emoji6 = DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:");
+                //var emoji6 = DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:");
                 try
                 {
-                    var reSelect = await interactivity.WaitForMessageReactionAsync(xe => (xe == emoji || xe == emoji2 || xe == emoji3 || xe == emoji4 || xe == emoji5 || xe == emoji6), init, ctx.Message.Author, TimeSpan.FromSeconds(123));
+                    var reSelect = await interactivity.WaitForMessageReactionAsync(xe => (xe == emoji || xe == emoji2 || xe == emoji3 || xe == emoji4 || xe == emoji5), init, ctx.Message.Author, TimeSpan.FromSeconds(123));
 
                     if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":pushpin:")) BaseiInfo(ctx, init, select, myresponse, ddresponse);
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":page_facing_up:")) LyricEm(ctx, init, select, myresponse, ddresponse);
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":movie_camera:")) PVShowInfo(ctx, init, select, myresponse, ddresponse, oof2);
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:")) Derratives(ctx, init, select, myresponse, ddresponse);
-                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"))
-                    {
-                        if (!(oof2 == -1 && oof3 == -1))
-                        {
-                            if (oof3 != -1)
-                            {
-                                await ctx.RespondAsync("Downloading from NicoNico, this may take a while! (NND is slow but has best quality)");
-                                got.YTDL(ctx, myresponse.items[select].pvs[oof3].url);
-                            }
-                            else if (oof2 != -1)
-                            {
-                                await ctx.RespondAsync("Downloading from YouTube! Please wait!");
-                                got.YTDL(ctx, myresponse.items[select].pvs[oof2].url);
-                            }
-                            await init.DeleteReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"), ctx.Message.Author);
-                            await init.DeleteOwnReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"));
-                        }
-                        else
-                        {
-                            await ctx.RespondAsync("No valid Download Source found, sorry uwu");
-                        }
-                    }
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":x:"))
                     {
                         loop = false;
@@ -305,37 +283,15 @@ namespace someBot
                 var emoji3 = DiscordEmoji.FromName(ctx.Client, ":movie_camera:");
                 var emoji4 = DiscordEmoji.FromName(ctx.Client, ":x:");
                 var emoji5 = DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:");//:arrow_double_down: 
-                var emoji6 = DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:");
+                //var emoji6 = DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:");
                 try
                 {
-                    var reSelect = await interactivity.WaitForMessageReactionAsync(xe => (xe == emoji || xe == emoji2 || xe == emoji3 || xe == emoji4 || xe == emoji5 || xe == emoji6), init, ctx.Message.Author, TimeSpan.FromSeconds(123));
+                    var reSelect = await interactivity.WaitForMessageReactionAsync(xe => (xe == emoji || xe == emoji2 || xe == emoji3 || xe == emoji4 || xe == emoji5), init, ctx.Message.Author, TimeSpan.FromSeconds(123));
 
                     if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":pushpin:")) BaseiInfo(ctx, init, select, myresponse, ddresponse);
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":page_facing_up:")) LyricEm(ctx, init, select, myresponse, ddresponse);
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":movie_camera:")) PVShowInfo(ctx, init, select, myresponse, ddresponse, oof2);
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:")) Derratives(ctx, init, select, myresponse, ddresponse);
-                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"))
-                    {
-                        if (!(oof2 == -1 && oof3 == -1))
-                        {
-                            if (oof3 != -1)
-                            {
-                                await ctx.RespondAsync("Downloading from NicoNico, this may take a while! (NND is slow but has best quality)");
-                                got.YTDL(ctx, myresponse.items[select].pvs[oof3].url);
-                            }
-                            else if (oof2 != -1)
-                            {
-                                await ctx.RespondAsync("Downloading from YouTube! Please wait!");
-                                got.YTDL(ctx, myresponse.items[select].pvs[oof2].url);
-                            }
-                            await init.DeleteReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"), ctx.Message.Author);
-                            await init.DeleteOwnReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"));
-                        }
-                        else
-                        {
-                            await ctx.RespondAsync("No valid Download Source found, sorry uwu");
-                        }
-                    }
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":x:"))
                     {
                         loop = false;
@@ -471,37 +427,15 @@ namespace someBot
                 var emoji3 = DiscordEmoji.FromName(ctx.Client, ":movie_camera:");
                 var emoji4 = DiscordEmoji.FromName(ctx.Client, ":x:");
                 var emoji5 = DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:");//:arrow_double_down: 
-                var emoji6 = DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:");
+                //var emoji6 = DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:");
                 try
                 {
-                    var reSelect = await interactivity.WaitForMessageReactionAsync(xe => (xe == emoji || xe == emoji2 || xe == emoji3 || xe == emoji4 || xe == emoji5 || xe == emoji6), init, ctx.Message.Author, TimeSpan.FromSeconds(123));
+                    var reSelect = await interactivity.WaitForMessageReactionAsync(xe => (xe == emoji || xe == emoji2 || xe == emoji3 || xe == emoji4 || xe == emoji5), init, ctx.Message.Author, TimeSpan.FromSeconds(123));
 
                     if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":pushpin:")) BaseiInfo(ctx, init, select, myresponse, ddresponse);
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":page_facing_up:")) LyricEm(ctx, init, select, myresponse, ddresponse);
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":movie_camera:")) PVShowInfo(ctx, init, select, myresponse, ddresponse, oof2);
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":revolving_hearts:")) Derratives(ctx, init, select, myresponse, ddresponse);
-                    else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"))
-                    {
-                        if (!(oof2 == -1 && oof3 == -1))
-                        {
-                            if (oof3 != -1)
-                            {
-                                await ctx.RespondAsync("Downloading from NicoNico, this may take a while! (NND is slow but has best quality)");
-                                got.YTDL(ctx, myresponse.items[select].pvs[oof3].url);
-                            }
-                            else if (oof2 != -1)
-                            {
-                                await ctx.RespondAsync("Downloading from YouTube! Please wait!");
-                                got.YTDL(ctx, myresponse.items[select].pvs[oof2].url);
-                            }
-                            await init.DeleteReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"), ctx.Message.Author);
-                            await init.DeleteOwnReactionAsync(DiscordEmoji.FromName(ctx.Client, ":arrow_double_down:"));
-                        }
-                        else
-                        {
-                            await ctx.RespondAsync("No valid Download Source found, sorry uwu");
-                        }
-                    }
                     else if (reSelect.Emoji == DiscordEmoji.FromName(ctx.Client, ":x:"))
                     {
                         loop = false;

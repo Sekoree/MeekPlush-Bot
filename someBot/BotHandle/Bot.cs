@@ -125,7 +125,7 @@ namespace someBot
                         {
                             Bot.guit[pos].paused = true;
                             await Task.Run(() => guit[pos].AudioFunctions.Pause(pos));
-                            await e.Guild.GetChannel(guit[pos].cmdChannel).SendMessageAsync("Playbacvk was pauses since everybode left the channel! unse ``m!resume`` to resume, other wise I'll also disconnect in ~5min");
+                            await e.Guild.GetChannel(guit[pos].cmdChannel).SendMessageAsync("Playback was paused since everybodey left the channel! uns ``m!resume`` to resume, otherwise I'll also disconnect in ~5min uwu");
                             var haDi = handleVoidisc(pos);
                             haDi.Wait(millisecondsTimeout: 2500);
                         }
