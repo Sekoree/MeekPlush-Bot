@@ -476,6 +476,7 @@ namespace someBot.Commands
                 await Task.CompletedTask;
                 return;
             }
+            Bot.guit[pos].cmdChannel = ctx.Channel.Id;
             if (bot.VoiceState?.Channel != chn || Bot.guit[pos].LLGuild == null || !Bot.guit[pos].LLGuild.IsConnected)
             {
                 if (Bot.guit[pos].LLGuild == null)

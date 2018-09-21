@@ -14,6 +14,18 @@ namespace someBot.Commands.MusicEx
             var con = Bot.guit[0].LLinkCon;
             var pos = Bot.guit.FindIndex(x => x.GID == lg.Player.Guild.Id);
             if (pos == -1 || !con.IsConnected || con == null) { await Task.CompletedTask; return; }
+            if (lg.Reason == TrackEndReason.LoadFailed)
+            {
+                try
+                {
+                    Bot.guit[pos].queue.RemoveAt(Bot.guit[pos].queue.FindIndex(x => x.addtime == Bot.guit[pos].playnow.addtime));
+                }
+                catch { }
+                await lg.Player.Guild.GetChannel(Bot.guit[pos].cmdChannel).SendMessageAsync("Track error, maybe regionlocked, skipped >>");
+                Console.WriteLine($"[{lg.Player.Guild.Id}] Song errored/regionblocked");
+                await Task.CompletedTask;
+                return;
+            }
             if (lg.Track.IsStream && lg.Reason != TrackEndReason.Stopped)
             {
                 Bot.guit[pos].sstop = false;

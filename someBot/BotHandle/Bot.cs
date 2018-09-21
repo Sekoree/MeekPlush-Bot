@@ -308,6 +308,13 @@ namespace someBot
                         guit[pos].LLGuild.TrackStuck -= guit[pos].AudioEvents.PlayStu;
                         guit[pos].LLGuild.TrackException -= guit[pos].AudioEvents.PlayErr;
                         guit[pos].LLGuild.Disconnect();
+                        guit[pos].paused = false;
+                        guit[pos].rAint = 0;
+                        guit[pos].repeat = false;
+                        guit[pos].repeatAll = false;
+                        guit[pos].shuffle = false;
+                        guit[pos].queue.Clear();
+                        guit[pos].playnow = new Gsets3();
                         guit[pos].playing = false;
                         guit[pos].LLGuild = null;
                         guit[pos].offtime = DateTime.Now;
