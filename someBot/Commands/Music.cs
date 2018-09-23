@@ -3,6 +3,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
+using someBot;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -117,6 +118,7 @@ namespace someBot.Commands
             }
             else
             {
+                Bot.guit[pos].playing = true;
                 await Bot.guit[pos].AudioEvents.setPlay(pos);
                 int nextSong = 0;
                 System.Random rnd = new System.Random();
@@ -253,6 +255,8 @@ namespace someBot.Commands
                 }
                 await Bot.guit[pos].AudioEvents.setNP(pos, Bot.guit[pos].queue[nextSong]);
                 Bot.guit[pos].LLGuild.Play(Bot.guit[pos].playnow.LavaTrack);
+                var Recover = Bot.guit[pos].AudioEvents.PlayRecover(Bot.guit[pos]);
+                Recover.Wait(1000);
             }
             Console.WriteLine($"[{ctx.Guild.Id}] Playlist loaded {uri}");
             await Task.CompletedTask;
@@ -495,6 +499,7 @@ namespace someBot.Commands
             var B = Bot.guit[pos];
             if (QueueCount != 0 && !B.playing && (Song == null || Song == "" || Song == " "))
             {
+                Console.WriteLine("Preload");
                 Bot.guit[pos].playing = true;
                 Console.WriteLine($"[{ctx.Guild.Id}] Continuing queue");
                 await ctx.RespondAsync("continuing queue/starting preloaded playlist");
@@ -508,15 +513,19 @@ namespace someBot.Commands
                     if (Bot.guit[pos].rAint == Bot.guit[pos].queue.Count) { Bot.guit[pos].rAint = 0; nextSong = 0; }
                 }
                 await Bot.guit[pos].AudioEvents.setNP(pos, Bot.guit[pos].queue[nextSong]);
-                Bot.guit[pos].LLGuild.Play(Bot.guit[pos].playnow.LavaTrack);
+                B.LLGuild.Play(Bot.guit[pos].playnow.LavaTrack);
+                var Recover = B.AudioEvents.PlayRecover(Bot.guit[pos]);
+                Recover.Wait(1000);
             }
             else if (QueueCount == 0 && !B.playing && (Song == null || Song == "" || Song == " "))
             {
+                Bot.guit[pos].playing = false;
                 Console.WriteLine($"[{ctx.Guild.Id}] No Song Provided");
                 await ctx.RespondAsync("Please provide a songname or URL");
             }
             else if (QueueCount == 0 && !B.playing && Song != null)
             {
+                Console.WriteLine("Q Empty but songname");
                 Bot.guit[pos].playing = true;
                 await Bot.guit[pos].AudioQueue.QueueSong(pos, ctx, Song);
                 Console.WriteLine($"[{ctx.Guild.Id}] Playing {Song}");
@@ -531,9 +540,13 @@ namespace someBot.Commands
                 }
                 await Bot.guit[pos].AudioEvents.setNP(pos, Bot.guit[pos].queue[nextSong]);
                 Bot.guit[pos].LLGuild.Play(Bot.guit[pos].playnow.LavaTrack);
+                var Recover = B.AudioEvents.PlayRecover(Bot.guit[pos]);
+                Recover.Wait(1000);
             }
             else
             {
+                Console.WriteLine("Everything else?");
+                Bot.guit[pos].playing = true;
                 Console.WriteLine($"[{ctx.Guild.Id}] Adding {Song}");
                 await Task.Run(() => Bot.guit[pos].AudioQueue.QueueSong(pos, ctx, Song));
             }

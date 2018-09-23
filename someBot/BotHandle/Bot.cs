@@ -27,7 +27,6 @@ namespace someBot
         private CommandsNextExtension commands;
         public LavalinkExtension llink { get; }
         public LavalinkNodeConnection LavalinkNode { get; private set; }
-        private CancellationTokenSource _cts;
         public static LavalinkConfiguration lcfg = new LavalinkConfiguration
         {
             Password = "",
@@ -57,11 +56,9 @@ namespace someBot
             });
             interactivity = bot.UseInteractivity(new InteractivityConfiguration { }); //add the ineractivity stuff to it
 
-            _cts = new CancellationTokenSource();
-
             commands = bot.UseCommandsNext(new CommandsNextConfiguration()
             {
-                //StringPrefixes = (new[] { "m!" }),
+                //StringPrefixes = new[] { "m!" },
                 EnableDefaultHelp = false,
                 IgnoreExtraArguments = false,
                 CaseSensitive = false,
@@ -123,7 +120,7 @@ namespace someBot
                     {
                         if (guit[pos].LLGuild?.Channel?.Users.Where(x => !x.IsBot).Count() == 0)
                         {
-                            Bot.guit[pos].paused = true;
+                            guit[pos].paused = true;
                             await Task.Run(() => guit[pos].AudioFunctions.Pause(pos));
                             await e.Guild.GetChannel(guit[pos].cmdChannel).SendMessageAsync("Playback was paused since everybodey left the channel! uns ``m!resume`` to resume, otherwise I'll also disconnect in ~5min uwu");
                             var haDi = handleVoidisc(pos);
@@ -231,13 +228,7 @@ namespace someBot
         public async Task RunAsync()
         {
             await bot.ConnectAsync();
-            await WaitForCancellationAsync();
-        }
-
-        private async Task WaitForCancellationAsync()
-        {
-            while (!_cts.IsCancellationRequested)
-                await Task.Delay(500);
+            await Task.Delay(-1);
         }
 
         private Task<int> PreGet(DiscordMessage msg)

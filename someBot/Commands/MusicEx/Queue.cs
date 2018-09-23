@@ -1,6 +1,7 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
+using someBot;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -46,12 +46,14 @@ namespace someBot.Commands.MusicEx
         }
         public Task Skip(int pos)
         {
+            Bot.guit[pos].playing = false;
             Bot.guit[pos].LLGuild.Stop();
             return Task.CompletedTask;
         }
         public Task Stop(int pos)
         {
             Bot.guit[pos].sstop = true;
+            Bot.guit[pos].playing = false;
             Bot.guit[pos].LLGuild.Stop();
             return Task.CompletedTask;
         }
