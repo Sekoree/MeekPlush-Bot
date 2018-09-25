@@ -8,6 +8,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using static MimeTypeMap.List.MimeTypeMap;
 
 namespace someBot.Commands.RanImg
 {
@@ -23,16 +24,19 @@ namespace someBot.Commands.RanImg
                 Stream dataStream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
-                //await ctx.RespondAsync(responseFromServer);
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
-                //await ctx.RespondAsync(myresponse.url);
+                response.Dispose();
+                dataStream.Dispose();
+                WebRequest request2 = WebRequest.Create($"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500");
+                WebResponse response2 = await request2.GetResponseAsync();
+                Stream dataStream2 = response2.GetResponseStream();
 
                 var emim = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor("#68D3D2"),
                     Title = "Random Project Diva Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
-                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                    ImageUrl = $"attachment://image{GetExtension(response2.ContentType)[0]}"
                 };
                 if (myresponse.creator != "")
                 {
@@ -42,7 +46,7 @@ namespace someBot.Commands.RanImg
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
-                await ctx.RespondAsync(embed: emim.Build());
+                await ctx.RespondWithFileAsync(fileName: $"image{GetExtension(response2.ContentType)[0]}",fileData: dataStream2,embed: emim.Build());
             }
             catch
             {
@@ -60,22 +64,25 @@ namespace someBot.Commands.RanImg
                 Stream dataStream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
-                //await ctx.RespondAsync(responseFromServer);
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
-                //await ctx.RespondAsync(myresponse.url);
+                response.Dispose();
+                dataStream.Dispose();
+                WebRequest request2 = WebRequest.Create($"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500");
+                WebResponse response2 = await request2.GetResponseAsync();
+                Stream dataStream2 = response2.GetResponseStream();
 
                 var emim = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor("#68D3D2"),
                     Title = "Random Rin Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
-                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                    ImageUrl = $"attachment://image{GetExtension(response2.ContentType)[0]}"
                 };
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
-                await ctx.RespondAsync(embed: emim.Build());
+                await ctx.RespondWithFileAsync(fileName: $"image{GetExtension(response2.ContentType)[0]}", fileData: dataStream2, embed: emim.Build());
             }
             catch
             {
@@ -93,26 +100,25 @@ namespace someBot.Commands.RanImg
                 Stream dataStream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
-                //await ctx.RespondAsync(responseFromServer);
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
-                //await ctx.RespondAsync(myresponse.url);
+                response.Dispose();
+                dataStream.Dispose();
+                WebRequest request2 = WebRequest.Create($"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500");
+                WebResponse response2 = await request2.GetResponseAsync();
+                Stream dataStream2 = response2.GetResponseStream();
 
                 var emim = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor("#68D3D2"),
                     Title = "Random Una Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
-                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                    ImageUrl = $"attachment://image{GetExtension(response2.ContentType)[0]}"
                 };
-                if (myresponse.creator != "")
-                {
-                    emim.AddField("Creator Message", myresponse.creator);
-                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
-                await ctx.RespondAsync(embed: emim.Build());
+                await ctx.RespondWithFileAsync(fileName: $"image{GetExtension(response2.ContentType)[0]}", fileData: dataStream2, embed: emim.Build());
             }
             catch
             {
@@ -130,26 +136,25 @@ namespace someBot.Commands.RanImg
                 Stream dataStream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
-                //await ctx.RespondAsync(responseFromServer);
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
-                //await ctx.RespondAsync(myresponse.url);
+                response.Dispose();
+                dataStream.Dispose();
+                WebRequest request2 = WebRequest.Create($"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500");
+                WebResponse response2 = await request2.GetResponseAsync();
+                Stream dataStream2 = response2.GetResponseStream();
 
                 var emim = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor("#68D3D2"),
                     Title = "Random Gumi Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
-                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                    ImageUrl = $"attachment://image{GetExtension(response2.ContentType)[0]}"
                 };
-                if (myresponse.creator != "")
-                {
-                    emim.AddField("Creator Message", myresponse.creator);
-                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
-                await ctx.RespondAsync(embed: emim.Build());
+                await ctx.RespondWithFileAsync(fileName: $"image{GetExtension(response2.ContentType)[0]}", fileData: dataStream2, embed: emim.Build());
             }
             catch
             {
@@ -167,26 +172,25 @@ namespace someBot.Commands.RanImg
                 Stream dataStream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
-                //await ctx.RespondAsync(responseFromServer);
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
-                //await ctx.Client.CreateDmAsync(ctx.Client.GetUserAsync(174970757468651520).Result).Result.SendMessageAsync(myresponse.url);
+                response.Dispose();
+                dataStream.Dispose();
+                WebRequest request2 = WebRequest.Create($"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500");
+                WebResponse response2 = await request2.GetResponseAsync();
+                Stream dataStream2 = response2.GetResponseStream();
 
                 var emim = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor("#68D3D2"),
                     Title = "Random Luka Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
-                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                    ImageUrl = $"attachment://image{GetExtension(response2.ContentType)[0]}"
                 };
-                if (myresponse.creator != "")
-                {
-                    emim.AddField("Creator Message", myresponse.creator);
-                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
-                await ctx.RespondAsync(embed: emim.Build());
+                await ctx.RespondWithFileAsync(fileName: $"image{GetExtension(response2.ContentType)[0]}", fileData: dataStream2, embed: emim.Build());
             }
             catch
             {
@@ -204,26 +208,25 @@ namespace someBot.Commands.RanImg
                 Stream dataStream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
-                //await ctx.RespondAsync(responseFromServer);
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
-                //await ctx.Client.CreateDmAsync(ctx.Client.GetUserAsync(174970757468651520).Result).Result.SendMessageAsync(myresponse.url);
+                response.Dispose();
+                dataStream.Dispose();
+                WebRequest request2 = WebRequest.Create($"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500");
+                WebResponse response2 = await request2.GetResponseAsync();
+                Stream dataStream2 = response2.GetResponseStream();
 
                 var emim = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor("#68D3D2"),
                     Title = "Random IA Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
-                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                    ImageUrl = $"attachment://image{GetExtension(response2.ContentType)[0]}"
                 };
-                if (myresponse.creator != "")
-                {
-                    emim.AddField("Creator Message", myresponse.creator);
-                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
-                await ctx.RespondAsync(embed: emim.Build());
+                await ctx.RespondWithFileAsync(fileName: $"image{GetExtension(response2.ContentType)[0]}", fileData: dataStream2, embed: emim.Build());
             }
             catch
             {
@@ -241,26 +244,25 @@ namespace someBot.Commands.RanImg
                 Stream dataStream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
-                //await ctx.RespondAsync(responseFromServer);
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
-                //await ctx.RespondAsync(myresponse.url);
+                response.Dispose();
+                dataStream.Dispose();
+                WebRequest request2 = WebRequest.Create($"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500");
+                WebResponse response2 = await request2.GetResponseAsync();
+                Stream dataStream2 = response2.GetResponseStream();
 
                 var emim = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor("#68D3D2"),
                     Title = "Random Yukari Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
-                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                    ImageUrl = $"attachment://image{GetExtension(response2.ContentType)[0]}"
                 };
-                if (myresponse.creator != "")
-                {
-                    emim.AddField("Creator Message", myresponse.creator);
-                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
-                await ctx.RespondAsync(embed: emim.Build());
+                await ctx.RespondWithFileAsync(fileName: $"image{GetExtension(response2.ContentType)[0]}", fileData: dataStream2, embed: emim.Build());
             }
             catch
             {
@@ -278,26 +280,25 @@ namespace someBot.Commands.RanImg
                 Stream dataStream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
-                //await ctx.RespondAsync(responseFromServer);
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
-                //await ctx.RespondAsync(myresponse.url);
+                response.Dispose();
+                dataStream.Dispose();
+                WebRequest request2 = WebRequest.Create($"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500");
+                WebResponse response2 = await request2.GetResponseAsync();
+                Stream dataStream2 = response2.GetResponseStream();
 
                 var emim = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor("#68D3D2"),
                     Title = "Random Teto Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
-                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                    ImageUrl = $"attachment://image{GetExtension(response2.ContentType)[0]}"
                 };
-                if (myresponse.creator != "")
-                {
-                    emim.AddField("Creator Message", myresponse.creator);
-                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
-                await ctx.RespondAsync(embed: emim.Build());
+                await ctx.RespondWithFileAsync(fileName: $"image{GetExtension(response2.ContentType)[0]}", fileData: dataStream2, embed: emim.Build());
             }
             catch
             {
@@ -315,26 +316,25 @@ namespace someBot.Commands.RanImg
                 Stream dataStream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
-                //await ctx.RespondAsync(responseFromServer);
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
-                //await ctx.RespondAsync(myresponse.url);
+                response.Dispose();
+                dataStream.Dispose();
+                WebRequest request2 = WebRequest.Create($"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500");
+                WebResponse response2 = await request2.GetResponseAsync();
+                Stream dataStream2 = response2.GetResponseStream();
 
                 var emim = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor("#68D3D2"),
                     Title = "Random Len Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
-                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                    ImageUrl = $"attachment://image{GetExtension(response2.ContentType)[0]}"
                 };
-                if (myresponse.creator != "")
-                {
-                    emim.AddField("Creator Message", myresponse.creator);
-                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
-                await ctx.RespondAsync(embed: emim.Build());
+                await ctx.RespondWithFileAsync(fileName: $"image{GetExtension(response2.ContentType)[0]}", fileData: dataStream2, embed: emim.Build());
             }
             catch
             {
@@ -352,26 +352,25 @@ namespace someBot.Commands.RanImg
                 Stream dataStream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
-                //await ctx.RespondAsync(responseFromServer);
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
-                //await ctx.RespondAsync(myresponse.url);
+                response.Dispose();
+                dataStream.Dispose();
+                WebRequest request2 = WebRequest.Create($"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500");
+                WebResponse response2 = await request2.GetResponseAsync();
+                Stream dataStream2 = response2.GetResponseStream();
 
                 var emim = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor("#68D3D2"),
                     Title = "Random Kaito Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
-                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                    ImageUrl = $"attachment://image{GetExtension(response2.ContentType)[0]}"
                 };
-                if (myresponse.creator != "")
-                {
-                    emim.AddField("Creator Message", myresponse.creator);
-                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
-                await ctx.RespondAsync(embed: emim.Build());
+                await ctx.RespondWithFileAsync(fileName: $"image{GetExtension(response2.ContentType)[0]}", fileData: dataStream2, embed: emim.Build());
             }
             catch
             {
@@ -389,26 +388,25 @@ namespace someBot.Commands.RanImg
                 Stream dataStream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
-                //await ctx.RespondAsync(responseFromServer);
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
-                //await ctx.RespondAsync(myresponse.url);
+                response.Dispose();
+                dataStream.Dispose();
+                WebRequest request2 = WebRequest.Create($"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500");
+                WebResponse response2 = await request2.GetResponseAsync();
+                Stream dataStream2 = response2.GetResponseStream();
 
                 var emim = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor("#68D3D2"),
                     Title = "Random Meiko Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
-                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                    ImageUrl = $"attachment://image{GetExtension(response2.ContentType)[0]}"
                 };
-                if (myresponse.creator != "")
-                {
-                    emim.AddField("Creator Message", myresponse.creator);
-                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
-                await ctx.RespondAsync(embed: emim.Build());
+                await ctx.RespondWithFileAsync(fileName: $"image{GetExtension(response2.ContentType)[0]}", fileData: dataStream2, embed: emim.Build());
             }
             catch
             {
@@ -426,26 +424,25 @@ namespace someBot.Commands.RanImg
                 Stream dataStream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
-                //await ctx.RespondAsync(responseFromServer);
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
-                //await ctx.RespondAsync(myresponse.url);
+                response.Dispose();
+                dataStream.Dispose();
+                WebRequest request2 = WebRequest.Create($"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500");
+                WebResponse response2 = await request2.GetResponseAsync();
+                Stream dataStream2 = response2.GetResponseStream();
 
                 var emim = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor("#68D3D2"),
                     Title = "Random Fukase Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
-                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                    ImageUrl = $"attachment://image{GetExtension(response2.ContentType)[0]}"
                 };
-                if (myresponse.creator != "")
-                {
-                    emim.AddField("Creator Message", myresponse.creator);
-                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
-                await ctx.RespondAsync(embed: emim.Build());
+                await ctx.RespondWithFileAsync(fileName: $"image{GetExtension(response2.ContentType)[0]}", fileData: dataStream2, embed: emim.Build());
             }
             catch
             {
@@ -464,22 +461,24 @@ namespace someBot.Commands.RanImg
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
+                response.Dispose();
+                dataStream.Dispose();
+                WebRequest request2 = WebRequest.Create($"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500");
+                WebResponse response2 = await request2.GetResponseAsync();
+                Stream dataStream2 = response2.GetResponseStream();
+
                 var emim = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor("#68D3D2"),
                     Title = "Random Miku Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
-                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                    ImageUrl = $"attachment://image{GetExtension(response2.ContentType)[0]}"
                 };
-                if (myresponse.creator != "")
-                {
-                    emim.AddField("Creator Message", myresponse.creator);
-                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
-                await ctx.RespondAsync(embed: emim.Build());
+                await ctx.RespondWithFileAsync(fileName: $"image{GetExtension(response2.ContentType)[0]}", fileData: dataStream2, embed: emim.Build());
             }
             catch
             {
@@ -498,22 +497,24 @@ namespace someBot.Commands.RanImg
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
+                response.Dispose();
+                dataStream.Dispose();
+                WebRequest request2 = WebRequest.Create($"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500");
+                WebResponse response2 = await request2.GetResponseAsync();
+                Stream dataStream2 = response2.GetResponseStream();
+
                 var emim = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor("#68D3D2"),
                     Title = "Random Miki Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
-                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                    ImageUrl = $"attachment://image{GetExtension(response2.ContentType)[0]}"
                 };
-                if (myresponse.creator != "")
-                {
-                    emim.AddField("Creator Message", myresponse.creator);
-                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
-                await ctx.RespondAsync(embed: emim.Build());
+                await ctx.RespondWithFileAsync(fileName: $"image{GetExtension(response2.ContentType)[0]}", fileData: dataStream2, embed: emim.Build());
             }
             catch
             {
@@ -532,22 +533,24 @@ namespace someBot.Commands.RanImg
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
+                response.Dispose();
+                dataStream.Dispose();
+                WebRequest request2 = WebRequest.Create($"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500");
+                WebResponse response2 = await request2.GetResponseAsync();
+                Stream dataStream2 = response2.GetResponseStream();
+
                 var emim = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor("#68D3D2"),
                     Title = "Random Mayu Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
-                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                    ImageUrl = $"attachment://image{GetExtension(response2.ContentType)[0]}"
                 };
-                if (myresponse.creator != "")
-                {
-                    emim.AddField("Creator Message", myresponse.creator);
-                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
-                await ctx.RespondAsync(embed: emim.Build());
+                await ctx.RespondWithFileAsync(fileName: $"image{GetExtension(response2.ContentType)[0]}", fileData: dataStream2, embed: emim.Build());
             }
             catch
             {
@@ -566,22 +569,24 @@ namespace someBot.Commands.RanImg
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
+                response.Dispose();
+                dataStream.Dispose();
+                WebRequest request2 = WebRequest.Create($"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500");
+                WebResponse response2 = await request2.GetResponseAsync();
+                Stream dataStream2 = response2.GetResponseStream();
+
                 var emim = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor("#68D3D2"),
                     Title = "Random Aoki Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
-                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                    ImageUrl = $"attachment://image{GetExtension(response2.ContentType)[0]}"
                 };
-                if (myresponse.creator != "")
-                {
-                    emim.AddField("Creator Message", myresponse.creator);
-                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
-                await ctx.RespondAsync(embed: emim.Build());
+                await ctx.RespondWithFileAsync(fileName: $"image{GetExtension(response2.ContentType)[0]}", fileData: dataStream2, embed: emim.Build());
             }
             catch
             {
@@ -600,22 +605,24 @@ namespace someBot.Commands.RanImg
                 StreamReader reader = new StreamReader(dataStream);
                 string responseFromServer = reader.ReadToEnd();
                 var myresponse = JsonConvert.DeserializeObject<ImgRet>(responseFromServer);
+                response.Dispose();
+                dataStream.Dispose();
+                WebRequest request2 = WebRequest.Create($"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500");
+                WebResponse response2 = await request2.GetResponseAsync();
+                Stream dataStream2 = response2.GetResponseStream();
+
                 var emim = new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor("#68D3D2"),
                     Title = "Random Lily Image!",
                     Description = $"[Full Source Image Link]({myresponse.url.ToString()})",
-                    ImageUrl = $"https://api.meek.moe/im/?image={myresponse.url.ToString()}&resize=500"
+                    ImageUrl = $"attachment://image{GetExtension(response2.ContentType)[0]}"
                 };
-                if (myresponse.creator != "")
-                {
-                    emim.AddField("Creator Message", myresponse.creator);
-                }
                 response.Close();
                 emim.WithAuthor(name: "via api.meek.moe", url: "https://api.meek.moe/");
                 emim.WithFooter("Requested by " + ctx.Message.Author.Username, ctx.Message.Author.AvatarUrl);
 
-                await ctx.RespondAsync(embed: emim.Build());
+                await ctx.RespondWithFileAsync(fileName: $"image{GetExtension(response2.ContentType)[0]}", fileData: dataStream2, embed: emim.Build());
             }
             catch
             {
